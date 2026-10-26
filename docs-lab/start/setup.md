@@ -22,7 +22,7 @@ Init asks which AI tools you use, writes the workflow files for the ones you pic
 OpenSpec Setup Complete
 
 Created: Claude Code
-6 skills and 6 commands in .claude/
+7 skills and 7 commands in .claude/
 Config: openspec/config.yaml (schema: spec-driven)
 ```
 
@@ -80,6 +80,7 @@ These are the OpenSpec workflows, the actions you'll use as you work. Here they 
 ```
 .agents/skills/
 ├── openspec-explore/              think through an idea first
+├── openspec-capture/              save project knowledge without proposing a change
 ├── openspec-propose/              propose a change
 ├── openspec-apply-change/         implement a change's tasks
 ├── openspec-update-change/        revise a change's plan
@@ -89,7 +90,7 @@ These are the OpenSpec workflows, the actions you'll use as you work. Here they 
 └── openspec-bulk-archive-change/  archive several changes at once (not included by default)
 ```
 
-This is the default set plus two optional workflows. [Profiles](../customize/profiles.md) lists all twelve.
+The tree shows all seven core workflows and two optional examples. [Profiles](../customize/profiles.md) lists all thirteen.
 
 By default each workflow installs in two forms:
 

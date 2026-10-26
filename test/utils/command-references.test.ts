@@ -102,6 +102,7 @@ Finally /opsx-apply to implement`;
       'bulk-archive',
       'verify',
       'explore',
+      'capture',
       'onboard',
     ];
 
@@ -139,6 +140,7 @@ describe('transformToSkillReferences', () => {
   describe('all known commands', () => {
     const mappings: Array<[string, string]> = [
       ['explore', '/openspec-explore'],
+      ['capture', '/openspec-capture'],
       ['new', '/openspec-new-change'],
       ['continue', '/openspec-continue-change'],
       ['apply', '/openspec-apply-change'],

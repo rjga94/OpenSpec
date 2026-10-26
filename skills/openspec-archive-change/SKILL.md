@@ -182,13 +182,34 @@ In both branches, never create the root as a side effect: do not run `openspec i
    mv "<changeRoot>" "<planningHome.changesDir>/archive/<target-name>"
    ```
 
-6. **Display summary**
+6. **Update project knowledge**
+
+   After the change has been moved successfully, review its archived artifacts,
+   available implementation evidence, and the existing knowledge at
+   `<planningHome.root>/openspec/knowledge/`. Update the relevant topic notes
+   with supported, durable project facts, decisions, or lessons from the
+   completed change. Link back to the archived change using its archive path,
+   and cite relevant source files or reference materials.
+
+   Follow the existing knowledge organization and preserve every original
+   reference file. If the directory does not exist and there is durable
+   knowledge to add, create it with a short `README.md` index and focused topic
+   note. Do not add a per-change note when an existing topic note is the right
+   home. Keep uncertain findings labeled as hypotheses or open questions.
+
+   If the change adds no durable project knowledge, make no knowledge edits and
+   report that. If a knowledge read or write fails, do not undo the completed
+   archive or report the archive itself as failed; state that the change was
+   archived and its knowledge update is incomplete.
+
+7. **Display summary**
 
    Show archive completion summary including:
    - Change name
    - Schema that was used
    - Archive location
    - Whether specs were synced (if applicable)
+   - Knowledge update result
    - Note about any warnings (incomplete artifacts/tasks)
 
 **Output On Success**
@@ -200,6 +221,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
 **Schema:** <schema-name>
 **Archived to:** the archive path derived from `planningHome.changesDir`/<target-name>/
 **Specs:** <"✓ Synced to main specs" only if the step 4 verification passed; otherwise "No delta specs" or "Sync skipped">
+**Knowledge:** <Updated / No new durable knowledge / Update incomplete>
 
 <"All artifacts complete. All tasks complete." — or, if archived with warnings, list them instead (e.g. "Archived with 2 incomplete tasks")>
 ```
@@ -216,5 +238,6 @@ In both branches, never create the root as a side effect: do not run `openspec i
 - Apply relevant runtime context and report conflicts; operation guidance remains advisory
 - Consider every guidance entry and explain any inapplicable or conflicting advice
 - Existing CLI checks, resolved paths, prompts, and command contracts are unchanged
+- After a successful move, update relevant project knowledge; report knowledge failures separately without undoing or misreporting the archive
 - Artifact rules constrain only the specs being written and are never operation guidance
 - Never copy runtime context, operation guidance, or artifact-rule text verbatim into output files

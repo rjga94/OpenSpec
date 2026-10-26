@@ -8,6 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
+import { BULK_ARCHIVE_KNOWLEDGE_UPDATE } from './knowledge-base.js';
 
 /**
  * Archiving must merge delta specs into the main specs; the `sync` workflow is
@@ -263,7 +264,9 @@ ${PROJECT_ROOT_GUARD}
       - Skipped: user chose not to archive (if applicable)
       - Sync skipped: for every delta in \`excludedDeltas\`, report \`sync skipped\` with the change, \`<capability-path>\`, and recorded reason. This is distinct from skipping the archive.
 
-9. **Display summary**
+${BULK_ARCHIVE_KNOWLEDGE_UPDATE}
+
+10. **Display summary**
 
    Show final results:
 
@@ -282,6 +285,9 @@ ${PROJECT_ROOT_GUARD}
    - 4 delta specs synced to main specs
    - 1 delta spec sync skipped (add-jwt, identity/user-auth: implementation not found)
    - 1 conflict resolved (identity/user-auth: synced add-oauth, skipped add-jwt)
+
+   Knowledge update:
+   - Updated relevant topic notes with links to the archived changes
    \`\`\`
 
    If any failures:
@@ -335,6 +341,9 @@ Archived N changes:
 Spec sync summary:
 - N delta specs synced to main specs
 - No conflicts (or: M conflicts resolved)
+
+Knowledge update:
+- Updated relevant topic notes / No new durable knowledge / Update incomplete
 \`\`\`
 
 **Output On Partial Success**
@@ -350,6 +359,9 @@ Skipped M changes:
 
 Failed K changes:
 - <change-3>: Archive directory already exists
+
+Knowledge update:
+- Updated relevant topic notes / No new durable knowledge / Update incomplete
 \`\`\`
 
 **Output When No Changes**
@@ -382,6 +394,7 @@ No active changes found. Create a new change to get started.
 - Fetch all required specs-rule snapshots before the batch's first main-spec write or move
 - A failed archive-inputs lookup never blocks the batch; it proceeds with no context or guidance
 - A failed specs instruction lookup stops the whole batch atomically
+- After the batch, update relevant project knowledge for successful archives only; report knowledge failures separately without undoing or misreporting archived changes
 - Changes without concrete \`artifactPaths.specs.existingOutputPaths\` continue without spec sync
 - Apply relevant runtime context across the batch and report conflicts
 - Operation guidance remains advisory; consider every entry and explain rejected advice
@@ -631,7 +644,9 @@ ${PROJECT_ROOT_GUARD}
       - Skipped: user chose not to archive (if applicable)
       - Sync skipped: for every delta in \`excludedDeltas\`, report \`sync skipped\` with the change, \`<capability-path>\`, and recorded reason. This is distinct from skipping the archive.
 
-9. **Display summary**
+${BULK_ARCHIVE_KNOWLEDGE_UPDATE}
+
+10. **Display summary**
 
    Show final results:
 
@@ -650,6 +665,9 @@ ${PROJECT_ROOT_GUARD}
    - 4 delta specs synced to main specs
    - 1 delta spec sync skipped (add-jwt, identity/user-auth: implementation not found)
    - 1 conflict resolved (identity/user-auth: synced add-oauth, skipped add-jwt)
+
+   Knowledge update:
+   - Updated relevant topic notes with links to the archived changes
    \`\`\`
 
    If any failures:
@@ -703,6 +721,9 @@ Archived N changes:
 Spec sync summary:
 - N delta specs synced to main specs
 - No conflicts (or: M conflicts resolved)
+
+Knowledge update:
+- Updated relevant topic notes / No new durable knowledge / Update incomplete
 \`\`\`
 
 **Output On Partial Success**
@@ -718,6 +739,9 @@ Skipped M changes:
 
 Failed K changes:
 - <change-3>: Archive directory already exists
+
+Knowledge update:
+- Updated relevant topic notes / No new durable knowledge / Update incomplete
 \`\`\`
 
 **Output When No Changes**
@@ -750,6 +774,7 @@ No active changes found. Create a new change to get started.
 - Fetch all required specs-rule snapshots before the batch's first main-spec write or move
 - A failed archive-inputs lookup never blocks the batch; it proceeds with no context or guidance
 - A failed specs instruction lookup stops the whole batch atomically
+- After the batch, update relevant project knowledge for successful archives only; report knowledge failures separately without undoing or misreporting archived changes
 - Changes without concrete \`artifactPaths.specs.existingOutputPaths\` continue without spec sync
 - Apply relevant runtime context across the batch and report conflicts
 - Operation guidance remains advisory; consider every entry and explain rejected advice

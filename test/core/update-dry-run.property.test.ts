@@ -25,7 +25,7 @@ const REGRESSION_SEEDS = [1208, 1209, 1232, 1286, 1307, 2062, 2241, 2337];
 const SEEDS = [...Array.from({ length: 40 }, (_, index) => index + 1), ...REGRESSION_SEEDS];
 
 const WORKFLOWS = [
-  'propose', 'explore', 'new', 'continue', 'apply', 'ff',
+  'propose', 'explore', 'capture', 'new', 'continue', 'apply', 'ff',
   'sync', 'archive', 'bulk-archive', 'verify', 'onboard', 'update',
 ];
 const TOOLS = [

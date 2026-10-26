@@ -121,7 +121,7 @@ Each selected tool gets OpenSpec's skills and commands in its own directory:
 OpenSpec Setup Complete
 
 Created: Claude Code
-6 skills and 6 commands in .claude/
+7 skills and 7 commands in .claude/
 Config: openspec/config.yaml (schema: spec-driven)
 
 Getting started:

@@ -12,18 +12,23 @@ You can start without a chosen stack or a complete architecture. Initialize Open
 Help me explore a task tracker from scratch. I have not picked a stack. Compare the options and help me choose the first behavior to build.
 ```
 
-Decide what the first change needs and leave later architecture choices open. Ask your agent to propose that one change, then follow the steps below. You can revisit the architecture as the project grows.
+Decide what the first change needs and leave later architecture choices open. If you want to keep useful findings without proposing a change yet, use Capture. Otherwise, ask your agent to propose the first change, then follow the steps below. You can revisit the architecture as the project grows.
 
 ## The loop at a glance
 
-Every change moves through the same five steps: you think the idea through with your agent, it drafts a plan, you correct the plan before any code exists, the agent builds from it, and archiving updates your specs with what shipped.
+Explore and Capture are optional. Propose, review, apply, and archive form the change workflow. Archive updates project knowledge when a completed change adds durable information.
 
 ```mermaid
 flowchart LR
-    explore["1 · Explore<br/>think it through together"] --> propose["2 · Propose<br/>agent drafts the plan"]
-    propose --> review["3 · Review<br/>you correct the plan"]
-    review --> apply["4 · Apply<br/>agent builds, task by task"]
-    apply --> archive["5 · Archive<br/>specs absorb the change"]
+    idea["Idea or problem"] --> explore["1 · Explore<br/>(optional)"]
+    idea --> propose["3 · Propose<br/>agent drafts the plan"]
+    idea --> capture["2 · Capture<br/>(optional, knowledge only)"]
+    explore --> capture
+    explore --> propose
+    capture -. "if ready to plan" .-> propose
+    propose --> review["4 · Review<br/>you correct the plan"]
+    review --> apply["5 · Apply<br/>agent builds, task by task"]
+    apply --> archive["6 · Archive<br/>specs and knowledge absorb findings"]
     archive -. "next change" .-> explore
 ```
 
@@ -31,29 +36,35 @@ Every prompt below goes in your AI chat, the same place you ask for code. The ex
 
 ## Step 1: Explore
 
-Think the idea through with your agent before you ask for a plan. In your AI chat:
+Think the idea through with your agent before you ask for a plan. Explore reads relevant notes and references from `openspec/knowledge/` when that folder exists. It does not edit them. In your AI chat:
 
 ```text
 Help me explore how rate limiting should work in this app.
 ```
 
-Explore is a thinking mode. The agent investigates your codebase, asks the questions that matter, sketches options, and challenges assumptions. It never writes code. It writes nothing else unless you ask it to capture what you decided, or say yes when it offers. The output is a sharper idea.
+Explore is a thinking mode. The agent investigates your codebase, asks the questions that matter, sketches options, and challenges assumptions. It never writes code or project knowledge files. The output is a sharper idea.
 
-Stay here as long as the problem needs. When the shape feels right, hand it off:
+Stay here as long as the problem needs. When the shape feels right, save reusable findings with Capture or go straight to Propose.
+
+## Step 2: Capture project knowledge (optional)
+
+Use Capture to preserve decisions, hypotheses, and open questions without creating a change proposal or implementing code. In your AI chat:
+
+```text
+Capture the options and open questions from our discussion in project knowledge.
+```
+
+Capture updates relevant topic notes under `openspec/knowledge/` and preserves original reference files. These files live under the OpenSpec root, so Git can version them with the rest of that root. Skip Capture when there is nothing durable to save. Archive reviews project knowledge after a completed change, even when you skip Capture.
+
+## Step 3: Propose
+
+Propose turns the idea into a reviewable plan. Coming from Explore or Capture, ask your agent to propose the discussed change. Starting cold, when the change is clear in your head, ask directly. In your AI chat:
 
 ```text
 Propose the change we just discussed.
 ```
 
-That line starts propose for you, carrying everything you settled. Skip the first prompt in step 2.
-
-## Step 2: Propose
-
-Propose turns the idea into a reviewable plan. Coming from explore, it's already running. Starting cold, when the change is clear in your head, ask directly. In your AI chat:
-
-```text
-Propose a change to add rate limiting.
-```
+That request carries forward what you settled. If you are starting cold, use a specific request such as "Propose a change to add rate limiting."
 
 The agent asks what it needs to, then writes a change folder:
 
@@ -67,7 +78,7 @@ openspec/changes/add-rate-limiting/
 
 No code yet. Propose stops at the plan.
 
-## Step 3: Review and correct the plan
+## Step 4: Review and correct the plan
 
 Fix the plan while it's still words and nothing is built yet. Read in this order:
 
@@ -80,7 +91,7 @@ To fix something, either works:
 - Edit the file yourself. The artifacts are plain markdown, and the files are the plan.
 - Tell your agent what's wrong ("the spec is missing the unauthenticated case"). It revises the artifacts.
 
-## Step 4: Apply
+## Step 5: Apply
 
 Apply turns the plan into code. Start a fresh chat session, since implementation goes better on a clean context window. In your AI chat:
 
@@ -91,12 +102,12 @@ Apply the add-rate-limiting change.
 The agent reads the change folder, then works through `tasks.md`, checking off each task as it lands.
 
 - **Interrupted, or out of context?** Open a new session and ask it to apply again. It resumes at the first unchecked task.
-- **Plan turned out wrong?** Fix the artifacts (either way from step 3), then continue applying.
+- **Plan turned out wrong?** Fix the artifacts (either way from step 4), then continue applying.
 - **Progress** lives in the `tasks.md` checkboxes. There is no hidden state.
 
-## Step 5: Archive
+## Step 6: Archive
 
-Archiving does two things: it updates your main specs with the change's requirements, and it moves the change folder into the archive folder (in `/openspec/changes/archive/*`).
+Archive updates your main specs with the change's requirements and moves the change folder into `openspec/changes/archive/`. After the move succeeds, it updates relevant project knowledge when the change adds durable information.
 
 When every box in `tasks.md` is checked, in your AI chat:
 
@@ -158,6 +169,8 @@ Step through what archiving does:
 
 Git is a separate concern. Commit the change folder with the code, and nothing else about your workflow changes.
 
+Archive leaves project knowledge unchanged when there is no durable finding to preserve. If a knowledge update fails, the change remains archived and Archive reports the incomplete update separately.
+
 ### Keep or prune archived changes
 
 `openspec/changes/archive/` keeps the proposal, design, tasks, and delta for each finished change. In the archive flow above, the delta has already updated `openspec/specs/`.
@@ -174,7 +187,7 @@ OpenSpec does not prune archived changes automatically or provide a retention se
 ## Going further
 
 - [Delta specs](../reference/schemas/spec-driven/index.md#delta-specs-specmd): how to write the behavior changes in a delta spec.
-- [Profiles](../customize/profiles.md): optional workflows beyond the core set (verify before archive, incremental planning).
+- [Profiles](../customize/profiles.md): choose which workflows to install.
 
 ## Advanced guides
 

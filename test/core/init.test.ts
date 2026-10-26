@@ -540,7 +540,7 @@ describe('InitCommand', () => {
         );
       }
 
-      // The default profile installs six workflows; `continue` and `new` are
+      // The default profile installs seven workflows; `continue` and `new` are
       // not among them. Nothing it generates may name them (#1734) - it would
       // send the agent to a skill that was never written. The CLI fallback is
       // stated outright instead of behind a runtime availability check.
@@ -1106,6 +1106,7 @@ describe('InitCommand', () => {
       const skillNames = [
         'openspec-apply-change',
         'openspec-archive-change',
+        'openspec-capture',
         'openspec-explore',
         'openspec-propose',
         'openspec-sync-specs',
@@ -1733,7 +1734,7 @@ describe('InitCommand', () => {
         if (delivery !== 'skills') {
           const commandFiles = await fs.readdir(commandsDir);
           expect(commandFiles.sort()).toEqual([
-            'opsx-apply.md', 'opsx-archive.md', 'opsx-explore.md',
+            'opsx-apply.md', 'opsx-archive.md', 'opsx-capture.md', 'opsx-explore.md',
             'opsx-propose.md', 'opsx-sync.md', 'opsx-update.md',
           ]);
           for (const filename of commandFiles) {
@@ -1759,7 +1760,7 @@ describe('InitCommand', () => {
       await initCommand.execute(testDir);
 
       const commandsDir = path.join(testDir, `.${toolId}`, 'commands', 'opsx');
-      const commandIds = ['apply', 'archive', 'explore', 'propose', 'sync', 'update'];
+      const commandIds = ['apply', 'archive', 'capture', 'explore', 'propose', 'sync', 'update'];
       expect((await fs.readdir(commandsDir)).sort()).toEqual(commandIds.map((id) => `${id}.toml`));
       for (const commandId of commandIds) {
         const content = parseToml(await fs.readFile(path.join(commandsDir, `${commandId}.toml`), 'utf-8'));

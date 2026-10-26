@@ -249,7 +249,27 @@ In both branches, never create the root as a side effect: do not run `openspec i
       - Skipped: user chose not to archive (if applicable)
       - Sync skipped: for every delta in `excludedDeltas`, report `sync skipped` with the change, `<capability-path>`, and recorded reason. This is distinct from skipping the archive.
 
-9. **Display summary**
+9. **Update project knowledge**
+
+   After processing the batch, update the relevant topic notes at
+   `<planningHome.root>/openspec/knowledge/` once for the changes that were
+   archived successfully. Use each archived change's artifacts and available
+   implementation evidence. Link each durable finding to its archived change
+   path and cite relevant source files or reference materials.
+
+   Follow the existing knowledge organization and preserve every original
+   reference file. If the directory does not exist and there is durable
+   knowledge to add, create it with a short `README.md` index and focused topic
+   note. Do not add per-change notes when existing topic notes are the right
+   home. Keep uncertain findings labeled as hypotheses or open questions.
+   Exclude blocked, skipped, or failed changes from the knowledge update.
+
+   If successfully archived changes add no durable project knowledge, make no
+   knowledge edits and report that. If a knowledge read or write fails, do not
+   undo any completed archive or mark it failed; report the archive results and
+   the incomplete knowledge update separately.
+
+10. **Display summary**
 
    Show final results:
 
@@ -268,6 +288,9 @@ In both branches, never create the root as a side effect: do not run `openspec i
    - 4 delta specs synced to main specs
    - 1 delta spec sync skipped (add-jwt, identity/user-auth: implementation not found)
    - 1 conflict resolved (identity/user-auth: synced add-oauth, skipped add-jwt)
+
+   Knowledge update:
+   - Updated relevant topic notes with links to the archived changes
    ```
 
    If any failures:
@@ -321,6 +344,9 @@ Archived N changes:
 Spec sync summary:
 - N delta specs synced to main specs
 - No conflicts (or: M conflicts resolved)
+
+Knowledge update:
+- Updated relevant topic notes / No new durable knowledge / Update incomplete
 ```
 
 **Output On Partial Success**
@@ -336,6 +362,9 @@ Skipped M changes:
 
 Failed K changes:
 - <change-3>: Archive directory already exists
+
+Knowledge update:
+- Updated relevant topic notes / No new durable knowledge / Update incomplete
 ```
 
 **Output When No Changes**
@@ -368,6 +397,7 @@ No active changes found. Create a new change to get started.
 - Fetch all required specs-rule snapshots before the batch's first main-spec write or move
 - A failed archive-inputs lookup never blocks the batch; it proceeds with no context or guidance
 - A failed specs instruction lookup stops the whole batch atomically
+- After the batch, update relevant project knowledge for successful archives only; report knowledge failures separately without undoing or misreporting archived changes
 - Changes without concrete `artifactPaths.specs.existingOutputPaths` continue without spec sync
 - Apply relevant runtime context across the batch and report conflicts
 - Operation guidance remains advisory; consider every entry and explain rejected advice

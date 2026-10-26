@@ -8,6 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
+import { ARCHIVE_KNOWLEDGE_UPDATE } from './knowledge-base.js';
 
 /**
  * Archiving must merge delta specs into the main specs; the `sync` workflow is
@@ -196,13 +197,16 @@ ${PROJECT_ROOT_GUARD}
    mv "<changeRoot>" "<planningHome.changesDir>/archive/<target-name>"
    \`\`\`
 
-6. **Display summary**
+${ARCHIVE_KNOWLEDGE_UPDATE}
+
+7. **Display summary**
 
    Show archive completion summary including:
    - Change name
    - Schema that was used
    - Archive location
    - Whether specs were synced (if applicable)
+   - Knowledge update result
    - Note about any warnings (incomplete artifacts/tasks)
 
 **Output On Success**
@@ -214,6 +218,7 @@ ${PROJECT_ROOT_GUARD}
 **Schema:** <schema-name>
 **Archived to:** the archive path derived from \`planningHome.changesDir\`/<target-name>/
 **Specs:** <"✓ Synced to main specs" only if the step 4 verification passed; otherwise "No delta specs" or "Sync skipped">
+**Knowledge:** <Updated / No new durable knowledge / Update incomplete>
 
 <"All artifacts complete. All tasks complete." — or, if archived with warnings, list them instead (e.g. "Archived with 2 incomplete tasks")>
 \`\`\`
@@ -230,6 +235,7 @@ ${PROJECT_ROOT_GUARD}
 - Apply relevant runtime context and report conflicts; operation guidance remains advisory
 - Consider every guidance entry and explain any inapplicable or conflicting advice
 - Existing CLI checks, resolved paths, prompts, and command contracts are unchanged
+- After a successful move, update relevant project knowledge; report knowledge failures separately without undoing or misreporting the archive
 - Artifact rules constrain only the specs being written and are never operation guidance
 - Never copy runtime context, operation guidance, or artifact-rule text verbatim into output files`,
     license: 'MIT',
@@ -408,13 +414,16 @@ ${PROJECT_ROOT_GUARD}
    mv "<changeRoot>" "<planningHome.changesDir>/archive/<target-name>"
    \`\`\`
 
-6. **Display summary**
+${ARCHIVE_KNOWLEDGE_UPDATE}
+
+7. **Display summary**
 
    Show archive completion summary including:
    - Change name
    - Schema that was used
    - Archive location
    - Spec sync status (synced / sync skipped / no delta specs)
+   - Knowledge update result
    - Note about any warnings (incomplete artifacts/tasks)
 
 **Output On Success**
@@ -426,6 +435,7 @@ ${PROJECT_ROOT_GUARD}
 **Schema:** <schema-name>
 **Archived to:** the archive path derived from \`planningHome.changesDir\`/<target-name>/
 **Specs:** ✓ Synced to main specs
+**Knowledge:** Updated / No new durable knowledge / Update incomplete
 
 All artifacts complete. All tasks complete.
 \`\`\`
@@ -439,6 +449,7 @@ All artifacts complete. All tasks complete.
 **Schema:** <schema-name>
 **Archived to:** the archive path derived from \`planningHome.changesDir\`/<target-name>/
 **Specs:** No delta specs
+**Knowledge:** Updated / No new durable knowledge / Update incomplete
 
 All artifacts complete. All tasks complete.
 \`\`\`
@@ -452,6 +463,7 @@ All artifacts complete. All tasks complete.
 **Schema:** <schema-name>
 **Archived to:** the archive path derived from \`planningHome.changesDir\`/<target-name>/
 **Specs:** Sync skipped (user chose to skip)
+**Knowledge:** Updated / No new durable knowledge / Update incomplete
 
 **Warnings:**
 - Archived with 2 incomplete artifacts
@@ -489,6 +501,7 @@ Target archive directory already exists.
 - Apply relevant runtime context and report conflicts; operation guidance remains advisory
 - Consider every guidance entry and explain any inapplicable or conflicting advice
 - Existing CLI checks, resolved paths, prompts, and command contracts are unchanged
+- After a successful move, update relevant project knowledge; report knowledge failures separately without undoing or misreporting the archive
 - Artifact rules constrain only the specs being written and are never operation guidance
 - Never copy runtime context, operation guidance, or artifact-rule text verbatim into output files`
   };

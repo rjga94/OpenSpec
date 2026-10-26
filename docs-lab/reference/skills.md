@@ -36,7 +36,7 @@ profile values are core and custom, so "expanded" reads as a third profile). -->
 
 The skills come in two sets:
 
-- **Core**: installed by default, the main planning loop.
+- **Core**: installed by default, including the planning loop and knowledge capture.
 - **Optional**: installed only when you add them, via [Profiles](../customize/profiles.md).
 
 Every skill expects a project that already uses OpenSpec. Before its first step that writes anything, a skill checks for a resolved root. What happens when there is none depends on how the skill was reached:
@@ -49,6 +49,7 @@ Commands are always the second case. A project whose `openspec/config.yaml` name
 | Skill | Job | Type |
 |---|---|---|
 | [openspec-explore](#openspec-explore) | Think through an idea before it becomes a change proposal | Core |
+| [openspec-capture](#openspec-capture) | Save project knowledge without creating a change proposal | Core |
 | [openspec-propose](#openspec-propose) | Create a change proposal with all its planning artifacts in one step | Core |
 | [openspec-apply-change](#openspec-apply-change) | Implement a change proposal's tasks | Core |
 | [openspec-update-change](#openspec-update-change) | Revise a change proposal's plan | Core |
@@ -70,8 +71,18 @@ Think through an idea before it becomes a change proposal.
 | Contract | Description |
 |---|---|
 | **Arguments** | A topic: an idea, a problem, a comparison, or the name of an existing change proposal to explore in context. With nothing given it enters explore mode. |
-| **Creates** | Nothing by default. It reads and investigates only. On request it captures insights: a new change proposal under `openspec/changes/<name>/`, or updates to an existing one's proposal, design, specs, or tasks. Never code. |
-| **Response** | An open conversation with no required output. When thinking crystallizes it summarizes the problem, approach, open questions, and next steps, and offers to capture them. You decide. Implementation never starts here. |
+| **Creates** | Nothing by default. It reads and investigates only, including relevant notes and references under `openspec/knowledge/` when that folder exists. On request it creates or updates OpenSpec change artifacts within the confirmed scope. It does not write project knowledge; use `openspec-capture` for that. Never code. |
+| **Response** | An open conversation with no required output. When thinking crystallizes it summarizes the problem, approach, open questions, and next steps, and offers to capture them as change artifacts. You decide. Implementation never starts here. |
+
+## openspec-capture
+
+Capture durable project knowledge without creating a change proposal or implementing code.
+
+| Contract | Description |
+|---|---|
+| **Arguments** | The knowledge to preserve. With no topic specified, it uses the relevant current conversation. If there is no clear knowledge to preserve, it asks what you want captured. |
+| **Creates** | Creates or updates topic notes under `openspec/knowledge/`, using `README.md` as an index when present. It preserves original reference files and records sources. It never creates change artifacts or code. |
+| **Response** | Names the files created or updated, summarizes the knowledge preserved, and identifies unresolved questions or source files it could not inspect. Confirms that no proposal or code was created. |
 
 ## openspec-propose
 
@@ -121,8 +132,8 @@ Move a finished change proposal to the archive.
 | Contract | Description |
 |---|---|
 | **Arguments** | A change proposal name, optional. |
-| **Creates** | Moves the change proposal folder to `openspec/changes/archive/YYYY-MM-DD-<name>/` (no date added if the name already starts with one). With your approval it first syncs outstanding delta specs. When `openspec-sync-specs` is installed, it runs that workflow. Otherwise, it merges the delta specs into the main specs itself. Never code. |
-| **Response** | Warns and asks before archiving with incomplete artifacts or tasks, and asks whether to sync when delta specs exist. Ends with a summary: name, schema, archive location, spec sync status, and any warnings. |
+| **Creates** | Moves the change proposal folder to `openspec/changes/archive/YYYY-MM-DD-<name>/` (no date added if the name already starts with one). With your approval it first syncs outstanding delta specs. When `openspec-sync-specs` is installed, it runs that workflow. Otherwise, it merges the delta specs into the main specs itself. After the move succeeds, it creates or updates relevant topic notes under `openspec/knowledge/` when the change adds durable knowledge. Never code. |
+| **Response** | Warns and asks before archiving with incomplete artifacts or tasks, and asks whether to sync when delta specs exist. Ends with a summary: name, schema, archive location, spec sync status, knowledge update status, and any warnings. |
 
 ## openspec-new-change
 
@@ -171,8 +182,8 @@ Archive several change proposals at once.
 | Contract | Description |
 |---|---|
 | **Arguments** | None. It lists the active change proposals and asks you to select any number, with an option for all. If none are active it says so and stops. |
-| **Creates** | `openspec/changes/archive/YYYY-MM-DD-<name>/` per archived change proposal (already-dated names keep their prefix). Each one's spec deltas sync first via `openspec-sync-specs`. Never code. |
-| **Response** | A status table per change proposal and one confirmation for the whole batch, then a summary of archived, skipped, and failed, plus spec sync results. When two change proposals touch the same spec it checks the codebase and syncs implemented deltas oldest first. |
+| **Creates** | `openspec/changes/archive/YYYY-MM-DD-<name>/` per archived change proposal (already-dated names keep their prefix). Each one's spec deltas sync first via `openspec-sync-specs`. After processing the batch, it creates or updates relevant topic notes under `openspec/knowledge/` once for successfully archived changes that add durable knowledge. Never code. |
+| **Response** | A status table per change proposal and one confirmation for the whole batch, then a summary of archived, skipped, and failed, plus spec sync and knowledge update results. When two change proposals touch the same spec it checks the codebase and syncs implemented deltas oldest first. |
 
 ## openspec-onboard
 

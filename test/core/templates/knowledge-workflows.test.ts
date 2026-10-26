@@ -1,0 +1,79 @@
+import { describe, expect, it } from 'vitest';
+
+import { ALL_WORKFLOWS, CORE_WORKFLOWS } from '../../../src/core/profiles.js';
+import {
+  getCommandTemplates,
+  getSkillTemplates,
+} from '../../../src/core/shared/skill-generation.js';
+
+function skillInstructions(workflowId: string, workflows = ALL_WORKFLOWS): string {
+  const entry = getSkillTemplates(workflows).find((item) => item.workflowId === workflowId);
+  if (!entry) throw new Error(`Missing skill template for ${workflowId}`);
+  return entry.template.instructions;
+}
+
+function commandInstructions(workflowId: string, workflows = ALL_WORKFLOWS): string {
+  const entry = getCommandTemplates(workflows).find((item) => item.id === workflowId);
+  if (!entry) throw new Error(`Missing command template for ${workflowId}`);
+  return entry.template.content;
+}
+
+describe('project knowledge workflow prompts', () => {
+  it.each([
+    ['skill', skillInstructions('explore', CORE_WORKFLOWS)],
+    ['command', commandInstructions('explore', CORE_WORKFLOWS)],
+  ])('adds knowledge discovery to Explore without changing its read-only stance (%s)', (_surface, body) => {
+    expect(body).toContain('<root.path>/openspec/knowledge/');
+    expect(body).toContain('read its `README.md` first');
+    expect(body).toContain('inspect only the topic notes and reference files relevant');
+    expect(body).toContain("does not change Explore's read-only behavior");
+    expect(body.toLowerCase()).toContain('never write code or implement features');
+    expect(body).toContain('openspec list --specs');
+  });
+
+  it.each([
+    ['archive skill', skillInstructions('archive')],
+    ['archive command', commandInstructions('archive')],
+  ])('adds knowledge updates after the existing single-change archive (%s)', (_surface, body) => {
+    expect(body).toContain('Check artifact completion status');
+    expect(body).toContain('Assess delta spec sync state');
+    expect(body).toContain('Perform the archive');
+    expect(body).toContain('After the change has been moved successfully');
+    expect(body).toContain('<planningHome.root>/openspec/knowledge/');
+    expect(body).toContain('report knowledge failures separately');
+    expect(body).toContain('Update incomplete');
+  });
+
+  it.each([
+    ['bulk archive skill', skillInstructions('bulk-archive')],
+    ['bulk archive command', commandInstructions('bulk-archive')],
+  ])('updates knowledge only for successfully archived changes (%s)', (_surface, body) => {
+    expect(body).toContain('Detect spec conflicts early');
+    expect(body).toContain('Use single confirmation for entire batch');
+    expect(body).toContain('After processing the batch');
+    expect(body).toContain('Exclude blocked, skipped, or failed changes');
+    expect(body).toContain('report the archive results and');
+  });
+
+  it('makes Capture knowledge-only and preserves uncertainty and source provenance', () => {
+    const skill = skillInstructions('capture', CORE_WORKFLOWS);
+    const command = commandInstructions('capture', CORE_WORKFLOWS);
+
+    expect(skill).toBe(command);
+    expect(skill).toContain('<root.path>/openspec/knowledge/');
+    expect(skill).toContain('Confirmed project facts or decisions');
+    expect(skill).toContain('Hypotheses or unverified ideas');
+    expect(skill).toContain('Open questions');
+    expect(skill).toContain('Ideas not yet implemented');
+    expect(skill).toContain('Do not create or modify proposals, specs, change artifacts, implementation code');
+    expect(skill).toContain('Keep all original reference files unchanged');
+  });
+
+  it('does not advertise Capture when a custom profile omits it', () => {
+    const workflowsWithoutCapture = ALL_WORKFLOWS.filter((workflow) => workflow !== 'capture');
+    const explore = skillInstructions('explore', workflowsWithoutCapture);
+
+    expect(explore).not.toContain('/opsx:capture');
+    expect(explore).toContain('offer to enable the Capture workflow');
+  });
+});

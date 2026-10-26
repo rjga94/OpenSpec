@@ -40,17 +40,20 @@ its landing page; the spec-driven schema publishes as a single page
 (`reference/schemas/spec-driven/index.md`) inside the Schemas group. Labels and URLs come from
 `website/docs.sync.config.mjs`, so moving a file never moves a URL.
 
-**Teach once.** The loop (propose, review, apply, archive) has one teacher; every other
-page links, never re-teaches:
+**Teach once.** The change loop (propose, review, apply, archive) and its optional
+Explore and Capture steps have one teacher; every other page links, never re-teaches:
 
 - `start/quickstart.md` teaches it as UX: how a human moves a change through the
-  lifecycle, including what archive does on disk.
+  lifecycle, including optional exploration and knowledge capture, and what archive
+  does on disk.
 - `start/overview.md` shows it as pitch: copy only, no explanation.
 - `guides/concepts.md` stays out of it: the page explains the artifacts (specs, changes,
   the delta) and links to the quickstart for the loop. Disk paths appear inline with the
   concept that owns them, never as a layout section.
 - `start/installation.md` owns install; `start/setup.md` owns init and what it writes.
   The quickstart opens with one prerequisite line linking both and starts at explore.
+- `reference/skills.md` owns the exact contract for Capture, Explore, and Archive,
+  including their knowledge-base behavior.
 
 **Guides vs reference.** `reference/skills.md` holds each skill's contract: arguments,
 what it creates, and what it responds with. Guide pages
