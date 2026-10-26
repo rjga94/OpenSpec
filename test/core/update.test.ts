@@ -3711,7 +3711,7 @@ More user content after markers.
           featureFlags: {},
           profile: 'custom',
           delivery,
-          workflows: ['propose', 'explore', 'capture', 'apply', 'archive'],
+          workflows: ['propose', 'explore', 'capture', 'init', 'apply', 'archive'],
         });
 
         const archiveSkill = path.join(
@@ -3767,7 +3767,7 @@ More user content after markers.
         featureFlags: {},
         profile: 'custom',
         delivery: 'both',
-        workflows: ['propose', 'explore', 'capture', 'apply', 'sync', 'archive'],
+        workflows: ['propose', 'explore', 'capture', 'init', 'apply', 'sync', 'archive'],
       });
 
       const initCommand = new InitCommand({ tools: 'claude', force: true });
@@ -3795,7 +3795,7 @@ More user content after markers.
         featureFlags: {},
         profile: 'custom',
         delivery: 'both',
-        workflows: ['propose', 'explore', 'capture', 'apply', 'update', 'sync', 'archive', 'verify'],
+        workflows: ['propose', 'explore', 'capture', 'init', 'apply', 'update', 'sync', 'archive', 'verify'],
       });
 
       const initCommand = new InitCommand({ tools: 'claude', force: true });
@@ -4144,6 +4144,7 @@ More user content after markers.
         'openspec-capture',
         'openspec-custom',
         'openspec-explore',
+        'openspec-init',
         'openspec-propose',
         'openspec-sync-specs',
         'openspec-update-change',

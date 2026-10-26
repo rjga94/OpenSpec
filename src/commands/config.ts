@@ -181,6 +181,10 @@ interface WorkflowPromptMeta {
 }
 
 export const WORKFLOW_PROMPT_META: Record<string, WorkflowPromptMeta> = {
+  init: {
+    name: 'Initialize project wiki',
+    description: 'Interview for project foundations and create a wiki',
+  },
   propose: {
     name: 'Propose change',
     description: 'Create proposal, design, and tasks from a request',
@@ -190,8 +194,8 @@ export const WORKFLOW_PROMPT_META: Record<string, WorkflowPromptMeta> = {
     description: 'Investigate a problem before implementation',
   },
   capture: {
-    name: 'Capture project knowledge',
-    description: 'Save project knowledge without creating a change proposal',
+    name: 'Capture wiki information',
+    description: 'Save project information in the wiki without creating a change proposal',
   },
   new: {
     name: 'New change',

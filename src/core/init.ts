@@ -112,6 +112,7 @@ const PROGRESS_SPINNER = {
 };
 
 const WORKFLOW_TO_SKILL_DIR: Record<string, string> = {
+  'init': 'openspec-init',
   'explore': 'openspec-explore',
   'capture': 'openspec-capture',
   'new': 'openspec-new-change',

@@ -27,6 +27,7 @@ type WorkflowId = (typeof ALL_WORKFLOWS)[number];
  * Maps workflow IDs to their skill directory names.
  */
 export const WORKFLOW_TO_SKILL_DIR: Record<WorkflowId, string> = {
+  'init': 'openspec-init',
   'explore': 'openspec-explore',
   'capture': 'openspec-capture',
   'new': 'openspec-new-change',

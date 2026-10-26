@@ -540,7 +540,7 @@ describe('InitCommand', () => {
         );
       }
 
-      // The default profile installs seven workflows; `continue` and `new` are
+      // The default profile installs eight workflows; `continue` and `new` are
       // not among them. Nothing it generates may name them (#1734) - it would
       // send the agent to a skill that was never written. The CLI fallback is
       // stated outright instead of behind a runtime availability check.
@@ -1108,6 +1108,7 @@ describe('InitCommand', () => {
         'openspec-archive-change',
         'openspec-capture',
         'openspec-explore',
+        'openspec-init',
         'openspec-propose',
         'openspec-sync-specs',
         'openspec-update-change',
@@ -1735,18 +1736,23 @@ describe('InitCommand', () => {
           const commandFiles = await fs.readdir(commandsDir);
           expect(commandFiles.sort()).toEqual([
             'opsx-apply.md', 'opsx-archive.md', 'opsx-capture.md', 'opsx-explore.md',
-            'opsx-propose.md', 'opsx-sync.md', 'opsx-update.md',
+            'opsx-init.md', 'opsx-propose.md', 'opsx-sync.md', 'opsx-update.md',
           ]);
           for (const filename of commandFiles) {
             const content = await fs.readFile(path.join(commandsDir, filename), 'utf-8');
             const frontmatter = content.match(/^---\n([\s\S]*?)\n---\n/);
             expect(frontmatter).not.toBeNull();
-            expect(parseYaml(frontmatter![1])).toMatchObject({
+            const metadata = parseYaml(frontmatter![1]);
+            expect(metadata).toMatchObject({
               name: path.basename(filename, '.md'),
               description: expect.any(String),
-              args: 'optional',
             });
-            expect(content).toContain('$ARGUMENTS');
+            expect(metadata.args).toBe(filename === 'opsx-init.md' ? 'none' : 'optional');
+            if (filename === 'opsx-init.md') {
+              expect(content).not.toContain('$ARGUMENTS');
+            } else {
+              expect(content).toContain('$ARGUMENTS');
+            }
             expect(content).not.toContain('/opsx:');
           }
           const applyCommand = await fs.readFile(path.join(commandsDir, 'opsx-apply.md'), 'utf-8');
@@ -1760,7 +1766,7 @@ describe('InitCommand', () => {
       await initCommand.execute(testDir);
 
       const commandsDir = path.join(testDir, `.${toolId}`, 'commands', 'opsx');
-      const commandIds = ['apply', 'archive', 'capture', 'explore', 'propose', 'sync', 'update'];
+      const commandIds = ['apply', 'archive', 'capture', 'explore', 'init', 'propose', 'sync', 'update'];
       expect((await fs.readdir(commandsDir)).sort()).toEqual(commandIds.map((id) => `${id}.toml`));
       for (const commandId of commandIds) {
         const content = parseToml(await fs.readFile(path.join(commandsDir, `${commandId}.toml`), 'utf-8'));

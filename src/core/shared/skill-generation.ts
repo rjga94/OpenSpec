@@ -5,6 +5,7 @@
  */
 
 import {
+  getInitSkillTemplate,
   getExploreSkillTemplate,
   getCaptureSkillTemplate,
   getNewChangeSkillTemplate,
@@ -18,6 +19,7 @@ import {
   getVerifyChangeSkillTemplate,
   getOnboardSkillTemplate,
   getOpsxProposeSkillTemplate,
+  getOpsxInitCommandTemplate,
   getOpsxExploreCommandTemplate,
   getOpsxCaptureCommandTemplate,
   getOpsxNewCommandTemplate,
@@ -83,6 +85,7 @@ export interface CommandTemplateEntry {
  */
 export function getSkillTemplates(workflowFilter?: readonly string[]): SkillTemplateEntry[] {
   const all: SkillTemplateEntry[] = [
+    { template: getInitSkillTemplate(), dirName: 'openspec-init', workflowId: 'init' },
     { template: getExploreSkillTemplate(), dirName: 'openspec-explore', workflowId: 'explore' },
     { template: getCaptureSkillTemplate(), dirName: 'openspec-capture', workflowId: 'capture' },
     { template: getNewChangeSkillTemplate(), dirName: 'openspec-new-change', workflowId: 'new' },
@@ -117,6 +120,7 @@ export function getSkillTemplates(workflowFilter?: readonly string[]): SkillTemp
  */
 export function getCommandTemplates(workflowFilter?: readonly string[]): CommandTemplateEntry[] {
   const all: CommandTemplateEntry[] = [
+    { template: getOpsxInitCommandTemplate(), id: 'init' },
     { template: getOpsxExploreCommandTemplate(), id: 'explore' },
     { template: getOpsxCaptureCommandTemplate(), id: 'capture' },
     { template: getOpsxNewCommandTemplate(), id: 'new' },

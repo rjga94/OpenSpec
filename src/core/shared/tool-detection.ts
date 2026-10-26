@@ -39,6 +39,7 @@ export type SkillName = (typeof SKILL_NAMES)[number];
  * IDs of command templates created by openspec init.
  */
 export const COMMAND_IDS = [
+  'init',
   'explore',
   'new',
   'continue',

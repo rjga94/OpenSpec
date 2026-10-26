@@ -8,7 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
-import { KNOWLEDGE_BASE_DISCOVERY } from './knowledge-base.js';
+import { WIKI_DISCOVERY } from './wiki.js';
 
 const PLANNING_GUIDANCE = `## Planning a Change
 
@@ -56,13 +56,13 @@ const CAPTURE_APPLY_HANDOFF = optionalWorkflow(
   'implementation works from the change\'s tasks (`openspec instructions apply --change "<name>" --json`), outside explore mode'
 );
 
-const CAPTURE_KNOWLEDGE_HANDOFF = optionalWorkflow(
+const CAPTURE_WIKI_HANDOFF = optionalWorkflow(
   'capture',
-  'run `/opsx:capture` to preserve these findings in project knowledge without creating a change',
-  'offer to enable the Capture workflow before saving findings to project knowledge; do not write knowledge from Explore'
+  'run `/opsx:capture` to preserve these findings in the wiki without creating a change',
+  'offer to enable the Capture workflow before saving findings in the wiki; do not write to the wiki from Explore'
 );
 
-const CAPTURE_KNOWLEDGE_GUIDANCE = `When the user wants to preserve reusable project knowledge without creating a change proposal, ${CAPTURE_KNOWLEDGE_HANDOFF}. Capturing project knowledge is separate from capturing OpenSpec change artifacts.`;
+const CAPTURE_WIKI_GUIDANCE = `When the user wants to preserve reusable information in the wiki without creating a change proposal, ${CAPTURE_WIKI_HANDOFF}. Wiki capture is separate from capturing OpenSpec change artifacts.`;
 
 const DISCOVERY_END_HANDOFF = optionalWorkflow(
   'propose',
@@ -96,9 +96,9 @@ ${STORE_SELECTION_GUIDANCE}
 
 ${PROJECT_ROOT_GUARD}
 
-${KNOWLEDGE_BASE_DISCOVERY}
+${WIKI_DISCOVERY}
 
-${CAPTURE_KNOWLEDGE_GUIDANCE}
+${CAPTURE_WIKI_GUIDANCE}
 
 ---
 
@@ -427,9 +427,9 @@ ${STORE_SELECTION_GUIDANCE}
 
 ${PROJECT_ROOT_GUARD}
 
-${KNOWLEDGE_BASE_DISCOVERY}
+${WIKI_DISCOVERY}
 
-${CAPTURE_KNOWLEDGE_GUIDANCE}
+${CAPTURE_WIKI_GUIDANCE}
 
 **Input**: The argument after \`/opsx:explore\` is whatever the user wants to think about. Could be:
 - A vague idea: "real-time collaboration"

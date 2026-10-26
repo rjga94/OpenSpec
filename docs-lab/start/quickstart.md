@@ -16,19 +16,19 @@ Decide what the first change needs and leave later architecture choices open. If
 
 ## The loop at a glance
 
-Explore and Capture are optional. Propose, review, apply, and archive form the change workflow. Archive updates project knowledge when a completed change adds durable information.
+Explore and Capture are optional. Propose, review, apply, and archive form the change workflow. Archive updates the wiki when a completed change adds useful information.
 
 ```mermaid
 flowchart LR
     idea["Idea or problem"] --> explore["1 · Explore<br/>(optional)"]
     idea --> propose["3 · Propose<br/>agent drafts the plan"]
-    idea --> capture["2 · Capture<br/>(optional, knowledge only)"]
+    idea --> capture["2 · Capture<br/>(optional, wiki only)"]
     explore --> capture
     explore --> propose
     capture -. "if ready to plan" .-> propose
     propose --> review["4 · Review<br/>you correct the plan"]
     review --> apply["5 · Apply<br/>agent builds, task by task"]
-    apply --> archive["6 · Archive<br/>specs and knowledge absorb findings"]
+    apply --> archive["6 · Archive<br/>specs and wiki record findings"]
     archive -. "next change" .-> explore
 ```
 
@@ -36,25 +36,25 @@ Every prompt below goes in your AI chat, the same place you ask for code. The ex
 
 ## Step 1: Explore
 
-Think the idea through with your agent before you ask for a plan. Explore reads relevant notes and references from `openspec/knowledge/` when that folder exists. It does not edit them. In your AI chat:
+Think the idea through with your agent before you ask for a plan. Explore reads relevant pages and references from `openspec/wiki/` when that folder exists. It does not edit them. In your AI chat:
 
 ```text
 Help me explore how rate limiting should work in this app.
 ```
 
-Explore is a thinking mode. The agent investigates your codebase, asks the questions that matter, sketches options, and challenges assumptions. It never writes code or project knowledge files. The output is a sharper idea.
+Explore is a thinking mode. The agent investigates your codebase, asks the questions that matter, sketches options, and challenges assumptions. It never writes code or wiki files. The output is a sharper idea.
 
 Stay here as long as the problem needs. When the shape feels right, save reusable findings with Capture or go straight to Propose.
 
-## Step 2: Capture project knowledge (optional)
+## Step 2: Capture information in the wiki (optional)
 
 Use Capture to preserve decisions, hypotheses, and open questions without creating a change proposal or implementing code. In your AI chat:
 
 ```text
-Capture the options and open questions from our discussion in project knowledge.
+Capture the options and open questions from our discussion in the wiki.
 ```
 
-Capture updates relevant topic notes under `openspec/knowledge/` and preserves original reference files. These files live under the OpenSpec root, so Git can version them with the rest of that root. Skip Capture when there is nothing durable to save. Archive reviews project knowledge after a completed change, even when you skip Capture.
+Capture updates relevant topic pages under `openspec/wiki/` and preserves original reference files. These files live under the OpenSpec root, so Git can version them with the rest of that root. Skip Capture when there is nothing durable to save. Archive reviews the wiki after a completed change, even when you skip Capture.
 
 ## Step 3: Propose
 
@@ -107,7 +107,7 @@ The agent reads the change folder, then works through `tasks.md`, checking off e
 
 ## Step 6: Archive
 
-Archive updates your main specs with the change's requirements and moves the change folder into `openspec/changes/archive/`. After the move succeeds, it updates relevant project knowledge when the change adds durable information.
+Archive updates your main specs with the change's requirements and moves the change folder into `openspec/changes/archive/`. After the move succeeds, it updates relevant wiki pages when the change adds useful information.
 
 When every box in `tasks.md` is checked, in your AI chat:
 
@@ -169,7 +169,7 @@ Step through what archiving does:
 
 Git is a separate concern. Commit the change folder with the code, and nothing else about your workflow changes.
 
-Archive leaves project knowledge unchanged when there is no durable finding to preserve. If a knowledge update fails, the change remains archived and Archive reports the incomplete update separately.
+Archive leaves the wiki unchanged when there is nothing useful to record. If a wiki update fails, the change remains archived and Archive reports the incomplete update separately.
 
 ### Keep or prune archived changes
 

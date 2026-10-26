@@ -52,6 +52,7 @@ export function transformCommandInvocations(
  * src/core/profile-sync-drift.ts (exported) and src/core/init.ts (local copy).
  */
 const COMMAND_TO_SKILL_NAME: Record<string, string> = {
+  'init': 'openspec-init',
   'explore': 'openspec-explore',
   'capture': 'openspec-capture',
   'new': 'openspec-new-change',

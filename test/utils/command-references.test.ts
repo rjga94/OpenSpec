@@ -139,6 +139,7 @@ Finally /opsx-apply to implement`;
 describe('transformToSkillReferences', () => {
   describe('all known commands', () => {
     const mappings: Array<[string, string]> = [
+      ['init', '/openspec-init'],
       ['explore', '/openspec-explore'],
       ['capture', '/openspec-capture'],
       ['new', '/openspec-new-change'],

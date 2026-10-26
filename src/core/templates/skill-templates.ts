@@ -6,6 +6,7 @@
 
 export type { SkillTemplate, CommandTemplate } from './types.js';
 
+export { getInitSkillTemplate, getOpsxInitCommandTemplate } from './workflows/init.js';
 export { getExploreSkillTemplate, getOpsxExploreCommandTemplate } from './workflows/explore.js';
 export { getCaptureSkillTemplate, getOpsxCaptureCommandTemplate } from './workflows/capture.js';
 export { getNewChangeSkillTemplate, getOpsxNewCommandTemplate } from './workflows/new-change.js';

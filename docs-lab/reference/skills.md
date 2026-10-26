@@ -36,20 +36,23 @@ profile values are core and custom, so "expanded" reads as a third profile). -->
 
 The skills come in two sets:
 
-- **Core**: installed by default, including the planning loop and knowledge capture.
+- **Core**: installed by default, including the planning loop and wiki capture.
 - **Optional**: installed only when you add them, via [Profiles](../customize/profiles.md).
 
-Every skill expects a project that already uses OpenSpec. Before its first step that writes anything, a skill checks for a resolved root. What happens when there is none depends on how the skill was reached:
+`openspec-init` is the bootstrap skill. It can run without an existing OpenSpec root and creates only `openspec/wiki/` after interviewing you about the project. It initializes Git only when the project is not already inside a Git repository.
+
+The other skills expect a project that already uses OpenSpec. Before their first write, they check for a resolved root. What happens when there is none depends on how the skill was reached:
 
 - **Auto-selected**: your agent picked the skill on its own, without you naming OpenSpec. It drops OpenSpec and answers your request normally, the way it would with OpenSpec not installed.
 - **Explicit OpenSpec request**: you named OpenSpec, named the skill, or ran its command. It stops before writing and asks how to proceed: run `openspec init` here, target a store with `--store <id>`, or continue without OpenSpec. It waits for your answer.
 
-Commands are always the second case. A project whose `openspec/config.yaml` names a store this machine cannot resolve (not registered, or a malformed `store:` line) is not treated as uninitialized: the skill stops and shows the store error with its fix. No skill creates an `openspec/` directory on its own in either case. The entries below describe what each skill does once a root is in place.
+Commands for these skills are always the second case. A project whose `openspec/config.yaml` names a store this machine cannot resolve (not registered, or a malformed `store:` line) is not treated as uninitialized: the skill stops and shows the store error with its fix. No other skill creates an OpenSpec root on its own. The entries below describe each skill's behavior.
 
 | Skill | Job | Type |
 |---|---|---|
+| [openspec-init](#openspec-init) | Interview for project foundations and initialize its wiki | Core |
 | [openspec-explore](#openspec-explore) | Think through an idea before it becomes a change proposal | Core |
-| [openspec-capture](#openspec-capture) | Save project knowledge without creating a change proposal | Core |
+| [openspec-capture](#openspec-capture) | Save project information in the wiki without creating a change proposal | Core |
 | [openspec-propose](#openspec-propose) | Create a change proposal with all its planning artifacts in one step | Core |
 | [openspec-apply-change](#openspec-apply-change) | Implement a change proposal's tasks | Core |
 | [openspec-update-change](#openspec-update-change) | Revise a change proposal's plan | Core |
@@ -64,6 +67,16 @@ Commands are always the second case. A project whose `openspec/config.yaml` name
 
 Each entry below names the skill that owns the next step. When your profile leaves that skill out, the installed files never name it: the handoff becomes the equivalent `openspec` command, or a plain request to you, and a line that exists only to point at a missing skill is not written at all. So the skills you have always hand off to skills you have. Which set you get is [Profiles](../customize/profiles.md).
 
+## openspec-init
+
+Initialize a project wiki by interviewing you about its foundations.
+
+| Contract | Description |
+|---|---|
+| **Arguments** | None. The skill inspects relevant project documentation and asks one question at a time about purpose, users, stack, architecture, supported platforms, development workflows, and constraints. You can skip questions or mark answers unknown. |
+| **Creates** | `openspec/wiki/README.md` and only the topic pages supported by your answers and project evidence. It copies relevant reference materials unchanged into the wiki and links to the copies. If the project is not inside a Git repository, it runs `git init` at the project root. It does not create specs, changes, or `config.yaml`, and it does not stage or commit files. |
+| **Response** | Lists the wiki pages created or updated and reference files copied, summarizes captured foundations and unresolved questions, and says whether Git was initialized or left unchanged. It asks before replacing conflicting established facts. |
+
 ## openspec-explore
 
 Think through an idea before it becomes a change proposal.
@@ -71,18 +84,18 @@ Think through an idea before it becomes a change proposal.
 | Contract | Description |
 |---|---|
 | **Arguments** | A topic: an idea, a problem, a comparison, or the name of an existing change proposal to explore in context. With nothing given it enters explore mode. |
-| **Creates** | Nothing by default. It reads and investigates only, including relevant notes and references under `openspec/knowledge/` when that folder exists. On request it creates or updates OpenSpec change artifacts within the confirmed scope. It does not write project knowledge; use `openspec-capture` for that. Never code. |
+| **Creates** | Nothing by default. It reads and investigates only, including relevant pages and references under `openspec/wiki/` when that folder exists. On request it creates or updates OpenSpec change artifacts within the confirmed scope. It does not write to the wiki; use `openspec-capture` for that. Never code. |
 | **Response** | An open conversation with no required output. When thinking crystallizes it summarizes the problem, approach, open questions, and next steps, and offers to capture them as change artifacts. You decide. Implementation never starts here. |
 
 ## openspec-capture
 
-Capture durable project knowledge without creating a change proposal or implementing code.
+Capture useful project information in the wiki without creating a change proposal or implementing code.
 
 | Contract | Description |
 |---|---|
-| **Arguments** | The knowledge to preserve. With no topic specified, it uses the relevant current conversation. If there is no clear knowledge to preserve, it asks what you want captured. |
-| **Creates** | Creates or updates topic notes under `openspec/knowledge/`, using `README.md` as an index when present. It preserves original reference files and records sources. It never creates change artifacts or code. |
-| **Response** | Names the files created or updated, summarizes the knowledge preserved, and identifies unresolved questions or source files it could not inspect. Confirms that no proposal or code was created. |
+| **Arguments** | The information to preserve. With no topic specified, it uses the relevant current conversation. If there is nothing clear to preserve, it asks what you want captured. |
+| **Creates** | Creates or updates topic pages under `openspec/wiki/`, using `README.md` as an index when present. It preserves original reference files and records sources. It never creates change artifacts or code. |
+| **Response** | Names the files created or updated, summarizes what the wiki records, and identifies unresolved questions or source files it could not inspect. Confirms that no proposal or code was created. |
 
 ## openspec-propose
 
@@ -132,8 +145,8 @@ Move a finished change proposal to the archive.
 | Contract | Description |
 |---|---|
 | **Arguments** | A change proposal name, optional. |
-| **Creates** | Moves the change proposal folder to `openspec/changes/archive/YYYY-MM-DD-<name>/` (no date added if the name already starts with one). With your approval it first syncs outstanding delta specs. When `openspec-sync-specs` is installed, it runs that workflow. Otherwise, it merges the delta specs into the main specs itself. After the move succeeds, it creates or updates relevant topic notes under `openspec/knowledge/` when the change adds durable knowledge. Never code. |
-| **Response** | Warns and asks before archiving with incomplete artifacts or tasks, and asks whether to sync when delta specs exist. Ends with a summary: name, schema, archive location, spec sync status, knowledge update status, and any warnings. |
+| **Creates** | Moves the change proposal folder to `openspec/changes/archive/YYYY-MM-DD-<name>/` (no date added if the name already starts with one). With your approval it first syncs outstanding delta specs. When `openspec-sync-specs` is installed, it runs that workflow. Otherwise, it merges the delta specs into the main specs itself. After the move succeeds, it updates relevant wiki pages when the change adds useful information. Never code. |
+| **Response** | Warns and asks before archiving with incomplete artifacts or tasks, and asks whether to sync when delta specs exist. Ends with a summary: name, schema, archive location, spec sync status, wiki update status, and any warnings. |
 
 ## openspec-new-change
 
@@ -182,8 +195,8 @@ Archive several change proposals at once.
 | Contract | Description |
 |---|---|
 | **Arguments** | None. It lists the active change proposals and asks you to select any number, with an option for all. If none are active it says so and stops. |
-| **Creates** | `openspec/changes/archive/YYYY-MM-DD-<name>/` per archived change proposal (already-dated names keep their prefix). Each one's spec deltas sync first via `openspec-sync-specs`. After processing the batch, it creates or updates relevant topic notes under `openspec/knowledge/` once for successfully archived changes that add durable knowledge. Never code. |
-| **Response** | A status table per change proposal and one confirmation for the whole batch, then a summary of archived, skipped, and failed, plus spec sync and knowledge update results. When two change proposals touch the same spec it checks the codebase and syncs implemented deltas oldest first. |
+| **Creates** | `openspec/changes/archive/YYYY-MM-DD-<name>/` per archived change proposal (already-dated names keep their prefix). Each one's spec deltas sync first via `openspec-sync-specs`. After processing the batch, it updates relevant wiki pages once for successfully archived changes that add useful information. Never code. |
+| **Response** | A status table per change proposal and one confirmation for the whole batch, then a summary of archived, skipped, and failed, plus spec sync and wiki update results. When two change proposals touch the same spec it checks the codebase and syncs implemented deltas oldest first. |
 
 ## openspec-onboard
 

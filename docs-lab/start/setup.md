@@ -79,8 +79,9 @@ These are the OpenSpec workflows, the actions you'll use as you work. Here they 
 
 ```
 .agents/skills/
+├── openspec-init/                  initialize a project wiki
 ├── openspec-explore/              think through an idea first
-├── openspec-capture/              save project knowledge without proposing a change
+├── openspec-capture/              save project information in the wiki without proposing a change
 ├── openspec-propose/              propose a change
 ├── openspec-apply-change/         implement a change's tasks
 ├── openspec-update-change/        revise a change's plan
@@ -90,7 +91,9 @@ These are the OpenSpec workflows, the actions you'll use as you work. Here they 
 └── openspec-bulk-archive-change/  archive several changes at once (not included by default)
 ```
 
-The tree shows all seven core workflows and two optional examples. [Profiles](../customize/profiles.md) lists all thirteen.
+The tree shows all eight core workflows and two optional examples. [Profiles](../customize/profiles.md) lists all fourteen.
+
+The `openspec-init` skill is separate from the terminal `openspec init` command. It interviews you about the project and creates `openspec/wiki/`; it does not create OpenSpec specs or changes. On tools that support slash-invoked skills, run it as `/openspec-init`; the generated command follows the tool's normal OPSX spelling (for example, `/opsx:init` in Claude Code; see [Supported tools](../reference/supported-tools.md)).
 
 By default each workflow installs in two forms:
 
