@@ -42,7 +42,7 @@ ${PROJECT_ROOT_GUARD}
 
 4. **Update the knowledge base**
 
-   Preserve the existing topic organization. Update the most relevant topic note instead of creating one note per conversation or change. If there is no knowledge base and there is useful knowledge to preserve, create \`<root.path>/openspec/knowledge/README.md\` as a short index and a focused topic note. Keep all original reference files unchanged.
+   Follow the wiki navigation conventions. Update the relevant topic landing page and focused pages, keeping the root home index and relative links current. If there is no knowledge wiki and there is useful knowledge to preserve, create a short root \`README.md\` home index and an appropriate topic landing page; add focused pages only when useful. Keep all original reference files unchanged.
 
    Write only within \`<root.path>/openspec/knowledge/\`. Do not create or modify proposals, specs, change artifacts, implementation code, or files outside the knowledge base. If a material conflict exists between sources or existing notes, surface it and ask before overwriting an established fact.
 

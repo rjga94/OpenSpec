@@ -24,8 +24,8 @@ describe('project knowledge workflow prompts', () => {
     ['command', commandInstructions('explore', CORE_WORKFLOWS)],
   ])('adds knowledge discovery to Explore without changing its read-only stance (%s)', (_surface, body) => {
     expect(body).toContain('<root.path>/openspec/knowledge/');
-    expect(body).toContain('read its `README.md` first');
-    expect(body).toContain('inspect only the topic notes and reference files relevant');
+    expect(body).toContain('root `README.md` home page first');
+    expect(body).toContain('follow links to only the topic landing pages and focused pages');
     expect(body).toContain("does not change Explore's read-only behavior");
     expect(body.toLowerCase()).toContain('never write code or implement features');
     expect(body).toContain('openspec list --specs');
@@ -40,6 +40,9 @@ describe('project knowledge workflow prompts', () => {
     expect(body).toContain('Perform the archive');
     expect(body).toContain('After the change has been moved successfully');
     expect(body).toContain('<planningHome.root>/openspec/knowledge/');
+    expect(body).toContain('Markdown wiki, not a flat list of notes');
+    expect(body).toContain('Use relative Markdown links');
+    expect(body).toContain('topic landing page');
     expect(body).toContain('report knowledge failures separately');
     expect(body).toContain('Update incomplete');
   });
@@ -51,6 +54,9 @@ describe('project knowledge workflow prompts', () => {
     expect(body).toContain('Detect spec conflicts early');
     expect(body).toContain('Use single confirmation for entire batch');
     expect(body).toContain('After processing the batch');
+    expect(body).toContain('Markdown wiki, not a flat list of notes');
+    expect(body).toContain('Use relative Markdown links');
+    expect(body).toContain('topic landing pages');
     expect(body).toContain('Exclude blocked, skipped, or failed changes');
     expect(body).toContain('report the archive results and');
   });
@@ -61,6 +67,10 @@ describe('project knowledge workflow prompts', () => {
 
     expect(skill).toBe(command);
     expect(skill).toContain('<root.path>/openspec/knowledge/');
+    expect(skill).toContain('Markdown wiki, not a flat list of notes');
+    expect(skill).toContain('Keep the root `README.md` as its home page and index');
+    expect(skill).toContain('Use relative Markdown links');
+    expect(skill).toContain('topic landing page');
     expect(skill).toContain('Confirmed project facts or decisions');
     expect(skill).toContain('Hypotheses or unverified ideas');
     expect(skill).toContain('Open questions');
