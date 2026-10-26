@@ -55,7 +55,7 @@ ${PROJECT_ROOT_GUARD}
 **Guardrails**
 - Capture is an optional knowledge-only workflow; it does not start Propose or Apply.
 - The user's request to run Capture authorizes only the knowledge-base edits described here.
-- Preserve original reference assets; do not extract, transform, or move them.
+- Copy relevant reference assets unchanged into the wiki and link them from the relevant topic page. Keep originals in place and unchanged; do not extract, transform, or move them.
 - Do not invent facts to make the knowledge base appear more complete.
 - Keep Explore and Archive's existing behaviors independent of whether Capture was used.`;
 

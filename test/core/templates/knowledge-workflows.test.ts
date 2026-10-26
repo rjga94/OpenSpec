@@ -43,6 +43,8 @@ describe('project knowledge workflow prompts', () => {
     expect(body).toContain('Markdown wiki, not a flat list of notes');
     expect(body).toContain('Use relative Markdown links');
     expect(body).toContain('topic landing page');
+    expect(body).toContain('copy relevant reference files unchanged');
+    expect(body).toContain('link to each copy from its topic page');
     expect(body).toContain('report knowledge failures separately');
     expect(body).toContain('Update incomplete');
   });
@@ -57,6 +59,8 @@ describe('project knowledge workflow prompts', () => {
     expect(body).toContain('Markdown wiki, not a flat list of notes');
     expect(body).toContain('Use relative Markdown links');
     expect(body).toContain('topic landing pages');
+    expect(body).toContain('copy relevant reference files unchanged');
+    expect(body).toContain('link to each copy from its topic page');
     expect(body).toContain('Exclude blocked, skipped, or failed changes');
     expect(body).toContain('report the archive results and');
   });
@@ -71,6 +75,8 @@ describe('project knowledge workflow prompts', () => {
     expect(skill).toContain('Keep the root `README.md` as its home page and index');
     expect(skill).toContain('Use relative Markdown links');
     expect(skill).toContain('topic landing page');
+    expect(skill).toContain('copy relevant reference files unchanged');
+    expect(skill).toContain('link to each copy from its topic page');
     expect(skill).toContain('Confirmed project facts or decisions');
     expect(skill).toContain('Hypotheses or unverified ideas');
     expect(skill).toContain('Open questions');
