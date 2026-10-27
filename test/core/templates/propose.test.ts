@@ -207,15 +207,28 @@ describe('default task guidance', () => {
 });
 
 describe('propose project context', () => {
-  it('loads project context before selecting the schema or creating the change (#1651)', () => {
+  it('loads project context and consults the wiki before clarifying, selecting the schema, or creating the change (#1651)', () => {
     for (const [label, body] of proposeBodies) {
       const contextStep = body.indexOf('**Load project context**');
+      const clarifyStep = body.indexOf('**Understand the request and clarify material ambiguity**');
       const schemaStep = body.indexOf('**Determine the workflow schema**');
       const createStep = body.indexOf('**Create the change directory**');
 
       expect(contextStep, `${label} is missing the early context step`).toBeGreaterThanOrEqual(0);
+      expect(contextStep, `${label} clarifies the request before loading context`).toBeLessThan(clarifyStep);
+      expect(clarifyStep, `${label} is missing request clarification`).toBeGreaterThanOrEqual(0);
       expect(contextStep, `${label} loads context after schema selection`).toBeLessThan(schemaStep);
       expect(contextStep, `${label} loads context after creating the change`).toBeLessThan(createStep);
+    }
+  });
+
+  it('uses the wiki to ground broad goals before asking focused clarification questions', () => {
+    for (const [label, body] of proposeBodies) {
+      expect(body, label).toContain('Consult the project wiki above before deciding whether the request is clear enough');
+      expect(body, label).toContain('A broad but meaningful goal (for example, "build the project foundation") is enough to start');
+      expect(body, label).toContain('Do not ask the generic question just because the user has not specified implementation details');
+      expect(body, label).toContain('not to invent or authorize additional requirements');
+      expect(body, label).toContain('ask a focused question about the unresolved decision');
     }
   });
 
@@ -375,11 +388,13 @@ describe('propose implementation boundary', () => {
       expect(body, label).toContain(
         'scope, externally observable behavior, compatibility, or acceptance criteria'
       );
-      expect(body, label).toContain('ask the user before creating the change');
+      expect(body, label).toContain(
+        'ask a focused question about the unresolved decision before creating the change'
+      );
       expect(body, label).toContain(
         'For minor details, make a reasonable assumption and record it in the planning artifacts'
       );
-      expect(body.indexOf('ask the user before creating the change'), label)
+      expect(body.indexOf('ask a focused question about the unresolved decision before creating the change'), label)
         .toBeLessThan(body.indexOf('**Create the change directory**'));
     }
   });

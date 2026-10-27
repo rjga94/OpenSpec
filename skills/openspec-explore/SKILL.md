@@ -323,7 +323,7 @@ There's no required ending. Discovery might:
 - **Result in artifact updates**: "Updated the design with these decisions"
 - **Just provide clarity**: User has what they need, moves on
 - **Continue later**: "We can pick this up anytime"
-- **Save to the wiki**: if the discussion holds lasting project knowledge, point the user at `/openspec-capture`, which records it in the project wiki. Explore itself never writes to the wiki
+- **Save to the wiki**: if the user wants to save the discussion to the project wiki, they can optionally run `/openspec-capture` first; otherwise, they can go straight to the proposal option above. Explore itself never writes to the wiki
 
 When it feels like things are crystallizing, you might summarize:
 
@@ -337,6 +337,7 @@ When it feels like things are crystallizing, you might summarize:
 **Open questions**: [if any remain]
 
 **Next steps** (if ready):
+- Optionally save this discussion to the project wiki first with `/openspec-capture`; otherwise, go straight to the change option below.
 - Turn this into a change: `/openspec-propose`
 - Keep exploring: just keep talking
 ```
