@@ -6,11 +6,12 @@ A profile is your preference for which OpenSpec workflows (the [skills and comma
 
 ## The core set
 
-The `core` profile installs six workflows, covering the whole loop from idea to archive:
+The `core` profile installs seven workflows, covering the whole loop from idea to archive:
 
 | Workflow | What it's for |
 |---|---|
 | [`explore`](../reference/skills.md#openspec-explore) | Think through an idea before it becomes a change proposal |
+| [`capture`](../reference/skills.md#openspec-capture) | Record the conversation in the project wiki at `openspec/wiki/` (optional to run; archive does it too) |
 | [`propose`](../reference/skills.md#openspec-propose) | Create a change proposal and generate all its planning artifacts in one step |
 | [`apply`](../reference/skills.md#openspec-apply-change) | Implement a change proposal's tasks |
 | [`update`](../reference/skills.md#openspec-update-change) | Revise a change proposal's existing planning artifacts |
@@ -38,7 +39,7 @@ To change the set, run the interactive picker:
 openspec config profile
 ```
 
-The picker asks what to configure ([delivery](#delivery-skills-commands-or-both), workflows, or both), then lists all twelve workflows as checkboxes, with the installed ones checked. Any selection that isn't exactly the core six is saved as the `custom` profile, so you can also uncheck core workflows you don't use.
+The picker asks what to configure ([delivery](#delivery-skills-commands-or-both), workflows, or both), then lists all thirteen workflows as checkboxes, with the installed ones checked. Any selection that isn't exactly the core seven is saved as the `custom` profile, so you can also uncheck core workflows you don't use.
 
 ## Delivery: skills, commands, or both
 

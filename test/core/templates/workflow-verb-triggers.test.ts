@@ -20,6 +20,7 @@ import {
  */
 const NATURAL_VERB_BY_WORKFLOW: Record<string, string> = {
   explore: 'explore',
+  capture: 'capture',
   new: 'new change',
   continue: 'continue',
   apply: 'apply',

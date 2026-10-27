@@ -110,7 +110,7 @@ Solo, OpenSpec keeps you and your AI honest on a single repo. On a team, the har
 **[Stores](https://openspec.dev/docs/stores)** are the answer — planning in a repo of its own. The same `openspec/` shape you already know (specs and changes), shared by `git push` like anything else. One source of truth your whole team and every coding agent can read, across every repo.
 
 - **Cross-repo features** — one change, one plan, even when the code lands in three repos.
-- **Shared requirements** — a platform team owns the specs; product teams reference them read-only, right where their coding agent can read them. No drifting wiki.
+- **Shared requirements** — a platform team owns the specs; product teams reference them read-only, right where their coding agent can read them. Specs stay the source of truth; the separate project wiki (`/opsx:capture`) holds the wider background.
 - **Plan before code** — capture the plan in the store now; the code repos catch up later.
 
 > Stores are in **beta**. Start with the [Stores guide](https://openspec.dev/docs/stores).

@@ -8,6 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
+import { WIKI_ARCHIVE_CAPTURE_STEP, WIKI_CAPTURE_PROCEDURE } from './wiki.js';
 
 /**
  * Archiving must merge delta specs into the main specs; the `sync` workflow is
@@ -211,6 +212,8 @@ ${PROJECT_ROOT_GUARD}
 
 8. **Execute archive for each confirmed change**
 
+   ${WIKI_ARCHIVE_CAPTURE_STEP} Do this once for the whole batch, before the first change is moved, not once per change.
+
    Before processing, carry the recorded decisions from step 5 (after any step 7 re-derivation) into two per-delta sets:
    - \`includedDeltas\`: all non-conflicting delta specs from confirmed changes plus conflict deltas selected for sync
    - \`excludedDeltas\`: conflict deltas from confirmed changes excluded because their implementation is missing
@@ -360,7 +363,10 @@ Failed K changes:
 No active changes found. Create a new change to get started.
 \`\`\`
 
+${WIKI_CAPTURE_PROCEDURE}
+
 **Guardrails**
+- Capture to the wiki once, before the first change is moved, and never let a capture problem block the archive
 - Allow any number of changes (1+ is fine, 2+ is the typical use case)
 - Always prompt for selection, never auto-select
 - Detect spec conflicts early and resolve by checking codebase
@@ -579,6 +585,8 @@ ${PROJECT_ROOT_GUARD}
 
 8. **Execute archive for each confirmed change**
 
+   ${WIKI_ARCHIVE_CAPTURE_STEP} Do this once for the whole batch, before the first change is moved, not once per change.
+
    Before processing, carry the recorded decisions from step 5 (after any step 7 re-derivation) into two per-delta sets:
    - \`includedDeltas\`: all non-conflicting delta specs from confirmed changes plus conflict deltas selected for sync
    - \`excludedDeltas\`: conflict deltas from confirmed changes excluded because their implementation is missing
@@ -728,7 +736,10 @@ Failed K changes:
 No active changes found. Create a new change to get started.
 \`\`\`
 
+${WIKI_CAPTURE_PROCEDURE}
+
 **Guardrails**
+- Capture to the wiki once, before the first change is moved, and never let a capture problem block the archive
 - Allow any number of changes (1+ is fine, 2+ is the typical use case)
 - Always prompt for selection, never auto-select
 - Detect spec conflicts early and resolve by checking codebase

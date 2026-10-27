@@ -502,6 +502,7 @@ This same rhythm works for any size change—a small fix or a major feature.
  |------------------|--------------------------------------------|
  | `/openspec-propose` | Create a change and generate all artifacts |
  | `/openspec-explore` | Think through problems before/during work  |
+ | `/openspec-capture` | Save the discussion to the project wiki    |
  | `/openspec-apply-change`   | Implement tasks from a change              |
  | `/openspec-archive-change` | Archive a completed change                 |
  | `/openspec-new-change`     | Start a new change, one artifact at a time |
@@ -549,6 +550,7 @@ If the user says they just want to see the commands or skip the tutorial:
  |--------------------------|--------------------------------------------|
  | `/openspec-propose <name>`  | Create a change and generate all artifacts |
  | `/openspec-explore`         | Think through problems (no code changes)   |
+ | `/openspec-capture`         | Save the discussion to the project wiki    |
  | `/openspec-apply-change <name>`    | Implement tasks                            |
  | `/openspec-archive-change <name>`  | Archive when done                          |
  | `/openspec-new-change <name>`      | Start a new change, step by step           |

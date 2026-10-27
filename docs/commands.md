@@ -17,6 +17,7 @@ for your tool. The files OpenSpec generates already use the right form.
 |---------|---------|
 | `/opsx:propose` | Create a change and generate planning artifacts in one step |
 | `/opsx:explore` | Think through ideas before committing to a change |
+| `/opsx:capture` | Record the discussion in the project wiki at `openspec/wiki/` |
 | `/opsx:apply` | Implement tasks from the change |
 | `/opsx:update` | Revise a change's planning artifacts and keep them coherent |
 | `/opsx:sync` | Merge delta specs into main specs |
@@ -73,6 +74,26 @@ AI:  Created openspec/changes/add-dark-mode/
 **Tips:**
 - Use this for the fastest end-to-end path
 - If you want step-by-step artifact control, enable expanded workflows and use `/opsx:new` + `/opsx:continue`
+
+---
+
+### `/opsx:capture`
+
+> **Optional.** Records what the conversation established in the project wiki, a structured knowledge base at `openspec/wiki/`. The wiki is separate from specs; proposals are drawn from it later.
+
+**Syntax:**
+```
+/opsx:capture [topic]
+```
+
+**What it does:**
+- Works whether or not you explored first
+- Organizes the knowledge into linked pages with indexes, updating existing pages instead of duplicating them
+- Copies reference files (images, video, audio, PDFs, documents) into the wiki's `assets/` folders and records links and sources
+- Sets up Git LFS the first time a binary file is copied, and tells you which Git files changed; it asks before copying very large files
+- Never edits specs, changes, or source code
+
+`/opsx:explore` and `/opsx:propose` read the wiki, and `/opsx:archive` captures to it automatically, so running this command is never required.
 
 ---
 

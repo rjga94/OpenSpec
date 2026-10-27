@@ -29,6 +29,7 @@ const EXPLORE_MODE_NOTE = optionalWorkflow(
 const COMMAND_REFERENCE_ROWS = [
   onlyWithWorkflow('propose', ' | `/opsx:propose` | Create a change and generate all artifacts |'),
   onlyWithWorkflow('explore', ' | `/opsx:explore` | Think through problems before/during work  |'),
+  onlyWithWorkflow('capture', ' | `/opsx:capture` | Save the discussion to the project wiki    |'),
   onlyWithWorkflow('apply', ' | `/opsx:apply`   | Implement tasks from a change              |'),
   onlyWithWorkflow('archive', ' | `/opsx:archive` | Archive a completed change                 |'),
   onlyWithWorkflow('new', ' | `/opsx:new`     | Start a new change, one artifact at a time |'),
@@ -40,6 +41,7 @@ const COMMAND_REFERENCE_ROWS = [
 const QUICK_REFERENCE_ROWS = [
   onlyWithWorkflow('propose', ' | `/opsx:propose <name>`  | Create a change and generate all artifacts |'),
   onlyWithWorkflow('explore', ' | `/opsx:explore`         | Think through problems (no code changes)   |'),
+  onlyWithWorkflow('capture', ' | `/opsx:capture`         | Save the discussion to the project wiki    |'),
   onlyWithWorkflow('apply', ' | `/opsx:apply <name>`    | Implement tasks                            |'),
   onlyWithWorkflow('archive', ' | `/opsx:archive <name>`  | Archive when done                          |'),
   onlyWithWorkflow('new', ' | `/opsx:new <name>`      | Start a new change, step by step           |'),

@@ -49,6 +49,7 @@ Commands are always the second case. A project whose `openspec/config.yaml` name
 | Skill | Job | Type |
 |---|---|---|
 | [openspec-explore](#openspec-explore) | Think through an idea before it becomes a change proposal | Core |
+| [openspec-capture](#openspec-capture) | Record the conversation in the project wiki | Core |
 | [openspec-propose](#openspec-propose) | Create a change proposal with all its planning artifacts in one step | Core |
 | [openspec-apply-change](#openspec-apply-change) | Implement a change proposal's tasks | Core |
 | [openspec-update-change](#openspec-update-change) | Revise a change proposal's plan | Core |
@@ -70,8 +71,18 @@ Think through an idea before it becomes a change proposal.
 | Contract | Description |
 |---|---|
 | **Arguments** | A topic: an idea, a problem, a comparison, or the name of an existing change proposal to explore in context. With nothing given it enters explore mode. |
-| **Creates** | Nothing by default. It reads and investigates only. On request it captures insights: a new change proposal under `openspec/changes/<name>/`, or updates to an existing one's proposal, design, specs, or tasks. Never code. |
+| **Creates** | Nothing by default. It reads and investigates only, including the project wiki at `openspec/wiki/` when one exists; it never writes to the wiki (that is `openspec-capture`). On request it captures insights: a new change proposal under `openspec/changes/<name>/`, or updates to an existing one's proposal, design, specs, or tasks. Never code. |
 | **Response** | An open conversation with no required output. When thinking crystallizes it summarizes the problem, approach, open questions, and next steps, and offers to capture them. You decide. Implementation never starts here. |
+
+## openspec-capture
+
+Record the conversation in the project wiki.
+
+| Contract | Description |
+|---|---|
+| **Arguments** | An optional focus, such as "the auth decisions". With nothing given it captures everything worth keeping from the conversation, whether or not you used explore first. |
+| **Creates** | Markdown pages under `openspec/wiki/`, organized by the agent with an `index.md` in the wiki root and every folder. Reference files (images, video, audio, PDFs, Word documents) are copied into the wiki's `assets/` folders, and links are recorded with their source and date. Before the first binary file is copied, it checks Git LFS and, if the wiki's assets are not tracked, sets it up and tells you which Git files changed. It asks before copying a very large file. Never specs, change proposals, or code. |
+| **Response** | The wiki pages created or updated, assets copied, and anything not copied and why. Explore and propose read the wiki; archive runs this capture before moving a change proposal, so running it yourself is optional. |
 
 ## openspec-propose
 
@@ -80,7 +91,7 @@ Create a change proposal and generate all its planning artifacts in one step.
 | Contract | Description |
 |---|---|
 | **Arguments** | A kebab-case name (`add-dark-mode`) or a plain description. Asks if you give neither. |
-| **Creates** | `openspec/changes/<name>/` with every artifact the schema defines, in dependency order (spec-driven: proposal, spec deltas, design, tasks). Never code. |
+| **Creates** | `openspec/changes/<name>/` (reading the project wiki at `openspec/wiki/` first when one exists) with every artifact the schema defines, in dependency order (spec-driven: proposal, spec deltas, design, tasks). Never code. |
 | **Response** | The created artifacts, ready for review, and the next step. Stops there; implementation waits for `openspec-apply-change`. |
 
 ## openspec-apply-change
@@ -121,7 +132,7 @@ Move a finished change proposal to the archive.
 | Contract | Description |
 |---|---|
 | **Arguments** | A change proposal name, optional. |
-| **Creates** | Moves the change proposal folder to `openspec/changes/archive/YYYY-MM-DD-<name>/` (no date added if the name already starts with one). With your approval it first syncs outstanding delta specs. When `openspec-sync-specs` is installed, it runs that workflow. Otherwise, it merges the delta specs into the main specs itself. Never code. |
+| **Creates** | First captures anything new from the conversation into the project wiki, the same as `openspec-capture`; a capture problem never blocks the archive. Then moves the change proposal folder to `openspec/changes/archive/YYYY-MM-DD-<name>/` (no date added if the name already starts with one). With your approval it first syncs outstanding delta specs. When `openspec-sync-specs` is installed, it runs that workflow. Otherwise, it merges the delta specs into the main specs itself. Never code. |
 | **Response** | Warns and asks before archiving with incomplete artifacts or tasks, and asks whether to sync when delta specs exist. Ends with a summary: name, schema, archive location, spec sync status, and any warnings. |
 
 ## openspec-new-change

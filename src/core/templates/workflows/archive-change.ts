@@ -8,6 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
+import { WIKI_ARCHIVE_CAPTURE_STEP, WIKI_CAPTURE_PROCEDURE } from './wiki.js';
 
 /**
  * Archiving must merge delta specs into the main specs; the `sync` workflow is
@@ -181,6 +182,10 @@ ${PROJECT_ROOT_GUARD}
 
 5. **Perform the archive**
 
+   ${WIKI_ARCHIVE_CAPTURE_STEP}
+
+   Then archive:
+
    Create an \`archive\` directory under \`planningHome.changesDir\` if it doesn't exist:
    \`\`\`bash
    mkdir -p "<planningHome.changesDir>/archive"
@@ -218,7 +223,10 @@ ${PROJECT_ROOT_GUARD}
 <"All artifacts complete. All tasks complete." — or, if archived with warnings, list them instead (e.g. "Archived with 2 incomplete tasks")>
 \`\`\`
 
+${WIKI_CAPTURE_PROCEDURE}
+
 **Guardrails**
+- Capture to the wiki before moving \`changeRoot\`, but never let a capture problem block the archive
 - Announce the selected change; prompt for selection when it is ambiguous
 - Use artifact graph (openspec status --json) for completion checking
 - Don't block archive on warnings - just inform and confirm
@@ -393,6 +401,10 @@ ${PROJECT_ROOT_GUARD}
 
 5. **Perform the archive**
 
+   ${WIKI_ARCHIVE_CAPTURE_STEP}
+
+   Then archive:
+
    Create an \`archive\` directory under \`planningHome.changesDir\` if it doesn't exist:
    \`\`\`bash
    mkdir -p "<planningHome.changesDir>/archive"
@@ -477,7 +489,10 @@ Target archive directory already exists.
 3. Wait until a different date to archive
 \`\`\`
 
+${WIKI_CAPTURE_PROCEDURE}
+
 **Guardrails**
+- Capture to the wiki before moving \`changeRoot\`, but never let a capture problem block the archive
 - Announce the selected change; prompt for selection when it is ambiguous
 - Use artifact graph (openspec status --json) for completion checking
 - Don't block archive on warnings - just inform and confirm

@@ -2,6 +2,7 @@ export const OPENSPEC_DIR_NAME = 'openspec';
 
 export const OPENSPEC_SKILL_NAMES = [
   'openspec-explore',
+  'openspec-capture',
   'openspec-new-change',
   'openspec-continue-change',
   'openspec-apply-change',

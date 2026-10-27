@@ -8,6 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
+import { WIKI_CONSULT_GUIDANCE } from './wiki.js';
 
 const PLANNING_GUIDANCE = `## Planning a Change
 
@@ -55,6 +56,12 @@ const CAPTURE_APPLY_HANDOFF = optionalWorkflow(
   'implementation works from the change\'s tasks (`openspec instructions apply --change "<name>" --json`), outside explore mode'
 );
 
+const WIKI_SAVE_HANDOFF = optionalWorkflow(
+  'capture',
+  'if the discussion holds lasting project knowledge, point the user at `/opsx:capture`, which records it in the project wiki. Explore itself never writes to the wiki',
+  'explore itself never writes to the project wiki'
+);
+
 const DISCOVERY_END_HANDOFF = optionalWorkflow(
   'propose',
   'Ready to start? Run `/opsx:propose` and this becomes a change.',
@@ -86,6 +93,8 @@ export function getExploreSkillTemplate(): SkillTemplate {
 ${STORE_SELECTION_GUIDANCE}
 
 ${PROJECT_ROOT_GUARD}
+
+${WIKI_CONSULT_GUIDANCE}
 
 ---
 
@@ -360,6 +369,7 @@ There's no required ending. Discovery might:
 - **Result in artifact updates**: "Updated the design with these decisions"
 - **Just provide clarity**: User has what they need, moves on
 - **Continue later**: "We can pick this up anytime"
+- **Save to the wiki**: ${WIKI_SAVE_HANDOFF}
 
 When it feels like things are crystallizing, you might summarize:
 
@@ -413,6 +423,8 @@ export function getOpsxExploreCommandTemplate(): CommandTemplate {
 ${STORE_SELECTION_GUIDANCE}
 
 ${PROJECT_ROOT_GUARD}
+
+${WIKI_CONSULT_GUIDANCE}
 
 **Input**: The argument after \`/opsx:explore\` is whatever the user wants to think about. Could be:
 - A vague idea: "real-time collaboration"
@@ -592,6 +604,7 @@ There's no required ending. Discovery might:
 - **Result in artifact updates**: "Updated the design with these decisions"
 - **Just provide clarity**: User has what they need, moves on
 - **Continue later**: "We can pick this up anytime"
+- **Save to the wiki**: ${WIKI_SAVE_HANDOFF}
 
 When things crystallize, you might offer a summary - but it's optional. Sometimes the thinking IS the value.
 

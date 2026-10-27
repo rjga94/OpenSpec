@@ -197,6 +197,8 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
 8. **Execute archive for each confirmed change**
 
+   **Capture to the wiki first.** Before moving anything, run the **Capture procedure** below inline for this conversation, so new project knowledge reaches `openspec/wiki/` while the change is still in place. This is part of every archive, whether or not the user ran capture earlier. If nothing new was discussed, or it was already captured, write nothing and do not mention it. If capture stops (for example Git LFS is not installed) or fails, report that in the summary and continue archiving: capture never blocks an archive. Run it as part of this workflow; do not delegate it to a background task. Do this once for the whole batch, before the first change is moved, not once per change.
+
    Before processing, carry the recorded decisions from step 5 (after any step 7 re-derivation) into two per-delta sets:
    - `includedDeltas`: all non-conflicting delta specs from confirmed changes plus conflict deltas selected for sync
    - `excludedDeltas`: conflict deltas from confirmed changes excluded because their implementation is missing
@@ -346,7 +348,28 @@ Failed K changes:
 No active changes found. Create a new change to get started.
 ```
 
+**Capture procedure** (records the conversation into the project wiki):
+
+1. **Resolve the wiki.** Run `openspec context --json` (add `--store "<id>"` when a store is selected). If it reports `no_openspec_root` or fails, write nothing and tell the user the project needs OpenSpec set up first; never create `openspec/` as a side effect. Otherwise the wiki is `<root.path>/openspec/wiki/` (where `root.path` is the root returned by `openspec context --json`, with `--store "<id>"` when a store is selected). The folder is always named `wiki`.
+
+2. **Decide what is worth keeping.** From the whole conversation, collect durable project knowledge: background, goals, decisions and the reasons for them, constraints, open questions, terminology, people and systems involved, and the reference material the discussion relied on. Leave out chit-chat, step-by-step tool output, and anything already recorded. If nothing is worth keeping, say so and write nothing.
+
+3. **Read before writing.** If the wiki exists, read `index.md` and the pages related to what you collected. Update an existing page in place when the topic is already covered; do not create a second page for the same topic. Preserve edits people made by hand. If the conversation contradicts a page, update it to the newer information, note on the page that it replaces earlier information, and tell the user.
+
+4. **Organize for navigation.** The wiki is a multi-level Markdown knowledge base. Choose the layout that fits the content (for example by area, topic, or time), and reorganize when it stops fitting, keeping links valid. Every folder, including the wiki root, has an `index.md` listing its pages and subfolders with a one-line description each. Add every new page to its parent index in the same capture so the whole wiki is reachable from `<wiki>/index.md`. Create the wiki and its root index if they do not exist yet.
+
+5. **Preserve reference material.**
+   - Links: record the link, its title, and the date in the page that uses it.
+   - Files (images, video, audio, PDFs, Word documents, other files): copy each file the discussion relied on into an `assets/` folder inside the wiki and link it from the page that uses it, recording the original source and the capture date. Never move or modify the original. If a file is not accessible, record the reference and its original location and tell the user it was not copied.
+   - Very large files: state the file's size and ask the user before copying. If they decline, record the reference and original location without copying.
+   - **Git LFS, lazily:** only immediately before copying the first binary file in a capture, and not at all for text-only captures, check the project's Git setup. If the project is not a Git repository, skip this. Otherwise run `git lfs version`. If Git LFS is not installed, do not copy the binary: tell the user how to install it, and record the reference and original location instead. If it is installed, check whether `.gitattributes` already tracks the wiki's assets with `filter=lfs` (for example with `git check-attr filter -- <wiki>/assets/<file>`). If not, run `git lfs install --local` and `git lfs track "openspec/wiki/**/assets/**"` from the repository root (adjusting the pattern to the wiki's path relative to it), and tell the user which Git files changed (normally `.gitattributes`); do not ask for confirmation. Do not rewrite history or migrate files that are already committed.
+
+6. **Stay in bounds.** Write only under the wiki folder, plus the Git LFS files above. Never modify `openspec/specs/`, `openspec/changes/`, or project source. Do not merge wiki content into specs; the wiki is a separate knowledge layer that later proposals draw from.
+
+7. **Report.** List the pages created or updated, assets copied, and anything not copied and why.
+
 **Guardrails**
+- Capture to the wiki once, before the first change is moved, and never let a capture problem block the archive
 - Allow any number of changes (1+ is fine, 2+ is the typical use case)
 - Always prompt for selection, never auto-select
 - Detect spec conflicts early and resolve by checking codebase

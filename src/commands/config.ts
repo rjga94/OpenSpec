@@ -189,6 +189,10 @@ export const WORKFLOW_PROMPT_META: Record<string, WorkflowPromptMeta> = {
     name: 'Explore ideas',
     description: 'Investigate a problem before implementation',
   },
+  capture: {
+    name: 'Capture to wiki',
+    description: 'Record the conversation in the project wiki',
+  },
   new: {
     name: 'New change',
     description: 'Create a new change scaffold quickly',

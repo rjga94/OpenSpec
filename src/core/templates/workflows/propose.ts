@@ -8,6 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
+import { WIKI_CONSULT_GUIDANCE } from './wiki.js';
 
 /**
  * The implementation handoff. `apply` is not guaranteed to be installed, so
@@ -53,6 +54,8 @@ When the user is ready to implement, they must start the apply workflow explicit
 ${STORE_SELECTION_GUIDANCE}
 
 ${PROJECT_ROOT_GUARD}
+
+${WIKI_CONSULT_GUIDANCE}
 
 **Input**: The user's request should include a change name (kebab-case) OR a description of what they want to build.
 
@@ -133,7 +136,7 @@ ${PROJECT_ROOT_GUARD}
         - \`resolvedOutputPath\`: Resolved path or pattern to write the artifact
         - \`dependencies\`: Completed artifacts to read for context
       - Read any completed dependency files for context - always re-read them from disk, even if you saw them earlier in the conversation (the user may have edited them)
-      - **Inspect the relevant project before drafting**: Read \`context\` and \`rules\` first, then inspect relevant implementation, nearby tests, configuration, and documentation outside \`openspec/\`. Keep inspection read-only and proportional to the change; reuse findings for later artifacts and inspect more only as needed.
+      - **Inspect the relevant project before drafting**: Read \`context\` and \`rules\` first, then inspect relevant implementation, nearby tests, configuration, and documentation outside \`openspec/\`, plus the wiki pages relevant to the request (see **Project wiki** above). Keep inspection read-only and proportional to the change; reuse findings for later artifacts and inspect more only as needed.
         - Identify the target project from the request and project context; the planning home may be separate from the code. If the target is unclear, ask. For greenfield or non-code changes, inspect the available structure and relevant documents. If source is unavailable, state the limitation and ask when it materially affects the plan.
         - Ground scope, approach, and tasks in what you find. Distinguish observed behavior from assumptions and proposed additions; surface conflicts with existing specs instead of silently deciding which is correct.
         - Do this discovery now, rather than leaving generic "explore the codebase" or "make a plan" tasks for implementation. Keep any necessary follow-up investigation specific to an unresolved question.
@@ -220,6 +223,8 @@ ${STORE_SELECTION_GUIDANCE}
 
 ${PROJECT_ROOT_GUARD}
 
+${WIKI_CONSULT_GUIDANCE}
+
 **Input**: The argument after \`/opsx:propose\` is the change name (kebab-case), OR a description of what the user wants to build.
 
 **Steps**
@@ -299,7 +304,7 @@ ${PROJECT_ROOT_GUARD}
         - \`resolvedOutputPath\`: Resolved path or pattern to write the artifact
         - \`dependencies\`: Completed artifacts to read for context
       - Read any completed dependency files for context - always re-read them from disk, even if you saw them earlier in the conversation (the user may have edited them)
-      - **Inspect the relevant project before drafting**: Read \`context\` and \`rules\` first, then inspect relevant implementation, nearby tests, configuration, and documentation outside \`openspec/\`. Keep inspection read-only and proportional to the change; reuse findings for later artifacts and inspect more only as needed.
+      - **Inspect the relevant project before drafting**: Read \`context\` and \`rules\` first, then inspect relevant implementation, nearby tests, configuration, and documentation outside \`openspec/\`, plus the wiki pages relevant to the request (see **Project wiki** above). Keep inspection read-only and proportional to the change; reuse findings for later artifacts and inspect more only as needed.
         - Identify the target project from the request and project context; the planning home may be separate from the code. If the target is unclear, ask. For greenfield or non-code changes, inspect the available structure and relevant documents. If source is unavailable, state the limitation and ask when it materially affects the plan.
         - Ground scope, approach, and tasks in what you find. Distinguish observed behavior from assumptions and proposed additions; surface conflicts with existing specs instead of silently deciding which is correct.
         - Do this discovery now, rather than leaving generic "explore the codebase" or "make a plan" tasks for implementation. Keep any necessary follow-up investigation specific to an unresolved question.

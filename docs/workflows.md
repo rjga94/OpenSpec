@@ -103,6 +103,7 @@ sequenceDiagram
 
 New installs default to `core`, which provides:
 - `/opsx:explore`
+- `/opsx:capture`
 - `/opsx:propose`
 - `/opsx:apply`
 - `/opsx:update`
@@ -112,8 +113,8 @@ New installs default to `core`, which provides:
 Typical flow:
 
 ```text
-/opsx:explore ──► /opsx:propose ──► /opsx:apply ──► /opsx:sync ──► /opsx:archive
-  (optional)
+/opsx:explore ──► /opsx:capture ──► /opsx:propose ──► /opsx:apply ──► /opsx:sync ──► /opsx:archive
+  (optional)      (optional)
 ```
 
 #### Start by exploring (the habit worth forming)
@@ -533,6 +534,7 @@ For full command details and options, see [Commands](commands.md).
 |---------|---------|-------------|
 | `/opsx:propose` | Create change + planning artifacts | Fast default path (`core` profile) |
 | `/opsx:explore` | Think through ideas with the AI | Start here when unsure: unclear requirements, investigation, comparing options |
+| `/opsx:capture` | Save the discussion to the project wiki | Optional; archive also does it |
 | `/opsx:new` | Start a change scaffold | Expanded mode, explicit artifact control |
 | `/opsx:continue` | Create next artifact | Expanded mode, step-by-step artifact creation |
 | `/opsx:ff` | Create all planning artifacts | Expanded mode, clear scope |

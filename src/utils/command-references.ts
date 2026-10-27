@@ -53,6 +53,7 @@ export function transformCommandInvocations(
  */
 const COMMAND_TO_SKILL_NAME: Record<string, string> = {
   'explore': 'openspec-explore',
+  'capture': 'openspec-capture',
   'new': 'openspec-new-change',
   'continue': 'openspec-continue-change',
   'apply': 'openspec-apply-change',
