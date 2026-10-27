@@ -58,7 +58,7 @@ const CAPTURE_APPLY_HANDOFF = optionalWorkflow(
 
 const WIKI_SAVE_HANDOFF = optionalWorkflow(
   'capture',
-  'if the discussion holds lasting project knowledge, point the user at `/opsx:capture`, which records it in the project wiki. Explore itself never writes to the wiki',
+  'if the user wants to save the discussion to the project wiki, they can optionally run `/opsx:capture` first; otherwise, they can go straight to the proposal option above. Explore itself never writes to the wiki',
   'explore itself never writes to the project wiki'
 );
 
@@ -72,6 +72,12 @@ const SUMMARY_NEXT_STEP = optionalWorkflow(
   'propose',
   '- Turn this into a change: `/opsx:propose`',
   '- Capture this as a change: ask me to'
+);
+
+const SUMMARY_CAPTURE_NEXT_STEP = optionalWorkflow(
+  'capture',
+  '- Optionally save this discussion to the project wiki first with `/opsx:capture`; otherwise, go straight to the change option below.',
+  ''
 );
 
 const GUARDRAIL_HANDOFF = optionalWorkflow(
@@ -383,6 +389,7 @@ When it feels like things are crystallizing, you might summarize:
 **Open questions**: [if any remain]
 
 **Next steps** (if ready):
+${SUMMARY_CAPTURE_NEXT_STEP}
 ${SUMMARY_NEXT_STEP}
 - Keep exploring: just keep talking
 \`\`\`

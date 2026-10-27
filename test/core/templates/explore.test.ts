@@ -640,6 +640,24 @@ describe('explore handoff to the propose workflow (#869)', () => {
     expect(skill.instructions).not.toContain('- Create a change proposal');
   });
 
+  it('offers wiki capture as an optional step before proposing', () => {
+    for (const [label, body] of bodies) {
+      expect(body, label).toContain(
+        'if the user wants to save the discussion to the project wiki, they can optionally run `/opsx:capture` first; otherwise, they can go straight to the proposal option above.'
+      );
+      expect(body, label).toContain(
+        '**Flow into a proposal**: "Ready to start? Run `/opsx:propose` and this becomes a change."'
+      );
+    }
+  });
+
+  it('offers wiki capture in the skill closing summary', () => {
+    expect(skill.instructions).toContain(
+      '- Optionally save this discussion to the project wiki first with `/opsx:capture`; otherwise, go straight to the change option below.'
+    );
+    expect(skill.instructions).toContain('- Turn this into a change: `/opsx:propose`');
+  });
+
   // The reference has to be the canonical `/opsx:<id>` form of a known
   // command id, or the per-tool transformers leave it as written and the
   // skill advertises an invocation no tool registers (#727, #1307).
@@ -658,17 +676,17 @@ describe('explore handoff to the propose workflow (#869)', () => {
 // cannot quietly leave explore advertising a command nobody answers to
 // (the #727 / #1307 failure mode).
 describe('explore handoff renders for every delivery surface (#869)', () => {
-  // Both workflows explore hands off to. Each is a `CORE_WORKFLOWS` member,
-  // so naming them does not advertise anything the default profile omits.
-  const HANDOFF_IDS = ['propose', 'apply'] as const;
+  // Explore references these core workflows for proposing, implementing, and
+  // optionally saving the discussion to the wiki.
+  const REFERENCE_IDS = ['propose', 'apply', 'capture'] as const;
 
   function canonicalCount(body: string, commandId: string): number {
     return occurrenceCount(body, `/opsx:${commandId}`);
   }
 
-  it('names both handoff workflows in both bodies before any rendering', () => {
+  it('names every referenced workflow in both bodies before any rendering', () => {
     for (const [label, body] of bodies) {
-      for (const commandId of HANDOFF_IDS) {
+      for (const commandId of REFERENCE_IDS) {
         expect(canonicalCount(body, commandId), `${label} ${commandId}`).toBeGreaterThan(0);
       }
     }
@@ -684,7 +702,7 @@ describe('explore handoff renders for every delivery surface (#869)', () => {
       for (const [label, body] of bodies) {
         const rendered = transformCommandInvocations(body, invocation);
 
-        for (const commandId of HANDOFF_IDS) {
+        for (const commandId of REFERENCE_IDS) {
           const expected = formatCommandInvocation(invocation, commandId);
           const where = `${adapter.toolId} ${label} ${commandId}`;
 
@@ -714,6 +732,9 @@ describe('explore handoff renders for every delivery surface (#869)', () => {
           occurrenceCount(rendered, 'openspec-apply-change'),
           `${tool.value} ${label}`
         ).toBe(canonicalCount(body, 'apply'));
+        expect(occurrenceCount(rendered, 'openspec-capture'), `${tool.value} ${label}`).toBe(
+          canonicalCount(body, 'capture')
+        );
       }
     }
   });
@@ -734,6 +755,13 @@ describe('explore handoff renders for every delivery surface (#869)', () => {
         ),
         label
       ).toBe(canonicalCount(body, 'apply'));
+      expect(
+        occurrenceCount(
+          rendered,
+          '$openspec-capture (Codex) or /openspec-capture (other agents)'
+        ),
+        label
+      ).toBe(canonicalCount(body, 'capture'));
     }
   });
 });
@@ -770,9 +798,10 @@ describe('explore capture path names where the work continues (#869)', () => {
 // would be sent to a command nobody answers to. Checked through the same
 // registries init and update call, on both delivery surfaces.
 describe('explore handoffs follow the installed workflow set (#869)', () => {
-  const PROFILES: Array<[string, string[], Array<'propose' | 'apply'>]> = [
-    ['explore only', ['explore'], ['propose', 'apply']],
-    ['explore + propose without apply', ['explore', 'propose'], ['apply']],
+  const PROFILES: Array<[string, string[], Array<'propose' | 'apply' | 'capture'>]> = [
+    ['explore only', ['explore'], ['propose', 'apply', 'capture']],
+    ['explore + propose without apply', ['explore', 'propose'], ['apply', 'capture']],
+    ['explore + capture without propose', ['explore', 'capture'], ['propose', 'apply']],
   ];
 
   function exploreSkillBody(workflows: string[]): string {
@@ -796,7 +825,12 @@ describe('explore handoffs follow the installed workflow set (#869)', () => {
         getSkillReferenceTransformer(tool.value)
       );
       for (const id of missing) {
-        const skillName = id === 'propose' ? 'openspec-propose' : 'openspec-apply-change';
+        const skillName =
+          id === 'propose'
+            ? 'openspec-propose'
+            : id === 'apply'
+              ? 'openspec-apply-change'
+              : 'openspec-capture';
         expect(content, `${tool.value} ${id}`).not.toContain(skillName);
       }
     }
