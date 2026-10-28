@@ -23,7 +23,7 @@ The project wiki SHALL live at `openspec/wiki/`, always under that name, in the 
 
 ### Requirement: Navigable structure
 
-The wiki SHALL be a multi-level knowledge base organized by the agent so information is easy to find and edit, with an `index.md` at the wiki root and in every folder that lists its contents with a one-line description each.
+The wiki SHALL be a multi-level knowledge base organized by the agent so information is easy to find and edit, with an `index.md` at the wiki root and in every folder that lists its contents with a one-line description each. Its organization SHALL be content-led rather than a fixed taxonomy: examples may guide categorization, but no category or folder is mandatory.
 
 #### Scenario: Reaching a page from the root
 
@@ -34,6 +34,14 @@ The wiki SHALL be a multi-level knowledge base organized by the agent so informa
 
 - **WHEN** the agent adds a page or folder
 - **THEN** it adds the entry to the index of its parent folder in the same capture
+
+#### Scenario: Content-led organization
+
+- **WHEN** the agent organizes captured knowledge
+- **THEN** it chooses categories and page boundaries that fit the content
+- **AND** treats suggested topics as examples, not required sections
+- **AND** does not create empty folders or placeholder pages to satisfy a template
+- **AND** keeps an existing layout when it still works
 
 #### Scenario: Reorganization
 

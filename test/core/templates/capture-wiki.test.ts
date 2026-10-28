@@ -46,6 +46,13 @@ describe('capture skill', () => {
     expect(capture.instructions).toContain('pages created, updated, moved, or removed');
   });
 
+  it('guides content-led organization without imposing a fixed wiki template', () => {
+    expect(capture.instructions).toContain('not a fixed template');
+    expect(capture.instructions).toContain('examples, not required sections');
+    expect(capture.instructions).toContain('not as empty placeholders');
+    expect(capture.instructions).toContain('Keep an existing layout when it still works');
+  });
+
   it('does not write specs or change artifacts', () => {
     expect(capture.instructions).toMatch(/never (write|create|modify)[^.]*(spec|change)/i);
   });

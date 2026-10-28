@@ -57,6 +57,14 @@ The skill SHALL audit the entire wiki after each capture and refactor it as need
 - **AND** preserves unique information and hand edits
 - **AND** reports pages moved or removed
 
+#### Scenario: Structure follows captured content
+
+- **WHEN** the agent organizes or refactors the wiki
+- **THEN** it uses categories that fit the project knowledge rather than requiring a predefined taxonomy
+- **AND** treats example topics as suggestions, not required sections
+- **AND** avoids empty folders and placeholder pages
+- **AND** preserves an existing layout when it still works
+
 ### Requirement: Reference material is preserved
 
 The skill SHALL copy reference files the conversation relies on into the wiki and SHALL record links as wiki entries, including source and capture date.
