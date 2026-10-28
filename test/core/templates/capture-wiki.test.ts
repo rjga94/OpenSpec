@@ -47,8 +47,10 @@ describe('capture skill', () => {
   });
 
   it('guides content-led organization without imposing a fixed wiki template', () => {
-    expect(capture.instructions).toContain('not a fixed template');
-    expect(capture.instructions).toContain('examples, not required sections');
+    expect(capture.instructions).toContain(
+      'Choose categories and page boundaries to fit the knowledge being captured',
+    );
+    expect(capture.instructions).toContain('Possible topics include project context');
     expect(capture.instructions).toContain('not as empty placeholders');
     expect(capture.instructions).toContain('Keep an existing layout when it still works');
   });
