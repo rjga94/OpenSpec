@@ -81,8 +81,8 @@ Record the conversation in the project wiki.
 | Contract | Description |
 |---|---|
 | **Arguments** | An optional focus, such as "the auth decisions". With nothing given it captures everything worth keeping from the conversation, whether or not you used explore first. |
-| **Creates** | Markdown pages under `openspec/wiki/`, organized by the agent with an `index.md` in the wiki root and every folder. Reference files (images, video, audio, PDFs, Word documents) are copied into the wiki's `assets/` folders, and links are recorded with their source and date. Before the first binary file is copied, it checks Git LFS and, if the wiki's assets are not tracked, sets it up and tells you which Git files changed. It asks before copying a very large file. Never specs, change proposals, or code. |
-| **Response** | The wiki pages created or updated, assets copied, and anything not copied and why. Explore and propose read the wiki; archive runs this capture before moving a change proposal, so running it yourself is optional. |
+| **Creates** | Markdown pages under `openspec/wiki/`, organized by the agent with an `index.md` in the wiki root and every folder. After each capture, it audits the whole tree and refactors pages, indexes, or links as needed to keep every page and asset reachable. Reference files (images, video, audio, PDFs, Word documents) are copied into the wiki's `assets/` folders, and links are recorded with their source and date. Before the first binary file is copied, it checks Git LFS and, if the wiki's assets are not tracked, sets it up and tells you which Git files changed. It asks before copying a very large file. Never specs, change proposals, or code. |
+| **Response** | The wiki pages created, updated, moved, or removed, assets copied, and anything not copied and why. Explore and propose read the wiki; archive runs this capture before moving a change proposal, so running it yourself is optional. |
 
 ## openspec-propose
 

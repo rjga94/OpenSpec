@@ -16,6 +16,7 @@ describe('capture skill', () => {
     expect(capture.name).toBe('openspec-capture');
     expect(capture.instructions).toContain('openspec/wiki/');
     expect(getOpsxCaptureCommandTemplate().content).toContain('openspec/wiki/');
+    expect(getOpsxCaptureCommandTemplate().content).toContain('review the entire wiki tree');
   });
 
   it('resolves the root through openspec context', () => {
@@ -35,6 +36,16 @@ describe('capture skill', () => {
     expect(capture.instructions).toMatch(/ask/i);
   });
 
+  it('audits and refactors the whole wiki for structural and navigational rules', () => {
+    expect(capture.instructions).toContain('review the entire wiki tree');
+    expect(capture.instructions).toContain('every page is reachable from the root index');
+    expect(capture.instructions).toContain('referenced assets are linked from their pages');
+    expect(capture.instructions).toContain('all internal page and asset links resolve');
+    expect(capture.instructions).toContain('Preserve unique information and hand edits');
+    expect(capture.instructions).toContain('do not make cosmetic rewrites');
+    expect(capture.instructions).toContain('pages created, updated, moved, or removed');
+  });
+
   it('does not write specs or change artifacts', () => {
     expect(capture.instructions).toMatch(/never (write|create|modify)[^.]*(spec|change)/i);
   });
@@ -50,6 +61,7 @@ describe('wiki consultation and archive capture', () => {
     for (const template of [getArchiveChangeSkillTemplate(), getBulkArchiveChangeSkillTemplate()]) {
       expect(template.instructions).toContain('openspec/wiki/');
       expect(template.instructions).toContain('openspec context --json');
+      expect(template.instructions).toContain('review the entire wiki tree');
     }
   });
 });

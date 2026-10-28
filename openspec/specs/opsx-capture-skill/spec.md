@@ -46,6 +46,17 @@ The skill SHALL read the existing wiki before writing and update existing pages 
 - **THEN** the agent updates the page to the newer information
 - **AND** states in the page that it replaces earlier information, and tells the user
 
+### Requirement: Wiki structure stays navigable
+
+The skill SHALL audit the entire wiki after each capture and refactor it as needed to preserve its structural and navigation rules.
+
+#### Scenario: Existing wiki needs restructuring
+
+- **WHEN** a capture finds missing or inaccurate indexes, unreachable pages or assets, or broken internal links anywhere in the wiki
+- **THEN** the agent repairs the structure and links, including moving or reorganizing pages when needed
+- **AND** preserves unique information and hand edits
+- **AND** reports pages moved or removed
+
 ### Requirement: Reference material is preserved
 
 The skill SHALL copy reference files the conversation relies on into the wiki and SHALL record links as wiki entries, including source and capture date.

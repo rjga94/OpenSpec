@@ -88,7 +88,7 @@ AI:  Created openspec/changes/add-dark-mode/
 
 **What it does:**
 - Works whether or not you explored first
-- Organizes the knowledge into linked pages with indexes, updating existing pages instead of duplicating them
+- Updates existing pages instead of duplicating topics, then audits and refactors the whole wiki so its indexes and links stay complete
 - Copies reference files (images, video, audio, PDFs, documents) into the wiki's `assets/` folders and records links and sources
 - Sets up Git LFS the first time a binary file is copied, and tells you which Git files changed; it asks before copying very large files
 - Never edits specs, changes, or source code
