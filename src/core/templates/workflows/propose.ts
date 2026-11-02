@@ -31,6 +31,16 @@ const COMMAND_APPLY_HANDOFF = optionalWorkflow(
   'run `openspec instructions apply --change "<name>" --json` to get the tasks'
 );
 
+const PROPOSE_BRANCH_GUIDANCE = `Before creating the change, create a dedicated Git branch from the currently checked-out branch:
+
+\`\`\`bash
+git rev-parse --show-toplevel
+git branch --show-current
+git switch -c "openspec/<name>"
+\`\`\`
+
+Use the current working directory's repository and the selected change name for \`<name>\`. The new branch starts at the current HEAD; do not switch to a default branch or choose a different base. If the current directory is not in a Git repository, no branch is checked out, or \`openspec/<name>\` already exists, stop before creating the change and report the reason. Never reuse an existing branch. Leave existing working-tree changes untouched; do not stash, reset, or discard them. Announce both the base branch and the new branch.`;
+
 export function getOpsxProposeSkillTemplate(): SkillTemplate {
   return {
     name: 'openspec-propose',
@@ -91,6 +101,8 @@ ${WIKI_CONSULT_GUIDANCE}
    Otherwise, omit \`--schema\` to preserve the configured default.
 
 4. **Create the change directory**
+
+   ${PROPOSE_BRANCH_GUIDANCE}
 
    Choose one schema form below. If a registered store is selected, append \`--store "<store-id>"\` to that command and each later OpenSpec command shown below that accepts \`--store\`.
 
@@ -257,6 +269,8 @@ ${WIKI_CONSULT_GUIDANCE}
    Otherwise, omit \`--schema\` to preserve the configured default.
 
 4. **Create the change directory**
+
+   ${PROPOSE_BRANCH_GUIDANCE}
 
    Choose one schema form below. If a registered store is selected, append \`--store "<store-id>"\` to that command and each later OpenSpec command shown below that accepts \`--store\`.
 

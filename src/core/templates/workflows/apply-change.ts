@@ -20,11 +20,11 @@ const BLOCKED_STATE_HANDOFF = optionalWorkflow(
   'suggest completing the missing artifacts. Run `openspec status --change "<name>" --json`, select the next `ready` artifact (not `skipped` or `blocked`), and use `openspec instructions "<artifact-id>" --change "<name>" --json` for its rules and template. Keep the selected `--store <id>` on both commands.'
 );
 
-/** The archive handoff shown once every task is done. */
+/** The archive handoff used after apply has completed every tracked task. */
 const ARCHIVE_HANDOFF = optionalWorkflow(
   'archive',
-  'You can archive this change with `/opsx:archive`.',
-  'You can archive this change by running `openspec archive "<name>"`.'
+  'run `/opsx:archive "<name>"` in Apply completion mode: sync its delta specs, archive it, and do not ask for confirmation',
+  'run `openspec archive "<name>"` to sync its delta specs and archive it without prompting'
 );
 
 /**
@@ -84,7 +84,7 @@ ${PROJECT_ROOT_GUARD}
    - If \`state: "blocked"\`: show the message and pause implementation.
      - If \`missingArtifacts\` is non-empty: ${BLOCKED_STATE_HANDOFF}
      - Otherwise, follow the CLI instruction to create or repair the schema-configured tracking file from existing planning artifacts. Do not assume another artifact is ready or start implementation while blocked.
-   - If \`state: "all_done"\`: report that all tracked tasks are complete and suggest review or verification as appropriate before archiving
+   - If \`state: "all_done"\`: report that all tracked tasks are complete and continue to the automatic sync, archive, and commit steps below
    - Otherwise: proceed to implementation
 
    Treat \`context\` as a required prompt-level input. Read and consider it, and
@@ -112,7 +112,17 @@ ${PROJECT_ROOT_GUARD}
    Do not copy \`context\` or \`operationGuidance\` verbatim into implementation
    files or planning artifacts unless the user separately asks for that content.
 
-5. **Show current progress**
+5. **Check Git commit readiness**
+
+   This workflow commits its completed work. Before editing, confirm the current
+   directory is inside a Git repository and inspect \`git status --short\`,
+   including staged, unstaged, and untracked files. If there is no Git repository
+   or the index already contains staged changes, stop before implementation and
+   explain why the automatic commit cannot safely proceed. Record pre-existing
+   working-tree changes so they can be excluded from this workflow's commit.
+   Never clean, stash, reset, or discard them.
+
+6. **Show current progress**
 
    Display:
    - Schema being used
@@ -120,7 +130,7 @@ ${PROJECT_ROOT_GUARD}
    - Remaining tasks overview
    - Dynamic instruction from CLI
 
-6. **Implement tasks (loop until done or blocked)**
+7. **Implement tasks (loop until done or blocked)**
 
    For each pending task:
    - Show which task is being worked on
@@ -138,12 +148,37 @@ ${PROJECT_ROOT_GUARD}
    - Error or blocker encountered → report and wait for guidance
    - User interrupts
 
-7. **On completion or pause, show status**
+   If any tracked tasks remain incomplete when implementation stops, report the
+   final progress and stop here. Do not sync specs, archive the change, or commit.
+
+8. **Run sync, archive, and commit after all tasks are complete**
+
+   Re-run \`openspec instructions apply --change "<name>" --json\` and continue
+   only when it reports \`state: "all_done"\` and zero remaining tasks. If any
+   task is incomplete, stop without starting the follow-up steps.
+
+   Pass the exact **Apply completion mode** handoff to the archive workflow:
+   "${ARCHIVE_HANDOFF}". The archive workflow syncs delta specs before moving the
+   change and does not ask for confirmation in this mode. If sync, archive, or
+   verification fails or reports a blocker, stop; do not commit.
+
+   After archive succeeds, stage only files changed for this change by
+   implementation, task progress, sync, or archive. Do not use \`git add .\` or
+   \`git add -A\`, and do not include pre-existing changes. If a changed file
+   contains unrelated pre-existing edits that cannot be isolated safely, stop
+   before committing and report it.
+
+   Generate a concise commit message from the change's intent and completed work
+   (for example, \`feat: complete <change-name>\`), then commit without asking
+   for confirmation. Verify that the commit succeeded. If staging or committing
+   fails, report the error and do not claim the pipeline completed.
+
+9. **On completion or pause, show status**
 
    Display:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
-   - If all done: report that tracked tasks are complete and suggest review or verification as appropriate before archiving
+   - If all done: report the sync result, archive location, generated commit message, and commit hash
    - If paused: explain why and wait for guidance
 
 **Output During Implementation**
@@ -174,8 +209,8 @@ Working on task 4/7: <task description>
 - [x] Task 2
 ...
 
-All tracked tasks are complete. Review or verify the change as appropriate
-before archiving. ${ARCHIVE_HANDOFF}
+All tracked tasks are complete. The workflow now syncs delta specs, archives the
+change, and commits the completed work automatically.
 \`\`\`
 
 **Output On Pause (Issue Encountered)**
@@ -190,12 +225,8 @@ before archiving. ${ARCHIVE_HANDOFF}
 ### Issue Encountered
 <description of the issue>
 
-**Options:**
-1. <option 1>
-2. <option 2>
-3. Other approach
-
-What would you like to do?
+No sync, archive, or commit was run. Resolve the blocker and run \`/opsx:apply\`
+again to continue.
 \`\`\`
 
 **Guardrails**
@@ -215,6 +246,8 @@ What would you like to do?
 - Consider every guidance entry; explain any inapplicable or conflicting advice
 - Do not copy runtime context or operation guidance into implementation files or planning artifacts
 - Preserve CLI-controlled blocked/ready/all-done behavior and completion criteria
+- Never sync, archive, or commit unless the refreshed apply instructions report all tracked tasks complete
+- Preserve unrelated staged, unstaged, and untracked work; commit only this change's completed work
 
 **Fluid Workflow Integration**
 

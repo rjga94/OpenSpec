@@ -43,6 +43,14 @@ ${PROJECT_ROOT_GUARD}
 
 **Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
 
+**Apply completion mode**: \`/opsx:apply\` may invoke archive after verifying that all
+tracked tasks are complete, passing the exact mode name "Apply completion mode".
+In this mode, do not ask for confirmation: stop and report if artifacts or tasks
+are incomplete; sync delta specs automatically when needed; archive automatically
+only after sync and verification succeed. If there are no delta specs or they are
+already synced, archive without another sync. A sync blocker or failure stops the
+workflow before archiving. Direct archive invocations retain the prompts below.
+
 **Steps**
 
 1. **Select the change**
@@ -95,6 +103,7 @@ ${PROJECT_ROOT_GUARD}
 
    **If any artifacts are neither \`done\` nor \`skipped\`** (skipped artifacts satisfy the requirement - the change declares skip_specs):
    - Display warning listing incomplete artifacts
+   - In Apply completion mode, stop and report the incomplete artifacts without prompting
    - Ask the user to confirm they want to proceed
    - Proceed if user confirms
 
@@ -117,6 +126,7 @@ ${PROJECT_ROOT_GUARD}
 
    **If incomplete tasks found:**
    - Display warning showing count of incomplete tasks
+   - In Apply completion mode, stop and report the incomplete task count without prompting
    - Ask the user to confirm they want to proceed
    - Proceed if user confirms
 
@@ -138,6 +148,11 @@ ${PROJECT_ROOT_GUARD}
      - Otherwise, count the capability as needing sync and name it in the summary (\`<capability-path>: new main spec will be created\`). If the delta also has REMOVED requirements, warn that they will be ignored because there is no main spec to remove from. The sync creates the main spec from only the delta's ADDED requirements, exactly as \`openspec archive\` does.
    - Determine what changes would be applied (adds, modifications, removals, renames)
    - Continue assessing the remaining capabilities even when one is sync-blocked. Show a combined summary before prompting.
+
+   **In Apply completion mode**, do not show the prompt options below. If a
+   capability is sync-blocked, stop and report its blocker. Otherwise, sync and
+   verify all pending delta specs automatically; if none need syncing, continue
+   directly to archive. Never archive after a sync or verification failure.
 
    **Prompt options:**
    - If any capability is sync-blocked: explain why and offer only "Archive without syncing", "Cancel"
@@ -261,6 +276,15 @@ ${PROJECT_ROOT_GUARD}
 \`<capability-path>\` is the spec directory relative to \`specs/\` (for example, \`user-auth\` or \`identity/user-auth\`). Preserve the full path from each delta spec when resolving its main spec.
 
 **Input**: Optionally specify a change name after \`/opsx:archive\` (e.g., \`/opsx:archive add-auth\`). If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
+
+**Apply completion mode****: \`/opsx:apply\` may invoke archive after verifying
+that all tracked tasks are complete, passing the exact mode name "Apply completion
+mode". In this mode, do not ask for confirmation: stop and report if artifacts or
+tasks are incomplete; sync delta specs automatically when needed; archive
+automatically only after sync and verification succeed. If there are no delta
+specs or they are already synced, archive without another sync. A sync blocker or
+failure stops the workflow before archiving. Direct archive invocations retain
+the prompts below.
 
 **Steps**
 

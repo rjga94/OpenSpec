@@ -157,12 +157,12 @@ rules:
 
 | Command | What it does |
 |---------|--------------|
-| `/opsx:propose` | Create a change and generate planning artifacts in one step (default quick path) |
+| `/opsx:propose` | Create a branch from the current checkout, then create a change and generate planning artifacts |
 | `/opsx:explore` | Think through ideas, investigate problems, clarify requirements |
 | `/opsx:new` | Start a new change scaffold (expanded workflow) |
 | `/opsx:continue` | Create the next artifact (expanded workflow) |
 | `/opsx:ff` | Fast-forward planning artifacts (expanded workflow) |
-| `/opsx:apply` | Implement tasks, updating artifacts as needed |
+| `/opsx:apply` | Implement tasks; when all are complete, sync specs, archive, and commit with a generated message |
 | `/opsx:update` | Revise a change's planning artifacts and keep them coherent |
 | `/opsx:verify` | Validate implementation against artifacts (expanded workflow) |
 | `/opsx:sync` | Merge delta specs into main specs (optional) |
@@ -183,6 +183,9 @@ Think through ideas, investigate problems, compare options. No structure require
 /opsx:propose
 ```
 Creates the change and generates planning artifacts needed before implementation.
+It creates an `openspec/<change-name>` branch from your currently checked-out
+branch first; it does not switch to a default branch. The current directory must
+be in a Git repository, and an existing branch with that name is not reused.
 
 If you've enabled expanded workflows, you can instead use:
 
@@ -207,7 +210,7 @@ Creates all planning artifacts at once. Use when you have a clear picture of wha
 ```
 /opsx:apply
 ```
-Works through tasks, checking them off as you go. If you're juggling multiple changes, you can run `/opsx:apply <name>`; otherwise it should infer from the conversation and prompt you to choose if it can't tell.
+Works through tasks, checking them off as you go. If you're juggling multiple changes, you can run `/opsx:apply <name>`; otherwise it should infer from the conversation and prompt you to choose if it can't tell. When every tracked task is complete, it syncs delta specs, archives the change, and commits the completed work with a generated message without asking for confirmation. If tasks remain incomplete or a sync/archive step fails, it stops before the later steps.
 
 ### Updating a change
 ```
@@ -227,6 +230,9 @@ Merges the current change's delta specs into your main `openspec/specs/` without
 ```
 /opsx:archive   # Move to archive when done (prompts to sync specs if needed)
 ```
+
+Direct `/opsx:archive` remains interactive. The automatic archive invoked by
+`/opsx:apply` syncs pending delta specs and archives without confirmation.
 
 ## When to Update vs. Start Fresh
 
