@@ -157,7 +157,7 @@ rules:
 
 | Command | What it does |
 |---------|--------------|
-| `/opsx:propose` | Create a branch from the current checkout, then create a change and generate planning artifacts |
+| `/opsx:propose` | Create a change and generate planning artifacts in one step (default quick path) |
 | `/opsx:explore` | Think through ideas, investigate problems, clarify requirements |
 | `/opsx:new` | Start a new change scaffold (expanded workflow) |
 | `/opsx:continue` | Create the next artifact (expanded workflow) |
@@ -183,9 +183,7 @@ Think through ideas, investigate problems, compare options. No structure require
 /opsx:propose
 ```
 Creates the change and generates planning artifacts needed before implementation.
-It creates an `openspec/<change-name>` branch from your currently checked-out
-branch first; it does not switch to a default branch. The current directory must
-be in a Git repository, and an existing branch with that name is not reused.
+It uses the current checkout without creating or switching Git branches.
 
 If you've enabled expanded workflows, you can instead use:
 

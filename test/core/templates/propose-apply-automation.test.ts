@@ -12,27 +12,6 @@ import {
   getOpsxArchiveCommandTemplate,
 } from '../../../src/core/templates/workflows/archive-change.js';
 
-describe('propose branch creation', () => {
-  const surfaces: Array<[string, string]> = [
-    ['skill', getOpsxProposeSkillTemplate().instructions],
-    ['command', getOpsxProposeCommandTemplate().content],
-  ];
-
-  it('creates a new branch from the current checkout before creating the change', () => {
-    for (const [label, body] of surfaces) {
-      const branch = body.indexOf('git switch -c "openspec/<name>"');
-      const change = body.indexOf('openspec new change "<name>"');
-
-      expect(body, label).toContain('git branch --show-current');
-      expect(body, label).toContain('do not switch to a default branch');
-      expect(body, label).toContain('Never reuse an existing branch');
-      expect(body, label).toContain('do not stash, reset, or discard them');
-      expect(branch, label).toBeGreaterThanOrEqual(0);
-      expect(change, label).toBeGreaterThan(branch);
-    }
-  });
-});
-
 describe('apply completion automation', () => {
   const applySurfaces: Array<[string, string]> = [
     ['skill', getApplyInstructions()],
