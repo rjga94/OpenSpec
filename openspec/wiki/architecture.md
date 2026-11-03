@@ -18,6 +18,10 @@ The workflow instruction handler resolves the planning root and schema, loads ch
 
 Agent-facing instructions are authored as workflow-specific TypeScript templates under `src/core/templates/workflows/` and re-exported through [skill-templates.ts](../../src/core/templates/skill-templates.ts). The package also provides generation scripts for committed skill outputs and parity hashes ([package scripts](../../package.json)). Capture's shared procedure lives in [wiki.ts](../../src/core/templates/workflows/wiki.ts); the CLI does not manage wiki content, which is written by the agent under the resolved OpenSpec root.
 
+### Apply completion lifecycle
+
+The shared Apply template drives both the skill and command surfaces. For changes with a tracked Apply completion group, its lifecycle is spec sync, wiki capture, archive, then commit. Before archiving, Apply saves the archive task as complete in the active task list; if archiving fails while the change remains active, it restores that checkbox. After a successful move, it verifies the checkbox in the archived task list before continuing to commit. The behavior is specified in the [Apply skill specification](../specs/opsx-apply-skill/spec.md), authored in [apply-change.ts](../../src/core/templates/workflows/apply-change.ts), and covered by [completion tests](../../test/core/templates/propose-apply-automation.test.ts). This describes the workflow as implemented on 2026-11-03.
+
 ## Main project areas
 
 - `src/cli/` — command registration and CLI startup.

@@ -42,6 +42,26 @@ describe('apply completion automation', () => {
     }
   });
 
+  it('marks the archive task before moving it and handles archive failures safely', () => {
+    for (const [label, body] of applySurfaces) {
+      const preArchiveCheck = body.indexOf(
+        'mark it complete, save the file, and verify that exact checkbox is checked before invoking archive'
+      );
+      const archive = body.indexOf('openspec archive "<name>" --skip-specs --yes');
+
+      expect(body, label).toContain('locate the archive task checkbox in the active tasks file');
+      expect(preArchiveCheck, label).toBeGreaterThanOrEqual(0);
+      expect(archive, label).toBeGreaterThan(preArchiveCheck);
+      expect(body, label).toContain('confirm the archive task is still checked before continuing');
+      expect(body, label).toContain(
+        'restore only the archive task checkbox to incomplete, save and verify it, then stop'
+      );
+      expect(body, label).toContain(
+        'if the change has moved, preserve the checked status'
+      );
+    }
+  });
+
   it('retains automatic closeout for legacy task files', () => {
     for (const [label, body] of applySurfaces) {
       expect(body, label).toContain('state: "all_done"');

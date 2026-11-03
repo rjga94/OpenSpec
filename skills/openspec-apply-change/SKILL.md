@@ -131,14 +131,15 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
    1. **Sync delta specs**: run `/openspec-sync-specs "<name>"` and verify the main specs reflect every delta requirement. If there are no delta specs, verify that none exist and mark this task complete as a no-op.
    2. **Capture wiki knowledge**: run `/openspec-capture` to apply the canonical capture procedure to this change. If there is nothing new to record, report that and mark this task complete as a no-op.
-   3. **Archive the change**: only after the sync and capture tasks are checked, run `openspec archive "<name>" --skip-specs --yes` (include the selected store flag when applicable). The explicit sync task has already merged and verified the delta specs, so `--skip-specs` prevents a second merge. `--yes` allows the still-pending commit task to remain tracked during archive. Verify the archive destination, then locate the moved tasks file, check the archive task there, and continue using that archived path. Do not rerun apply instructions after the change is archived.
+   3. **Archive the change**: only after the sync and capture tasks are checked, locate the archive task checkbox in the active tasks file, mark it complete, save the file, and verify that exact checkbox is checked before invoking archive. Then run `openspec archive "<name>" --skip-specs --yes` (include the selected store flag when applicable). The explicit sync task has already merged and verified the delta specs, so `--skip-specs` prevents a second merge. `--yes` allows the still-pending commit task to remain tracked during archive. On success, verify the archive destination, locate the moved tasks file, and confirm the archive task is still checked before continuing with that archived path. If archive reports failure, inspect whether the change remains active: if it does, restore only the archive task checkbox to incomplete, save and verify it, then stop; if the change has moved, preserve the checked status, inspect the archived task file, report the command error, and stop before commit. Do not rerun apply instructions after the change is archived.
    4. **Commit the work**: stage only files changed for this change by implementation, task progress, sync, wiki capture, or archive. Do not use `git add .` or `git add -A`, and do not include pre-existing changes. Mark the commit checkbox in the archived tasks file as part of preparing this commit, stage that file, then commit with a concise message and verify the commit hash. Treat the task as complete only after the commit succeeds; if it fails, restore the checkbox to incomplete and report the error.
 
 
 
    For sync and capture tasks, mark their checkbox after verification and refresh
-   apply instructions as usual. After archive moves the change, update the task
-   checkbox in the archived file instead; the active-change instructions no
+   apply instructions as usual. After archive moves the change, verify the
+   archive task remains checked in the archived file and update the commit task
+   checkbox there when preparing the commit; the active-change instructions no
    longer apply. Leave all later lifecycle tasks unchecked if a step fails.
 
    **Pause if:**
