@@ -2,7 +2,7 @@
 
 ## Runtime and package
 
-The published package is an ESM Node.js CLI. The package manifest sets Node.js `>=20.19.0`, exposes the `openspec` binary, and uses Commander for command parsing ([package.json](../../package.json)).
+The published package is an ESM Node.js CLI. The package manifest sets Node.js `>=22.12.0`, exposes the `openspec` binary, and uses Commander for command parsing ([package.json](../../package.json)).
 
 ## CLI and command handlers
 
@@ -26,4 +26,3 @@ Agent-facing instructions are authored as workflow-specific TypeScript templates
 - `openspec/specs/` — product behavior contracts.
 - `openspec/changes/` — active and archived planning artifacts.
 - `docs-lab/` and `website/` — authored documentation and its publishing site; see [documentation ownership](documentation.md).
-

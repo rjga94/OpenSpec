@@ -1,7 +1,7 @@
 # opsx-capture-skill Specification
 
 ## Purpose
-TBD - created by archiving change add-capture-workflow-and-wiki. Update Purpose after archive.
+Provides the `/opsx:capture` workflow for recording durable, evidence-based project knowledge in `openspec/wiki/` and keeping its pages, indexes, and references consistent.
 
 ## Requirements
 

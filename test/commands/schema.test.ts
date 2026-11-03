@@ -4,6 +4,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 import { runCLI } from '../helpers/run-cli.js';
+import { createSymlinkOrSkip } from '../helpers/symlink.js';
 
 async function runSchemaCommand(args: string[]): Promise<void> {
   const { registerSchemaCommand } = await import('../../src/cli/commands/schema.js');
@@ -783,14 +784,14 @@ artifacts:
       });
     });
 
-    it('does not set the default through a config symlink outside the project', async () => {
+    it('does not set the default through a config symlink outside the project', async ({ skip }) => {
       const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), 'openspec-schema-config-'));
       const outsideConfig = path.join(outsideDir, 'config.yaml');
       const configPath = path.join(tempDir, 'openspec', 'config.yaml');
       fs.writeFileSync(outsideConfig, 'schema: untouched\n');
-      fs.symlinkSync(outsideConfig, configPath, 'file');
 
       try {
+        await createSymlinkOrSkip(() => fs.symlinkSync(outsideConfig, configPath, 'file'), skip);
         await runSchemaCommand([
           'init',
           'my-workflow',

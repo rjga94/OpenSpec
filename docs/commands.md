@@ -93,7 +93,7 @@ AI:  Created openspec/changes/add-dark-mode/
 - Sets up Git LFS the first time a binary file is copied, and tells you which Git files changed; it asks before copying very large files
 - Never edits specs, changes, or source code
 
-`/opsx:explore` and `/opsx:propose` read the wiki, and `/opsx:archive` captures to it automatically, so running this command is never required.
+`/opsx:explore` and `/opsx:propose` read the wiki. When you run `/opsx:archive`, it captures to the wiki before archiving the change; use `/opsx:capture` when you want to capture at another time.
 
 ---
 

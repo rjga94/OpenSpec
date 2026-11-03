@@ -244,7 +244,7 @@ describe('propose project context', () => {
       expect(body, label).toContain('A broad but meaningful goal (for example, "build the project foundation") is enough to start');
       expect(body, label).toContain('Do not ask the generic question just because the user has not specified implementation details');
       expect(body, label).toContain('not to invent or authorize additional requirements');
-      expect(body, label).toContain('ask a focused question about the unresolved decision');
+      expect(body, label).toContain('focused question about the unresolved decision');
     }
   });
 
@@ -405,12 +405,15 @@ describe('propose implementation boundary', () => {
         'scope, externally observable behavior, compatibility, or acceptance criteria'
       );
       expect(body, label).toContain(
-        'ask a focused question about the unresolved decision before creating the change'
+        'ask the user before creating the change'
+      );
+      expect(body, label).toContain(
+        'focused question about the unresolved decision'
       );
       expect(body, label).toContain(
         'For minor details, make a reasonable assumption and record it in the planning artifacts'
       );
-      expect(body.indexOf('ask a focused question about the unresolved decision before creating the change'), label)
+      expect(body.indexOf('ask the user before creating the change'), label)
         .toBeLessThan(body.indexOf('**Create the change directory**'));
     }
   });

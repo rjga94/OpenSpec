@@ -78,7 +78,7 @@ ${WIKI_CONSULT_GUIDANCE}
 
    A broad but meaningful goal (for example, "build the project foundation") is enough to start: use the wiki, project context, and relevant project structure to understand it and shape a bounded proposal. Do not ask the generic question just because the user has not specified implementation details. Use wiki content to ground the requested goal, not to invent or authorize additional requirements.
 
-   Derive a kebab-case name from the request (e.g., "add user authentication" → \`add-user-auth\`). If material ambiguity remains after reviewing project context and relevant wiki pages, ask a focused question about the unresolved decision before creating the change. For minor details, make a reasonable assumption and record it in the planning artifacts.
+   Derive a kebab-case name from the request (e.g., "add user authentication" → \`add-user-auth\`). After reviewing project context and relevant wiki pages, if the request contains ambiguity that would materially affect scope, externally observable behavior, compatibility, or acceptance criteria, ask the user before creating the change, using a focused question about the unresolved decision. For minor details, make a reasonable assumption and record it in the planning artifacts.
 
 3. **Determine the workflow schema**
 
@@ -246,7 +246,7 @@ ${WIKI_CONSULT_GUIDANCE}
 
    A broad but meaningful goal (for example, "build the project foundation") is enough to start: use the wiki, project context, and relevant project structure to understand it and shape a bounded proposal. Do not ask the generic question just because the user has not specified implementation details. Use wiki content to ground the requested goal, not to invent or authorize additional requirements.
 
-   Derive a kebab-case name from the request (e.g., "add user authentication" → \`add-user-auth\`). If material ambiguity remains after reviewing project context and relevant wiki pages, ask a focused question about the unresolved decision before creating the change. For minor details, make a reasonable assumption and record it in the planning artifacts.
+   Derive a kebab-case name from the request (e.g., "add user authentication" → \`add-user-auth\`). After reviewing project context and relevant wiki pages, if the request contains ambiguity that would materially affect scope, externally observable behavior, compatibility, or acceptance criteria, ask the user before creating the change, using a focused question about the unresolved decision. For minor details, make a reasonable assumption and record it in the planning artifacts.
 
 3. **Determine the workflow schema**
 

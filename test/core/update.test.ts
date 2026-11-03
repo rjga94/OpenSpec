@@ -11,6 +11,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import os from 'os';
 import { parse as parseToml } from 'smol-toml';
+import { createSymlinkOrSkip } from '../helpers/symlink.js';
 
 const { confirmMock, searchableMultiSelectMock, interactiveState } = vi.hoisted(() => ({
   confirmMock: vi.fn(),
@@ -1722,7 +1723,7 @@ metadata:
       ).toBe('user workflow');
     });
 
-    it('should not delete the install when the legacy root is a symlink to the current one', async () => {
+    it('should not delete the install when the legacy root is a symlink to the current one', async ({ skip }) => {
       // Symlinking the two roots is a realistic way to straddle the rebrand.
       // Source and destination are then the same file, so a naive
       // "destination exists, drop the legacy copy" would delete the original.
@@ -1730,7 +1731,10 @@ metadata:
       const devinSkill = path.join(testDir, '.devin', 'skills', 'openspec-explore');
       await fs.mkdir(devinSkill, { recursive: true });
       await fs.writeFile(path.join(devinSkill, 'SKILL.md'), 'real content');
-      await fs.symlink('.devin', path.join(testDir, '.windsurf'));
+      await createSymlinkOrSkip(
+        () => fs.symlink('.devin', path.join(testDir, '.windsurf')),
+        skip
+      );
 
       await updateCommand.execute(testDir);
 

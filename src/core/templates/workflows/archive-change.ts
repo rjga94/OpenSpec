@@ -43,7 +43,7 @@ ${PROJECT_ROOT_GUARD}
 
 **Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
 
-**Apply completion mode**: An explicit handoff from \`/opsx:apply\` may arrive while
+**Apply completion mode**: An explicit handoff from the Apply workflow may arrive while
 tracked archive or commit tasks remain unchecked. Do not ask for confirmation or
 stop solely because task counts are incomplete; report the count in the archive summary.
 Still stop and report if artifacts are incomplete; sync delta specs automatically when needed.
@@ -278,7 +278,7 @@ ${PROJECT_ROOT_GUARD}
 
 **Input**: Optionally specify a change name after \`/opsx:archive\` (e.g., \`/opsx:archive add-auth\`). If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
 
-**Apply completion mode**: An explicit handoff from \`/opsx:apply\` may arrive while
+**Apply completion mode**: An explicit handoff from the Apply workflow may arrive while
 tracked archive or commit tasks remain unchecked. Do not ask for confirmation or
 stop solely because task counts are incomplete; report the count in the archive summary.
 Still stop and report if artifacts are incomplete; sync delta specs automatically when needed.

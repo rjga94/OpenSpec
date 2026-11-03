@@ -1,7 +1,7 @@
 # project-wiki Specification
 
 ## Purpose
-TBD - created by archiving change add-capture-workflow-and-wiki. Update Purpose after archive.
+Defines the project wiki as a navigable, evidence-backed knowledge layer at `openspec/wiki/`, with reference assets kept separate from specifications.
 
 ## Requirements
 

@@ -1,4 +1,4 @@
-import { execFileSync } from 'child_process';
+import { execFileSync, spawnSync } from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -41,7 +41,12 @@ describe('update-flake.sh confines every hash rewrite to the pnpmDeps block', ()
   // the range actually selects the right derivation. Runs the script's own
   // three sed operations against a flake with three FODs, pnpmDeps in the
   // middle, so a first-match bug and a global-replace bug both show up.
-  it('touches only the pnpmDeps hash in a flake with several derivations', () => {
+  it('touches only the pnpmDeps hash in a flake with several derivations', ({ skip }) => {
+    const bashProbe = spawnSync('bash', ['-c', 'exit 0'], { stdio: 'ignore' });
+    if (bashProbe.error || bashProbe.status !== 0) {
+      skip('A runnable Bash installation is required (Git Bash or an initialized WSL distribution).');
+    }
+
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'openspec-flake-scope-'));
     const flake = path.join(dir, 'flake.nix');
     const other = 'sha256-OTHEROTHEROTHEROTHEROTHEROTHEROTHEROTHEROT0=';

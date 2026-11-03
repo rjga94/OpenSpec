@@ -16,3 +16,7 @@ The older `docs/` tree remains useful source material, but the docs-lab README s
 - Use source under `src/` and the relevant tests for current implementation.
 - Use `docs-lab/` plus `website/docs.sync.config.mjs` for current published documentation.
 - Use `docs/` as legacy or migration source material unless a page is explicitly still maintained there.
+
+## Platform-dependent tests
+
+The test suite includes cases that require filesystem symlink permissions or a runnable Bash shell. Symlink tests skip only when the OS denies creation with `EPERM` or `EACCES`; the `update-flake.sh` test skips only when a Bash probe cannot run. These cases still execute where the required capability is available ([symlink helper](../../test/helpers/symlink.ts), [flake script test](../../test/update-flake-script.test.ts), [test command](../../package.json)).

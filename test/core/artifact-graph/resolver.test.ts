@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
+import { createSymlinkOrSkip } from '../../helpers/symlink.js';
 import {
   resolveSchema,
   listSchemas,
@@ -716,11 +717,11 @@ artifacts:
       expect(isSchemaDir(tempDir, entry)).toBe(true);
     });
 
-    it('should return true for a symlink pointing at a directory', () => {
+    it('should return true for a symlink pointing at a directory', async ({ skip }) => {
       const target = path.join(tempDir, 'target-dir');
       fs.mkdirSync(target);
       const link = path.join(tempDir, 'linked-dir');
-      fs.symlinkSync(target, link, 'dir');
+      await createSymlinkOrSkip(() => fs.symlinkSync(target, link, 'dir'), skip);
 
       const entry = fs
         .readdirSync(tempDir, { withFileTypes: true })
@@ -730,11 +731,11 @@ artifacts:
       expect(isSchemaDir(tempDir, entry)).toBe(true);
     });
 
-    it('should return false for a symlink pointing at a file', () => {
+    it('should return false for a symlink pointing at a file', async ({ skip }) => {
       const targetFile = path.join(tempDir, 'target-file');
       fs.writeFileSync(targetFile, 'contents');
       const link = path.join(tempDir, 'linked-file');
-      fs.symlinkSync(targetFile, link, 'file');
+      await createSymlinkOrSkip(() => fs.symlinkSync(targetFile, link, 'file'), skip);
 
       const entry = fs
         .readdirSync(tempDir, { withFileTypes: true })
@@ -742,9 +743,12 @@ artifacts:
       expect(isSchemaDir(tempDir, entry)).toBe(false);
     });
 
-    it('should return false for a broken symlink', () => {
+    it('should return false for a broken symlink', async ({ skip }) => {
       const link = path.join(tempDir, 'broken-link');
-      fs.symlinkSync(path.join(tempDir, 'does-not-exist'), link, 'dir');
+      await createSymlinkOrSkip(
+        () => fs.symlinkSync(path.join(tempDir, 'does-not-exist'), link, 'dir'),
+        skip
+      );
 
       const entry = fs
         .readdirSync(tempDir, { withFileTypes: true })
@@ -763,7 +767,7 @@ artifacts:
   });
 
   describe('listSchemas with symlinked directories', () => {
-    it('should include a user schema that is a symlink to a directory', () => {
+    it('should include a user schema that is a symlink to a directory', async ({ skip }) => {
       process.env.XDG_DATA_HOME = tempDir;
       const userSchemasBase = path.join(tempDir, 'openspec', 'schemas');
       fs.mkdirSync(userSchemasBase, { recursive: true });
@@ -775,14 +779,17 @@ artifacts:
         path.join(realSchemaDir, 'schema.yaml'),
         'name: linked\nversion: 1\nartifacts: []'
       );
-      fs.symlinkSync(realSchemaDir, path.join(userSchemasBase, 'linked-schema'), 'dir');
+      await createSymlinkOrSkip(
+        () => fs.symlinkSync(realSchemaDir, path.join(userSchemasBase, 'linked-schema'), 'dir'),
+        skip
+      );
 
       const schemas = listSchemas();
       expect(schemas).toContain('linked-schema');
       expect(getSchemaDir('linked-schema')).toBe(path.join(userSchemasBase, 'linked-schema'));
     });
 
-    it('should not include a symlink pointing at a schema file', () => {
+    it('should not include a symlink pointing at a schema file', async ({ skip }) => {
       process.env.XDG_DATA_HOME = tempDir;
       const userSchemasBase = path.join(tempDir, 'openspec', 'schemas');
       fs.mkdirSync(userSchemasBase, { recursive: true });
@@ -790,7 +797,10 @@ artifacts:
       // A symlink whose target is a file, not a directory.
       const targetFile = path.join(tempDir, 'schema.yaml');
       fs.writeFileSync(targetFile, 'name: nope\nversion: 1\nartifacts: []');
-      fs.symlinkSync(targetFile, path.join(userSchemasBase, 'file-link'), 'file');
+      await createSymlinkOrSkip(
+        () => fs.symlinkSync(targetFile, path.join(userSchemasBase, 'file-link'), 'file'),
+        skip
+      );
 
       const schemas = listSchemas();
       expect(schemas).not.toContain('file-link');
@@ -798,7 +808,7 @@ artifacts:
   });
 
   describe('listSchemasWithInfo with symlinked directories', () => {
-    it('should include a symlinked user schema with source: user', () => {
+    it('should include a symlinked user schema with source: user', async ({ skip }) => {
       process.env.XDG_DATA_HOME = tempDir;
       const userSchemasBase = path.join(tempDir, 'openspec', 'schemas');
       fs.mkdirSync(userSchemasBase, { recursive: true });
@@ -817,7 +827,10 @@ artifacts:
     template: a.md
 `
       );
-      fs.symlinkSync(realSchemaDir, path.join(userSchemasBase, 'linked-info'), 'dir');
+      await createSymlinkOrSkip(
+        () => fs.symlinkSync(realSchemaDir, path.join(userSchemasBase, 'linked-info'), 'dir'),
+        skip
+      );
 
       const schemas = listSchemasWithInfo();
       const linked = schemas.find(s => s.name === 'linked-info');
