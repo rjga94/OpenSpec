@@ -8,7 +8,7 @@ OPSX replaces the old phase-locked workflow with a fluid, action-based approach.
 
 | Aspect | Legacy | OPSX |
 |--------|--------|------|
-| **Commands** | `/openspec:proposal`, `/openspec:apply`, `/openspec:archive` | Default: `/opsx:propose`, `/opsx:explore`, `/opsx:apply`, `/opsx:update`, `/opsx:sync`, `/opsx:archive` (expanded workflow commands optional) |
+| **Commands** | `/openspec:proposal`, `/openspec:apply`, `/openspec:archive` | Default: `/opsx:propose`, `/opsx:explore`, `/opsx:apply`, `/opsx:bulk-apply`, `/opsx:update`, `/opsx:sync`, `/opsx:archive` (expanded workflow commands optional) |
 | **Workflow** | Create all artifacts at once | Create incrementally or all at once—your choice |
 | **Going back** | Awkward phase gates | Natural—update any artifact anytime |
 | **Customization** | Fixed structure | Schema-driven, fully hackable |

@@ -52,6 +52,7 @@ Commands are always the second case. A project whose `openspec/config.yaml` name
 | [openspec-capture](#openspec-capture) | Record the conversation in the project wiki | Core |
 | [openspec-propose](#openspec-propose) | Create a change proposal with all its planning artifacts in one step | Core |
 | [openspec-apply-change](#openspec-apply-change) | Implement a change proposal's tasks | Core |
+| [openspec-bulk-apply-change](#openspec-bulk-apply-change) | Implement several change proposals sequentially | Core |
 | [openspec-update-change](#openspec-update-change) | Revise a change proposal's plan | Core |
 | [openspec-sync-specs](#openspec-sync-specs) | Merge a change proposal's spec updates into `specs/` | Core |
 | [openspec-archive-change](#openspec-archive-change) | Move a finished change proposal to the archive | Core |
@@ -103,6 +104,16 @@ Implement a change proposal's tasks, working through the list until done or bloc
 | **Arguments** | A change proposal name (`add-auth`), optional. If the target is ambiguous it lists the active change proposals and asks you to pick. |
 | **Creates** | Code: the minimal changes each task calls for, in your project files. In the change proposal it checks off each finished task (`- [ ]` to `- [x]`) in the tracked file identified by `sourcePath` and one-based `line`. A schema may track tasks across multiple files. |
 | **Response** | Progress per task, then an overall count (N/M tasks complete). All done: suggests `openspec-archive-change`. Blocked by missing artifacts: points to `openspec-continue-change`, or to `openspec status` and `openspec instructions` when that skill is not installed (the core profile leaves it out). Unclear tasks or errors: pauses and asks. |
+
+## openspec-bulk-apply-change
+
+Implement several active change proposals in sequence, ordering prerequisites before the changes that depend on them.
+
+| Contract | Description |
+|---|---|
+| **Arguments** | One or more exact change proposal names. With none, applies all active proposals. Missing or duplicate names stop the batch before edits. |
+| **Creates** | Code and completed task checkboxes for each proposal, one at a time. Before each later proposal, adapts its implementation-facing plan and code to earlier completed work only when its original intent, requirements, and earlier contracts remain intact. |
+| **Response** | Shows the chosen order and rationale, then reports completed, skipped, blocked, and remaining proposals. In the default all-active batch, blocked proposals are reported and skipped; a named batch stops at a blocked proposal. A material change to proposal intent or an earlier contract pauses for your decision. An implementation error stops the batch without rolling back completed work. |
 
 ## openspec-update-change
 

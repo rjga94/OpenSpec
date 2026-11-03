@@ -106,6 +106,7 @@ New installs default to `core`, which provides:
 - `/opsx:capture`
 - `/opsx:propose`
 - `/opsx:apply`
+- `/opsx:bulk-apply`
 - `/opsx:update`
 - `/opsx:sync`
 - `/opsx:archive`
@@ -142,6 +143,16 @@ You: /opsx:propose rebuild-search-index-on-write
 ```
 
 Explore never writes code, and writes nothing else unless you ask, or say yes when it offers. It's a free, no-stakes conversation that turns a vague worry into a precise change, so the proposal that follows is sharp. Already know exactly what you want? Skip it and go straight to `/opsx:propose`. Full guide: [Explore First](explore.md).
+
+#### Apply several changes in dependency order
+
+When multiple active changes are ready, `/opsx:bulk-apply` applies all of them in an order based on their implementation dependencies and scope, not their creation dates. You can also name an exact subset:
+
+```text
+/opsx:bulk-apply add-auth migrate-session-storage
+```
+
+Each proposal uses the full Apply lifecycle. Before a later proposal starts, the workflow checks its plan against earlier completed work and current code, adapting implementation details automatically when the original intent, requirements, and earlier contracts can be preserved. It pauses for your decision if that would change the proposal's intent or an earlier contract. With the default all-active batch it reports and skips blocked proposals; a named batch stops at a blocked proposal.
 
 ### Expanded/Full Workflow (custom selection)
 
@@ -539,6 +550,7 @@ For full command details and options, see [Commands](commands.md).
 | `/opsx:continue` | Create next artifact | Expanded mode, step-by-step artifact creation |
 | `/opsx:ff` | Create all planning artifacts | Expanded mode, clear scope |
 | `/opsx:apply` | Implement tasks | Ready to write code |
+| `/opsx:bulk-apply` | Apply several changes in dependency-informed order | Multiple active changes are ready |
 | `/opsx:verify` | Validate implementation | Expanded mode, before archiving |
 | `/opsx:sync` | Merge delta specs | Expanded mode, optional |
 | `/opsx:archive` | Complete the change | All work finished |

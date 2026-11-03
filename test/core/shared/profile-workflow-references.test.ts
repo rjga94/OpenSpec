@@ -90,8 +90,7 @@ describe('generated files never name an uninstalled workflow', () => {
 
   // The mirror image: dropping a reference must not drop the handoff itself.
   // With every workflow installed, every reference that exists is emitted.
-  // `bulk-archive` is the one workflow nothing points at - it is reached from
-  // the CLI, not from another workflow.
+  // Bulk workflows are reached from the CLI, not from another workflow.
   it('still names every referenced workflow when the profile installs them', () => {
     const bodies = [
       ...getSkillTemplates(ALL_WORKFLOWS).map(
@@ -108,7 +107,7 @@ describe('generated files never name an uninstalled workflow', () => {
     }
 
     expect([...named].sort()).toEqual(
-      [...ALL_WORKFLOWS].filter((id) => id !== 'bulk-archive').sort()
+      [...ALL_WORKFLOWS].filter((id) => id !== 'bulk-archive' && id !== 'bulk-apply').sort()
     );
   });
 

@@ -104,6 +104,7 @@ const LEGACY_GLOBAL_CODEX_WORKFLOWS: Record<string, readonly WorkflowId[]> = {
   'opsx-new.md': ['new'],
   'opsx-continue.md': ['continue'],
   'opsx-apply.md': ['apply'],
+  'opsx-bulk-apply.md': ['bulk-apply'],
   'opsx-update.md': ['update'],
   'opsx-ff.md': ['ff'],
   'opsx-sync.md': ['sync'],

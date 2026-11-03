@@ -205,6 +205,10 @@ export const WORKFLOW_PROMPT_META: Record<string, WorkflowPromptMeta> = {
     name: 'Apply tasks',
     description: 'Implement tasks from the current change',
   },
+  'bulk-apply': {
+    name: 'Bulk apply',
+    description: 'Implement multiple changes in sequence',
+  },
   update: {
     name: 'Update change',
     description: 'Revise the planning artifacts of an existing change',

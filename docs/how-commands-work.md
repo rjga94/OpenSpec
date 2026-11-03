@@ -126,6 +126,7 @@ By default, OpenSpec installs the **core** set of slash commands:
 - `/opsx:explore`: think through an idea with the AI before committing to a change (great first step when you're unsure)
 - `/opsx:propose`: create a change and draft all its planning artifacts in one step
 - `/opsx:apply`: build the change by working through its task list
+- `/opsx:bulk-apply`: apply multiple active changes in dependency-informed order
 - `/opsx:update`: revise a change's planning artifacts and keep them coherent
 - `/opsx:sync`: merge a change's spec updates into your main specs (usually automatic)
 - `/opsx:archive`: finish a change and file it away

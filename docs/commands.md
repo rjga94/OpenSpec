@@ -19,6 +19,7 @@ for your tool. The files OpenSpec generates already use the right form.
 | `/opsx:explore` | Think through ideas before committing to a change |
 | `/opsx:capture` | Record the discussion in the project wiki at `openspec/wiki/` |
 | `/opsx:apply` | Implement tasks from the change |
+| `/opsx:bulk-apply` | Implement multiple changes sequentially |
 | `/opsx:update` | Revise a change's planning artifacts and keep them coherent |
 | `/opsx:sync` | Merge delta specs into main specs |
 | `/opsx:archive` | Archive a completed change |
@@ -348,6 +349,30 @@ AI:  Implementing add-dark-mode...
 - Can resume where you left off if interrupted
 - Use for parallel changes by specifying the change name
 - Completion state is tracked in `tasks.md` checkboxes
+
+---
+
+### `/opsx:bulk-apply`
+
+Implement several active changes sequentially, choosing an order from their implementation dependencies and scope rather than creation dates.
+
+**Syntax:**
+```
+/opsx:bulk-apply [change-names...]
+```
+
+**Arguments:**
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `change-names` | No | Exact changes to apply; if omitted, applies all active changes |
+
+**What it does:**
+- Shows the selected changes in dependency-informed order with a brief rationale
+- Applies each change using the full single-change Apply lifecycle
+- Before each later change, checks its plan against completed changes and current code, automatically adapting implementation-facing plans while preserving proposal intent, requirements, and prior contracts
+- Stops and asks before an adaptation that would materially change the proposal's intent or an earlier contract
+- In an all-active batch, reports and skips blocked changes; in a named batch, stops at a blocked change
+- Stops after an implementation error without rolling back completed changes
 
 ---
 

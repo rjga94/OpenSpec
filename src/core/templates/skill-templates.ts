@@ -11,6 +11,7 @@ export { getCaptureSkillTemplate, getOpsxCaptureCommandTemplate } from './workfl
 export { getNewChangeSkillTemplate, getOpsxNewCommandTemplate } from './workflows/new-change.js';
 export { getContinueChangeSkillTemplate, getOpsxContinueCommandTemplate } from './workflows/continue-change.js';
 export { getApplyInstructions, getApplyChangeSkillTemplate, getOpsxApplyCommandTemplate } from './workflows/apply-change.js';
+export { getBulkApplyInstructions, getBulkApplyChangeSkillTemplate, getOpsxBulkApplyCommandTemplate } from './workflows/bulk-apply-change.js';
 export { getUpdateChangeSkillTemplate, getOpsxUpdateCommandTemplate } from './workflows/update-change.js';
 export { getFfChangeSkillTemplate, getOpsxFfCommandTemplate } from './workflows/ff-change.js';
 export { getSyncSpecsSkillTemplate, getOpsxSyncCommandTemplate } from './workflows/sync-specs.js';

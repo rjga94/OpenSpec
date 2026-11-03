@@ -298,7 +298,7 @@ delivery: both
 Profile settings:
   profile: core (default)
   delivery: both (default)
-  workflows: propose, explore, apply, update, sync, archive (from core profile)
+  workflows: propose, explore, apply, bulk-apply, update, sync, archive (from core profile)
 ```
 
 ### openspec config get

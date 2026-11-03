@@ -6,7 +6,7 @@ A profile is your preference for which OpenSpec workflows (the [skills and comma
 
 ## The core set
 
-The `core` profile installs seven workflows, covering the whole loop from idea to archive:
+The `core` profile installs eight workflows, covering the whole loop from idea to archive:
 
 | Workflow | What it's for |
 |---|---|
@@ -14,6 +14,7 @@ The `core` profile installs seven workflows, covering the whole loop from idea t
 | [`capture`](../reference/skills.md#openspec-capture) | Record the conversation in the project wiki at `openspec/wiki/` (optional to run; archive does it too) |
 | [`propose`](../reference/skills.md#openspec-propose) | Create a change proposal and generate all its planning artifacts in one step |
 | [`apply`](../reference/skills.md#openspec-apply-change) | Implement a change proposal's tasks |
+| [`bulk-apply`](../reference/skills.md#openspec-bulk-apply-change) | Implement several change proposals in dependency-informed order |
 | [`update`](../reference/skills.md#openspec-update-change) | Revise a change proposal's existing planning artifacts |
 | [`sync`](../reference/skills.md#openspec-sync-specs) | Merge a change proposal's spec updates into `specs/` without archiving it |
 | [`archive`](../reference/skills.md#openspec-archive-change) | Move a finished change proposal to the archive |
@@ -39,7 +40,7 @@ To change the set, run the interactive picker:
 openspec config profile
 ```
 
-The picker asks what to configure ([delivery](#delivery-skills-commands-or-both), workflows, or both), then lists all thirteen workflows as checkboxes, with the installed ones checked. Any selection that isn't exactly the core seven is saved as the `custom` profile, so you can also uncheck core workflows you don't use.
+The picker asks what to configure ([delivery](#delivery-skills-commands-or-both), workflows, or both), then lists all fourteen workflows as checkboxes, with the installed ones checked. Any selection that isn't exactly the core eight is saved as the `custom` profile, so you can also uncheck core workflows you don't use.
 
 ## Delivery: skills, commands, or both
 

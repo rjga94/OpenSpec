@@ -2931,7 +2931,7 @@ ${OPENSPEC_MARKERS.end}
       consoleSpy.mockRestore();
 
       expect(logCalls.some((entry) => entry.includes('Getting started'))).toBe(true);
-      const menuLines = logCalls.filter((entry) => entry.includes('Scaffold a change'));
+      const menuLines = logCalls.filter((entry) => entry.includes('Scaffold change'));
       expect(menuLines).toHaveLength(1);
       expect(menuLines[0]).toContain('$openspec-new-change');
       expect(logCalls.some((entry) => entry.includes('/opsx:new'))).toBe(false);
@@ -3715,7 +3715,7 @@ More user content after markers.
           featureFlags: {},
           profile: 'custom',
           delivery,
-          workflows: ['propose', 'explore', 'capture', 'apply', 'archive'],
+          workflows: ['propose', 'explore', 'capture', 'apply', 'bulk-apply', 'archive'],
         });
 
         const archiveSkill = path.join(
@@ -3771,7 +3771,7 @@ More user content after markers.
         featureFlags: {},
         profile: 'custom',
         delivery: 'both',
-        workflows: ['propose', 'explore', 'capture', 'apply', 'sync', 'archive'],
+        workflows: ['propose', 'explore', 'capture', 'apply', 'bulk-apply', 'sync', 'archive'],
       });
 
       const initCommand = new InitCommand({ tools: 'claude', force: true });
@@ -3799,7 +3799,7 @@ More user content after markers.
         featureFlags: {},
         profile: 'custom',
         delivery: 'both',
-        workflows: ['propose', 'explore', 'capture', 'apply', 'update', 'sync', 'archive', 'verify'],
+        workflows: ['propose', 'explore', 'capture', 'apply', 'bulk-apply', 'update', 'sync', 'archive', 'verify'],
       });
 
       const initCommand = new InitCommand({ tools: 'claude', force: true });
@@ -3848,7 +3848,7 @@ More user content after markers.
         featureFlags: {},
         profile: 'custom',
         delivery: 'both',
-        workflows: ['propose', 'explore', 'capture', 'apply', 'sync', 'archive'],
+        workflows: ['propose', 'explore', 'capture', 'apply', 'bulk-apply', 'sync', 'archive'],
       });
 
       const initCommand = new InitCommand({ tools: 'claude', force: true });
@@ -4145,6 +4145,7 @@ More user content after markers.
       expect((await fs.readdir(skillsDir)).sort()).toEqual([
         'openspec-apply-change',
         'openspec-archive-change',
+        'openspec-bulk-apply-change',
         'openspec-capture',
         'openspec-custom',
         'openspec-explore',

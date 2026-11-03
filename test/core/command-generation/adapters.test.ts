@@ -66,6 +66,7 @@ describe('command-generation/adapters', () => {
 
     it('should generate correct file path for different command IDs', () => {
       expect(claudeAdapter.getFilePath('new')).toBe(path.join('.claude', 'commands', 'opsx', 'new.md'));
+      expect(claudeAdapter.getFilePath('bulk-apply')).toBe(path.join('.claude', 'commands', 'opsx', 'bulk-apply.md'));
       expect(claudeAdapter.getFilePath('bulk-archive')).toBe(path.join('.claude', 'commands', 'opsx', 'bulk-archive.md'));
     });
 
@@ -101,6 +102,7 @@ describe('command-generation/adapters', () => {
 
     it('should generate correct file paths for different commands', () => {
       expect(cursorAdapter.getFilePath('new')).toBe(path.join('.cursor', 'commands', 'opsx-new.md'));
+      expect(cursorAdapter.getFilePath('bulk-apply')).toBe(path.join('.cursor', 'commands', 'opsx-bulk-apply.md'));
       expect(cursorAdapter.getFilePath('bulk-archive')).toBe(path.join('.cursor', 'commands', 'opsx-bulk-archive.md'));
     });
 
@@ -272,6 +274,7 @@ describe('command-generation/adapters', () => {
 
     it('should generate correct file paths for different commands', () => {
       expect(atomcodeAdapter.getFilePath('new')).toBe(path.join('.atomcode', 'commands', 'opsx-new.md'));
+      expect(atomcodeAdapter.getFilePath('bulk-apply')).toBe(path.join('.atomcode', 'commands', 'opsx-bulk-apply.md'));
       expect(atomcodeAdapter.getFilePath('bulk-archive')).toBe(path.join('.atomcode', 'commands', 'opsx-bulk-archive.md'));
     });
 
@@ -381,6 +384,7 @@ describe('command-generation/adapters', () => {
 
     it('should generate correct file paths for different commands', () => {
       expect(bobAdapter.getFilePath('new')).toBe(path.join('.bob', 'commands', 'opsx-new.md'));
+      expect(bobAdapter.getFilePath('bulk-apply')).toBe(path.join('.bob', 'commands', 'opsx-bulk-apply.md'));
       expect(bobAdapter.getFilePath('bulk-archive')).toBe(path.join('.bob', 'commands', 'opsx-bulk-archive.md'));
     });
 
@@ -959,6 +963,7 @@ describe('command-generation/adapters', () => {
 
     it('should generate correct file paths for different commands', () => {
       expect(piAdapter.getFilePath('new')).toBe(path.join('.pi', 'prompts', 'opsx-new.md'));
+      expect(piAdapter.getFilePath('bulk-apply')).toBe(path.join('.pi', 'prompts', 'opsx-bulk-apply.md'));
       expect(piAdapter.getFilePath('bulk-archive')).toBe(path.join('.pi', 'prompts', 'opsx-bulk-archive.md'));
     });
 
@@ -1023,6 +1028,7 @@ describe('command-generation/adapters', () => {
 
     it('should generate correct file paths for different commands', () => {
       expect(ohMyPiAdapter.getFilePath('new')).toBe(path.join('.omp', 'commands', 'opsx-new.md'));
+      expect(ohMyPiAdapter.getFilePath('bulk-apply')).toBe(path.join('.omp', 'commands', 'opsx-bulk-apply.md'));
       expect(ohMyPiAdapter.getFilePath('bulk-archive')).toBe(path.join('.omp', 'commands', 'opsx-bulk-archive.md'));
     });
 
@@ -1132,6 +1138,7 @@ describe('command-generation/adapters', () => {
 
     it('should generate correct file paths for different commands', () => {
       expect(traeAdapter.getFilePath('new')).toBe(path.join('.trae', 'commands', 'opsx-new.md'));
+      expect(traeAdapter.getFilePath('bulk-apply')).toBe(path.join('.trae', 'commands', 'opsx-bulk-apply.md'));
       expect(traeAdapter.getFilePath('bulk-archive')).toBe(path.join('.trae', 'commands', 'opsx-bulk-archive.md'));
     });
 
@@ -1203,11 +1210,12 @@ describe('command-generation/adapters', () => {
 
     it('should generate correct file paths for different command IDs', () => {
       expect(zcodeAdapter.getFilePath('new')).toBe(path.join('.zcode', 'commands', 'opsx', 'new.md'));
+      expect(zcodeAdapter.getFilePath('bulk-apply')).toBe(path.join('.zcode', 'commands', 'opsx', 'bulk-apply.md'));
       expect(zcodeAdapter.getFilePath('bulk-archive')).toBe(path.join('.zcode', 'commands', 'opsx', 'bulk-archive.md'));
     });
 
     it('should keep command paths under .zcode and never reference .agents', () => {
-      for (const id of ['explore', 'new', 'apply', 'sync', 'archive', 'bulk-archive']) {
+      for (const id of ['explore', 'new', 'apply', 'bulk-apply', 'sync', 'archive', 'bulk-archive']) {
         const filePath = zcodeAdapter.getFilePath(id);
         expect(filePath).toContain('.zcode');
         expect(filePath).not.toContain('.agents');
@@ -1346,6 +1354,7 @@ describe('command-generation/adapters', () => {
 
     it('should generate correct file path for different command IDs', () => {
       expect(codeassistantAdapter.getFilePath('new')).toBe(path.join('.codeassistant', 'commands', 'opsx-new.md'));
+      expect(codeassistantAdapter.getFilePath('bulk-apply')).toBe(path.join('.codeassistant', 'commands', 'opsx-bulk-apply.md'));
       expect(codeassistantAdapter.getFilePath('bulk-archive')).toBe(path.join('.codeassistant', 'commands', 'opsx-bulk-archive.md'));
     });
 
@@ -1361,7 +1370,7 @@ describe('command-generation/adapters', () => {
     it('generates registered commands with hyphenated workflow references', () => {
       const content: CommandContent = {
         ...sampleContent,
-        body: 'Use /opsx:propose, /opsx:update, and /opsx:bulk-archive. Keep /opsx:unknown.',
+        body: 'Use /opsx:propose, /opsx:update, /opsx:bulk-apply, and /opsx:bulk-archive. Keep /opsx:unknown.',
       };
       const adapter = CommandAdapterRegistry.get('codeassistant');
       expect(adapter).toBe(codeassistantAdapter);
@@ -1369,7 +1378,7 @@ describe('command-generation/adapters', () => {
 
       expect(generated.path).toBe(path.join('.codeassistant', 'commands', 'opsx-explore.md'));
       expect(generated.fileContent).toContain(
-        'Use /opsx-propose, /opsx-update, and /opsx-bulk-archive. Keep /opsx:unknown.'
+        'Use /opsx-propose, /opsx-update, /opsx-bulk-apply, and /opsx-bulk-archive. Keep /opsx:unknown.'
       );
       expect(content.body).toContain('/opsx:propose');
     });

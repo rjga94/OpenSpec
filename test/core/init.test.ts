@@ -318,11 +318,12 @@ describe('InitCommand', () => {
 
       await initCommand.execute(testDir);
 
-      // Core profile: propose, explore, apply, update, sync, archive
+      // Core profile includes both single-change and batch application.
       const coreSkillNames = [
         'openspec-propose',
         'openspec-explore',
         'openspec-apply-change',
+        'openspec-bulk-apply-change',
         'openspec-update-change',
         'openspec-sync-specs',
         'openspec-archive-change',
@@ -391,6 +392,7 @@ describe('InitCommand', () => {
         'opsx/propose.md',
         'opsx/explore.md',
         'opsx/apply.md',
+        'opsx/bulk-apply.md',
         'opsx/update.md',
         'opsx/sync.md',
         'opsx/archive.md',
@@ -1106,6 +1108,7 @@ describe('InitCommand', () => {
       const skillNames = [
         'openspec-apply-change',
         'openspec-archive-change',
+        'openspec-bulk-apply-change',
         'openspec-capture',
         'openspec-explore',
         'openspec-propose',
@@ -1734,7 +1737,7 @@ describe('InitCommand', () => {
         if (delivery !== 'skills') {
           const commandFiles = await fs.readdir(commandsDir);
           expect(commandFiles.sort()).toEqual([
-            'opsx-apply.md', 'opsx-archive.md', 'opsx-capture.md', 'opsx-explore.md',
+            'opsx-apply.md', 'opsx-archive.md', 'opsx-bulk-apply.md', 'opsx-capture.md', 'opsx-explore.md',
             'opsx-propose.md', 'opsx-sync.md', 'opsx-update.md',
           ]);
           for (const filename of commandFiles) {
@@ -1760,7 +1763,7 @@ describe('InitCommand', () => {
       await initCommand.execute(testDir);
 
       const commandsDir = path.join(testDir, `.${toolId}`, 'commands', 'opsx');
-      const commandIds = ['apply', 'archive', 'capture', 'explore', 'propose', 'sync', 'update'];
+      const commandIds = ['apply', 'archive', 'bulk-apply', 'capture', 'explore', 'propose', 'sync', 'update'];
       expect((await fs.readdir(commandsDir)).sort()).toEqual(commandIds.map((id) => `${id}.toml`));
       for (const commandId of commandIds) {
         const content = parseToml(await fs.readFile(path.join(commandsDir, `${commandId}.toml`), 'utf-8'));
