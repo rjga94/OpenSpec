@@ -43,13 +43,14 @@ ${PROJECT_ROOT_GUARD}
 
 **Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
 
-**Apply completion mode**: \`/opsx:apply\` may invoke archive after verifying that all
-tracked tasks are complete, passing the exact mode name "Apply completion mode".
-In this mode, do not ask for confirmation: stop and report if artifacts or tasks
-are incomplete; sync delta specs automatically when needed; archive automatically
-only after sync and verification succeed. If there are no delta specs or they are
-already synced, archive without another sync. A sync blocker or failure stops the
-workflow before archiving. Direct archive invocations retain the prompts below.
+**Apply completion mode**: An explicit handoff from \`/opsx:apply\` may arrive while
+tracked archive or commit tasks remain unchecked. Do not ask for confirmation or
+stop solely because task counts are incomplete; report the count in the archive summary.
+Still stop and report if artifacts are incomplete; sync delta specs automatically when needed.
+Archive only after sync and verification succeed.
+If there are no delta specs or they are already synced, archive without another
+sync. A sync blocker or failure stops the workflow before archiving.
+Direct archive invocations retain the prompts below.
 
 **Steps**
 
@@ -125,10 +126,10 @@ workflow before archiving. Direct archive invocations retain the prompts below.
    other markers, including unfamiliar ones, remain incomplete.
 
    **If incomplete tasks found:**
-   - Display warning showing count of incomplete tasks
-   - In Apply completion mode, stop and report the incomplete task count without prompting
+   - In Apply completion mode, do not stop or prompt solely because tasks remain unchecked; report the incomplete task count in the archive summary
+   - Otherwise, display a warning showing the count of incomplete tasks
    - Ask the user to confirm they want to proceed
-   - Proceed if user confirms
+   - Proceed if the user confirms
 
    **If \`totalTasks\` is zero:** Proceed without a task-related warning.
 
@@ -277,14 +278,14 @@ ${PROJECT_ROOT_GUARD}
 
 **Input**: Optionally specify a change name after \`/opsx:archive\` (e.g., \`/opsx:archive add-auth\`). If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
 
-**Apply completion mode****: \`/opsx:apply\` may invoke archive after verifying
-that all tracked tasks are complete, passing the exact mode name "Apply completion
-mode". In this mode, do not ask for confirmation: stop and report if artifacts or
-tasks are incomplete; sync delta specs automatically when needed; archive
-automatically only after sync and verification succeed. If there are no delta
-specs or they are already synced, archive without another sync. A sync blocker or
-failure stops the workflow before archiving. Direct archive invocations retain
-the prompts below.
+**Apply completion mode**: An explicit handoff from \`/opsx:apply\` may arrive while
+tracked archive or commit tasks remain unchecked. Do not ask for confirmation or
+stop solely because task counts are incomplete; report the count in the archive summary.
+Still stop and report if artifacts are incomplete; sync delta specs automatically when needed.
+Archive only after sync and verification succeed.
+If there are no delta specs or they are already synced, archive without another
+sync. A sync blocker or failure stops the workflow before archiving.
+Direct archive invocations retain the prompts below.
 
 **Steps**
 
@@ -359,9 +360,10 @@ the prompts below.
    other markers, including unfamiliar ones, remain incomplete.
 
    **If incomplete tasks found:**
-   - Display warning showing count of incomplete tasks
-   - Prompt user for confirmation to continue
-   - Proceed if user confirms
+   - In Apply completion mode, do not stop or prompt solely because tasks remain unchecked; report the incomplete task count in the archive summary
+   - Otherwise, display a warning showing the count of incomplete tasks
+   - Prompt the user for confirmation to continue
+   - Proceed if the user confirms
 
    **If \`totalTasks\` is zero:** Proceed without a task-related warning.
 

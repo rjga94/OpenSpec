@@ -45,7 +45,7 @@ The skill SHALL check artifact completion status using the artifact graph before
 
 ### Requirement: Task Completion Check
 
-The skill SHALL check the selected change's task completion using `totalTasks` and `completedTasks` from `openspec list --json`, with the same selected-root flags used for the rest of the workflow. It SHALL match the change by name and use the CLI's schema-aware task resolution in both single and bulk archive workflows.
+The skill SHALL check the selected change's task completion using `totalTasks` and `completedTasks` from `openspec list --json`, with the same selected-root flags used for the rest of the workflow. It SHALL match the change by name and use the CLI's schema-aware task resolution in both single and bulk archive workflows. Direct archive SHALL warn and request confirmation when tasks are incomplete. In Apply completion mode, incomplete task counts SHALL NOT alone stop the archive or trigger a prompt.
 
 #### Scenario: Incomplete tasks found
 
@@ -53,6 +53,13 @@ The skill SHALL check the selected change's task completion using `totalTasks` a
 - **THEN** display warning showing count of incomplete tasks
 - **AND** prompt user for confirmation to continue
 - **AND** proceed if user confirms
+
+#### Scenario: Incomplete tasks in Apply completion mode
+
+- **WHEN** the selected change has `totalTasks` greater than `completedTasks`
+- **AND** archive is running in Apply completion mode
+- **THEN** continue without prompting or stopping solely because tasks remain unchecked
+- **AND** report the incomplete task count in the archive summary
 
 #### Scenario: All tasks complete
 

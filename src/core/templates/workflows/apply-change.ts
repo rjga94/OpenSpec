@@ -8,6 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
+import { WIKI_CAPTURE_PROCEDURE } from './wiki.js';
 
 /**
  * `/opsx:continue` is not in the `core` profile, so the blocked-state handoff
@@ -35,8 +36,14 @@ const APPLY_SYNC_STEP = optionalWorkflow(
 
 const APPLY_WIKI_CAPTURE_STEP = optionalWorkflow(
   'capture',
-  'run `/opsx:capture` to capture durable decisions and project knowledge from this change',
-  'perform wiki capture inline using the archive workflow capture procedure'
+  'run `/opsx:capture` to apply the canonical capture procedure to this change',
+  'perform wiki capture inline using the canonical capture procedure below'
+);
+
+const APPLY_INLINE_WIKI_CAPTURE_PROCEDURE = optionalWorkflow(
+  'capture',
+  '',
+  WIKI_CAPTURE_PROCEDURE
 );
 
 /**
@@ -164,6 +171,8 @@ ${PROJECT_ROOT_GUARD}
    2. **Capture wiki knowledge**: ${APPLY_WIKI_CAPTURE_STEP}. If there is nothing new to record, report that and mark this task complete as a no-op.
    3. **Archive the change**: only after the sync and capture tasks are checked, run \`openspec archive "<name>" --skip-specs --yes\` (include the selected store flag when applicable). The explicit sync task has already merged and verified the delta specs, so \`--skip-specs\` prevents a second merge. \`--yes\` allows the still-pending commit task to remain tracked during archive. Verify the archive destination, then locate the moved tasks file, check the archive task there, and continue using that archived path. Do not rerun apply instructions after the change is archived.
    4. **Commit the work**: stage only files changed for this change by implementation, task progress, sync, wiki capture, or archive. Do not use \`git add .\` or \`git add -A\`, and do not include pre-existing changes. Mark the commit checkbox in the archived tasks file as part of preparing this commit, stage that file, then commit with a concise message and verify the commit hash. Treat the task as complete only after the commit succeeds; if it fails, restore the checkbox to incomplete and report the error.
+
+${APPLY_INLINE_WIKI_CAPTURE_PROCEDURE}
 
    For sync and capture tasks, mark their checkbox after verification and refresh
    apply instructions as usual. After archive moves the change, update the task

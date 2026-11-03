@@ -1,7 +1,8 @@
 /**
  * Skill Template Workflow Modules
  *
- * Capture records the conversation into the project wiki at `openspec/wiki/`.
+ * Capture records durable knowledge from the conversation and relevant project
+ * evidence in the wiki at `openspec/wiki/`.
  */
 import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
@@ -16,7 +17,7 @@ const NEXT_STEP_HANDOFF = optionalWorkflow(
 );
 
 function buildInstructions(argumentLine: string): string {
-  return `Capture the conversation into the project wiki.
+  return `Capture durable project knowledge into the wiki.
 
 **This workflow records knowledge; it does not plan or implement.** It writes only to the wiki at \`openspec/wiki/\` (and the Git LFS files described below). Do not create or edit changes, specs, or project code here.
 
@@ -26,7 +27,7 @@ ${PROJECT_ROOT_GUARD}
 
 ${argumentLine}
 
-It does not matter whether explore was used earlier: capture whatever project knowledge the conversation holds.
+It does not matter whether explore was used earlier: capture durable knowledge from the conversation and relevant project evidence.
 
 ${WIKI_CAPTURE_PROCEDURE}
 
@@ -44,9 +45,9 @@ ${NEXT_STEP_HANDOFF}`;
 export function getCaptureSkillTemplate(): SkillTemplate {
   return {
     name: 'openspec-capture',
-    description: 'Capture the current conversation into the OpenSpec project wiki (openspec/wiki/), including reference files and links. Use when the user wants to save what was discussed as lasting project knowledge, with or without a prior explore session. Also use when the user says "openspec capture" or "opsx capture".',
+    description: 'Capture durable conversation and project knowledge into the OpenSpec project wiki (openspec/wiki/), including reference files and links. Use when the user wants to preserve lasting project knowledge, with or without a prior explore session. Also use when the user says "openspec capture" or "opsx capture".',
     instructions: buildInstructions(
-      '**Input**: Optionally a focus after the request (for example "capture the auth decisions"). If omitted, capture everything worth keeping from the conversation.'
+      '**Input**: Optionally a focus after the request (for example "capture the auth decisions"). If omitted, capture everything worth keeping from the conversation and relevant project evidence.'
     ),
     license: 'MIT',
     compatibility: 'Requires openspec CLI.',
@@ -57,11 +58,11 @@ export function getCaptureSkillTemplate(): SkillTemplate {
 export function getOpsxCaptureCommandTemplate(): CommandTemplate {
   return {
     name: 'OPSX: Capture',
-    description: 'Capture the conversation into the project wiki (openspec/wiki/)',
+    description: 'Capture durable project knowledge into the project wiki (openspec/wiki/)',
     category: 'Workflow',
     tags: ['workflow', 'capture', 'wiki', 'experimental'],
     content: buildInstructions(
-      '**Input**: The argument after `/opsx:capture` is an optional focus (for example `/opsx:capture the auth decisions`). If omitted, capture everything worth keeping from the conversation.'
+      '**Input**: The argument after `/opsx:capture` is an optional focus (for example `/opsx:capture the auth decisions`). If omitted, capture everything worth keeping from the conversation and relevant project evidence.'
     ),
   };
 }

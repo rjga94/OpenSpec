@@ -64,4 +64,14 @@ describe('apply completion automation', () => {
       expect(body, label).toMatch(/Direct archive invocations retain\s+the prompts below/);
     }
   });
+
+  it('does not block Apply completion on unchecked tasks or invalidly infer missing task progress', () => {
+    for (const [label, body] of archiveSurfaces) {
+      expect(body, label).toContain('stop solely because task counts are incomplete');
+      expect(body, label).toContain('report the count in the archive summary');
+      expect(body, label).toContain('do not stop or prompt solely because tasks remain unchecked');
+      expect(body, label).toContain('stop before syncing or archiving');
+      expect(body, label).toContain('Still stop and report if artifacts are incomplete');
+    }
+  });
 });
