@@ -72,16 +72,9 @@ describe('pnpm workspace configuration', () => {
     expect(serverPackages).toEqual([]);
   });
 
-  it('includes install policy changes in Nix and security validation', () => {
+  it('keeps Nix packaging aware of pnpm workspace policy', () => {
     const flake = fs.readFileSync(path.join(projectRoot, 'flake.nix'), 'utf8');
-    const ci = fs.readFileSync(path.join(projectRoot, '.github/workflows/ci.yml'), 'utf8');
-    const security = fs.readFileSync(
-      path.join(projectRoot, '.github/workflows/security.yml'),
-      'utf8'
-    );
 
     expect(flake).toContain('./pnpm-workspace.yaml');
-    expect(ci).toContain("- 'pnpm-workspace.yaml'");
-    expect(security).toContain("- '**/pnpm-workspace.yaml'");
   });
 });

@@ -28,6 +28,12 @@ An explicit `/opsx:update` or direct update-skill invocation authorizes the requ
 
 The shared Apply template drives both the skill and command surfaces. For changes with a tracked Apply completion group, its lifecycle is spec sync, wiki capture, archive, then commit. Before archiving, Apply saves the archive task as complete in the active task list; if archiving fails while the change remains active, it restores that checkbox. After a successful move, it verifies the checkbox in the archived task list before continuing to commit. The behavior is specified in the [Apply skill specification](../specs/opsx-apply-skill/spec.md), authored in [apply-change.ts](../../src/core/templates/workflows/apply-change.ts), and covered by [completion tests](../../test/core/templates/propose-apply-automation.test.ts). This describes the workflow as implemented on 2026-11-03.
 
+## Local verification and hosted automation
+
+The repository does not maintain GitHub Actions workflows or Dependabot configuration. Contributors can run the package's build, test, and lint commands locally; Nix packaging and its update script also remain available ([package.json](../../package.json), [flake.nix](../../flake.nix), [update-flake.sh](../../scripts/update-flake.sh)). Release automation is no longer provided by repository workflows, though the package's local release scripts remain.
+
+This does not remove the CLI's CI-environment awareness. The shared `CI` detector still informs telemetry, version checks, and CI-aware tips ([ci.ts](../../src/utils/ci.ts), [telemetry](../../src/telemetry/index.ts), [version-check.ts](../../src/core/version-check.ts), [completion-tip.ts](../../src/core/completion-tip.ts), [standalone-tip.ts](../../src/core/standalone-tip.ts)). The `.github/` directory retains issue templates, `CODEOWNERS`, and the pull request template.
+
 ## Main project areas
 
 - `src/cli/` — command registration and CLI startup.
