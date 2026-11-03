@@ -1,7 +1,7 @@
 # opsx-update-skill Specification
 
 ## Purpose
-Provides the `/opsx:update` workflow for revising a change's planning artifacts, keeping them consistent with each other and applying edits only with user confirmation.
+Provides the `/opsx:update` workflow for revising and reconciling a change's planning artifacts; an explicit update invocation authorizes in-scope edits, while implicitly selected use requires user confirmation.
 
 ## Requirements
 
@@ -71,9 +71,11 @@ The `/opsx:update` skill SHALL learn which artifacts exist and where they live b
 #### Scenario: A missing companion file under a populated glob artifact
 
 - **WHEN** reconciliation identifies a missing companion file for a glob artifact with non-empty `existingOutputPaths`
-- **THEN** the skill MAY propose creating that file using the artifact's instructions, template, project context, rules, and current dependency files
+- **THEN** the skill can create that file using the artifact's instructions, template, project context, rules, and current dependency files
 - **AND** it selects an unused concrete path matching the artifact's `outputPath` inside `changeRoot`, including after resolving linked parent directories
-- **AND** it creates the file only after user confirmation, refreshing status, instructions, and path checks immediately before creation
+- **AND** an explicit update invocation authorizes creating the file without separate confirmation, while implicitly selected use creates it only after the user confirms
+- **AND** immediately before creation, it refreshes status and instructions and repeats the concrete-path checks
+- **AND** path containment and parent resolution work on Windows, macOS, and Linux
 - **AND** creation SHALL fail rather than overwrite a file that appeared in the meantime
 - **AND** it SHALL NOT start another artifact, write main specs, or edit implementation code
 
@@ -85,7 +87,7 @@ The `/opsx:update` skill SHALL learn which artifacts exist and where they live b
 #### Scenario: Schema delegates companion creation
 
 - **WHEN** the artifact instruction delegates creation to another skill or command
-- **THEN** the skill SHALL invoke it only if it can honor the confirmed concrete path and the update guardrails
+- **THEN** the skill SHALL invoke it only if it can honor the selected concrete path and the update guardrails
 - **AND** otherwise it SHALL stop rather than invoke broader generation
 
 #### Scenario: Intentionally skipped artifact
@@ -101,19 +103,19 @@ The `/opsx:update` skill SHALL keep a change's existing planning artifacts coher
 
 - **WHEN** the user revises one artifact
 - **THEN** the skill reviews the change's other existing artifacts against the revision
-- **AND** it proposes follow-on edits to any artifact that is now inconsistent, whether that artifact is upstream or downstream of the edited one
+- **AND** it applies necessary in-scope follow-on revisions when the user explicitly invoked the update workflow, or proposes them for confirmation when the workflow was selected implicitly
 
 #### Scenario: Upstream artifact may be revised
 
 - **WHEN** an edit to a later artifact (for example design) contradicts an earlier one (for example the proposal)
-- **THEN** the skill may propose revising the earlier artifact to restore coherence
-- **AND** it does not treat propagation as downstream-only
+- **THEN** the skill may revise the earlier artifact to restore coherence
+- **AND** it applies that revision without separate confirmation only when the update workflow was explicitly invoked
 
 #### Scenario: Coherence review with no specific edit
 
-- **WHEN** the user invokes `/opsx:update` without a specific revision in mind ("make this change coherent")
+- **WHEN** the user explicitly invokes `/opsx:update` without a specific revision in mind ("make this change coherent")
 - **THEN** the skill reads the change's existing artifacts and reviews them against each other for contradictions, gaps, and duplication
-- **AND** it presents any findings for the user to confirm before editing
+- **AND** it applies in-scope corrections without asking for per-artifact confirmation
 
 #### Scenario: Coherent change yields no changes
 
@@ -122,7 +124,7 @@ The `/opsx:update` skill SHALL keep a change's existing planning artifacts coher
 
 ### Requirement: Next-Step Guidance
 
-After applying confirmed revisions (or finding none needed), the `/opsx:update` skill SHALL report where the change stands and recommend the next command, without acting on the recommendation itself.
+After applying revisions authorized by the update invocation (or finding none needed), the `/opsx:update` skill SHALL report where the change stands and recommend the next command, without acting on the recommendation itself.
 
 #### Scenario: Updating an already-implemented change
 
@@ -143,17 +145,17 @@ After applying confirmed revisions (or finding none needed), the `/opsx:update` 
 
 ### Requirement: User-Confirmed Incremental Application
 
-The `/opsx:update` skill SHALL propose each artifact revision and apply it only after user confirmation.
+The `/opsx:update` skill SHALL apply in-scope revisions without additional confirmation when the user explicitly invokes the update workflow, and SHALL require confirmation when the workflow is selected implicitly.
 
 #### Scenario: Confirm before writing
 
-- **WHEN** the skill has a proposed revision for an artifact
-- **THEN** it shows the user what it intends to change and why before writing
-- **AND** it writes only after the user confirms
+- **WHEN** the skill has an in-scope planning-artifact revision
+- **THEN** it applies the requested revision and necessary coherence edits without per-artifact confirmation when the user explicitly invoked the update workflow
+- **AND** when the workflow was selected implicitly, it shows each proposed revision and why before writing and writes only after the user confirms
 
 #### Scenario: Rejected revision is not written
 
-- **WHEN** the user rejects a proposed revision for an artifact
+- **WHEN** the user rejects a proposed revision awaiting confirmation
 - **THEN** the skill does not write that revision
 - **AND** the artifact is left unchanged
 

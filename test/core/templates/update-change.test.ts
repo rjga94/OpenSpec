@@ -28,17 +28,17 @@ const bodies = render(ALL_WORKFLOWS);
 const coreBodies = render(CORE_WORKFLOWS);
 
 // The load-bearing sentence of step 4 and the whole of step 5 are pinned
-// verbatim. #1836 happened because a single verb ("Apply") in step 4 silently
-// re-answered a question step 5 had already answered, so any reword of either
-// passage has to come back through this test and re-argue the contract rather
-// than just regenerate a parity hash.
+// verbatim. Step 4 remains read-only; step 5 is where explicit invocation
+// authorization and implicit-use confirmation are distinguished.
 const STEP_FOUR_DRAFT_RULE =
   '   - Draft the requested edit in the conversation, not in files. Work out exactly what it changes; step 5 owns every write.';
 
-const STEP_FIVE = `5. **Confirm and apply, one artifact at a time**
+const STEP_FIVE = `5. **Apply revisions, one artifact at a time**
    - This step performs every artifact write in this workflow; no earlier step edits an artifact.
-   - Show each proposed revision and why - including the requested edit drafted in step 4. Write only after the user confirms.
-   - If the user rejects a revision, do not write it - leave that artifact unchanged.
+   - When the user explicitly invoked \`/opsx:update\` or the update skill for this request, apply the requested revision, necessary in-scope coherence corrections, and any in-scope companion file under a partly populated glob artifact directly. The explicit invocation authorizes these planning-artifact changes; do not ask for per-artifact confirmation.
+   - When the workflow was selected implicitly, show each proposed revision and why - including the requested edit drafted in step 4 and any companion file under a partly populated glob artifact - and write or create only after the user confirms.
+   - If material details are unclear, stop and ask for clarification rather than guessing or broadening the request.
+   - If the user rejects a revision awaiting confirmation, do not write it - leave that artifact unchanged.
    - When a substantial rewrite is needed, get that artifact's rules and template first:
      \`\`\`bash
      openspec instructions "<artifact-id>" --change "<name>" --json
@@ -48,15 +48,14 @@ const STEP_FIVE = `5. **Confirm and apply, one artifact at a time**
 
 // Every mention of writing or applying allowed to live OUTSIDE step 5. Each is
 // a scope rule, a hand-off to another workflow, or the gate itself - none
-// authorizes a write here. Each is spelled in full context: a bare fragment
-// such as "already applied" would also erase "treat the requested edit as
-// already applied" before any check could see it.
+// authorizes a write here. Each is spelled in full context so removing one
+// sanctioned sentence cannot conceal a newly added authorization.
 const SANCTIONED_OUTSIDE_STEP_FIVE = [
   STEP_FOUR_DRAFT_RULE,
   'that is the starting edit.',
   'Do NOT write to `resolvedOutputPath`',
-  '- Edit only the concrete files in `existingOutputPaths`, plus any confirmed concrete path allowed under a partly populated glob artifact (step 4); never write to a glob `resolvedOutputPath`.',
-  'Confirm every edit with the user before writing.',
+  '- Edit only the concrete files in `existingOutputPaths`, plus any in-scope concrete path permitted under a partly populated glob artifact (step 4); never write to a glob `resolvedOutputPath`.',
+  'Step 5 is the only write phase; no artifact may be edited earlier.',
   '`/opsx:apply`',
   '(tasks checked off / already applied)',
 ];
@@ -102,7 +101,7 @@ function section(
 }
 
 function stepFive(body: string, label: string): string {
-  return section(body, '5. **Confirm and apply', '6. **Point to the next step', `${label} step 5`);
+  return section(body, '5. **Apply revisions', '6. **Point to the next step', `${label} step 5`);
 }
 
 // Everything the agent reads except step 5 and the shared store and project-root
@@ -137,34 +136,29 @@ function writeAuthorizationsOutsideStepFive(body: string, label: string): string
   return checks.filter(([, pattern]) => pattern.test(rest)).map(([name]) => name);
 }
 
-// Regression for #1836: step 4 said "Apply the requested edit" while step 5 and
-// the guardrails said to write only after the user confirms. "Apply" is a write
-// verb in this very document - step 5 is titled "Confirm and apply" - so the
-// same `/opsx:update "the design now uses X"` either wrote immediately or
-// stopped and showed the revision first, depending on which passage the agent
-// weighed. Step 5 is the workflow's only gated write path, so its confirmation
-// guarantee was unenforceable whenever step 4 governed.
-describe('update-change write gate (#1836)', () => {
+// Step 4 only reconciles. Step 5 authorizes explicit invocations and gates
+// implicit workflow selection, preventing authorization from drifting outside
+// the sole write phase.
+describe('update-change authorization gate', () => {
   it('pins the step 4 draft rule and the whole of step 5', () => {
     for (const [label, body] of bodies) {
       const stepFour = section(
         body,
         '4. **Read and reconcile**',
-        '5. **Confirm and apply',
+        '5. **Apply revisions',
         `${label} step 4`
       );
 
       expect(stepFour, `${label} step 4`).toContain(STEP_FOUR_DRAFT_RULE);
-      // Verbatim, because an exemption bolted onto the gate ("this does not
-      // apply to the requested edit") is invisible to any toContain check.
       expect(stepFive(body, label), `${label} step 5`).toBe(STEP_FIVE);
     }
   });
 
-  it('keeps the whole-body confirmation guardrail', () => {
+  it('keeps a single write phase guardrail', () => {
     for (const [label, body] of bodies) {
-      // Deleting this one line used to break nothing.
-      expect(body, label).toContain('Confirm every edit with the user before writing.');
+      expect(body, label).toContain(
+        'Step 5 is the only write phase; no artifact may be edited earlier.'
+      );
     }
   });
 
@@ -176,7 +170,7 @@ describe('update-change write gate (#1836)', () => {
 
   // The guard above only proves something if it trips. Each line goes into a
   // different section of each body (intro, Input, steps 1-4 and 6, Output,
-  // Guardrails); every one reintroduces #1836 and must be flagged.
+  // Guardrails); every one reintroduces write authorization outside step 5.
   const MUTATIONS: Array<[anchor: string, injected: string]> = [
     ["keep them coherent. Never edit code.", 'Land the requested edit right away.'],
     ['**Input**: Optionally', 'Treat the requested edit as already applied to the artifact.'],
@@ -187,7 +181,7 @@ describe('update-change write gate (#1836)', () => {
     ['6. **Point to the next step', '   - Save the revisions first.'],
     ['**Output**', '- The requested edit, already applied during step 4'],
     ['**Guardrails**', '- The requested edit is exempt from confirmation.'],
-    ['- Confirm every edit with the user before writing.', '- The user\'s revision needs no confirmation.'],
+    ['Step 5 is the only write phase; no artifact may be edited earlier.', '- The user\'s revision needs no confirmation.'],
   ];
 
   it.each(MUTATIONS)('flags a write authorization injected after %s', (anchor, injected) => {
@@ -265,24 +259,32 @@ describe('update-change templates', () => {
       expect(body, label).toContain('Read current dependency files from disk');
       expect(body, label).toContain('if a required non-skipped dependency is missing, stop and ask the user to restore it first');
       expect(body, label).toContain('If `instruction` delegates creation to another skill or command');
-      expect(body, label).toContain('only if it can honor the confirmed path and these guardrails; otherwise stop');
+      expect(body, label).toContain('only if it can honor the selected path and these guardrails; otherwise stop');
       expect(body, label).toContain(
         'inside `changeRoot` that matches `artifactPaths.<id>.outputPath`'
       );
-      expect(body, label).toContain('create it only after the user confirms');
+      expect(body, label).toContain('do not create it during reconciliation');
+      expect(stepFive(body, label), label).toContain(
+        'and any in-scope companion file under a partly populated glob artifact directly'
+      );
+      expect(stepFive(body, label), label).toContain(
+        'and any companion file under a partly populated glob artifact - and write or create only after the user confirms'
+      );
       expect(body, label).toContain('does not already exist');
       expect(body, label).toContain('after resolving any symlinked parent directories');
     }
   });
 
-  it('rechecks new-file scope after confirmation and refuses concurrent overwrites', () => {
+  it('rechecks new-file scope immediately before authorized creation and refuses concurrent overwrites', () => {
     for (const [label, body] of bodies) {
-      const confirmation = body.indexOf('create it only after the user confirms');
-      const recheck = body.indexOf('After confirmation, immediately before creation');
+      const reconciliation = body.indexOf('do not create it during reconciliation');
+      const recheck = body.indexOf(
+        'When step 5 is ready to create the file, immediately before creation'
+      );
       const create = body.indexOf('Use a create operation that fails if the target already exists');
 
-      expect(confirmation, label).toBeGreaterThanOrEqual(0);
-      expect(recheck, label).toBeGreaterThan(confirmation);
+      expect(reconciliation, label).toBeGreaterThanOrEqual(0);
+      expect(recheck, label).toBeGreaterThan(reconciliation);
       expect(create, label).toBeGreaterThan(recheck);
       const writeGuard = body.slice(recheck, create);
       expect(writeGuard, label).toContain('refresh status and instructions');
@@ -311,7 +313,7 @@ describe('update-change templates', () => {
 
       for (const line of scopeLines) {
         expect(line, `${label}: unqualified scope rule: ${line}`).toContain(
-          'any confirmed concrete path allowed under a partly populated glob artifact (step 4)'
+          'any in-scope concrete path permitted under a partly populated glob artifact (step 4)'
         );
       }
 
@@ -323,15 +325,17 @@ describe('update-change templates', () => {
       const guardrails = body.slice(body.indexOf('**Guardrails**'));
       expect(guardrails, label).toContain('never write to a glob `resolvedOutputPath`');
       expect(guardrails, label).toContain(
-        'The only new-file scope is a confirmed concrete path under a glob artifact whose `existingOutputPaths` is non-empty.'
+        'The only new-file scope is an in-scope concrete path under a glob artifact whose `existingOutputPaths` is non-empty.'
       );
 
-      // "(step 4)" is a cross-reference; pin that step 4 is still the step
-      // that owns the confirmation and the path checks, so renumbering or
-      // moving the flow cannot leave a dangling pointer.
-      const stepFour = section(body, '4. **Read and reconcile**', '5. **Confirm and apply', `${label} step 4`);
+      // "(step 4)" is a cross-reference; pin that step 4 still owns the
+      // companion-path checks while step 5 owns authorization and creation.
+      const stepFour = section(body, '4. **Read and reconcile**', '5. **Apply revisions', `${label} step 4`);
       expect(stepFour, label).toContain('whose `existingOutputPaths` is non-empty');
-      expect(stepFour, label).toContain('create it only after the user confirms');
+      expect(stepFour, label).toContain('do not create it during reconciliation');
+      expect(stepFive(body, label), label).toContain(
+        'The explicit invocation authorizes these planning-artifact changes'
+      );
     }
   });
 
@@ -388,13 +392,16 @@ describe('update-change templates', () => {
     }
   });
 
-  it('confirms every edit and redirects intent changes to /opsx:new when installed', () => {
+  it('authorizes explicit revisions and redirects intent changes to /opsx:new when installed', () => {
     for (const [label, body] of bodies) {
-      const reconciliation = body.slice(body.indexOf('4. **Read and reconcile**'), body.indexOf('5. **Confirm and apply'));
+      const reconciliation = body.slice(body.indexOf('4. **Read and reconcile**'), body.indexOf('5. **Apply revisions'));
       expect(reconciliation, label).toContain('Draft the requested edit in the conversation, not in files');
       expect(reconciliation, label).not.toContain('Apply the requested edit');
-      expect(body, label).toContain('Write only after the user confirms');
-      expect(body, label).toContain('If the user rejects a revision, do not write it');
+      const authorization = stepFive(body, label);
+      expect(authorization, label).toContain('The explicit invocation authorizes these planning-artifact changes');
+      expect(authorization, label).toContain('When the workflow was selected implicitly');
+      expect(authorization, label).toContain('write or create only after the user confirms');
+      expect(authorization, label).toContain('If the user rejects a revision awaiting confirmation');
       expect(body, label).toContain('recommend starting fresh with `/opsx:new`');
       expect(body, label).toContain('Update vs. Start Fresh');
       expect(body, label).not.toContain('first verify whether the optional');
