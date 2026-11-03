@@ -28,6 +28,10 @@ An explicit `/opsx:update` or direct update-skill invocation authorizes the requ
 
 The shared Apply template drives both the skill and command surfaces. For changes with a tracked Apply completion group, its lifecycle is spec sync, wiki capture, archive, then commit. Before archiving, Apply saves the archive task as complete in the active task list; if archiving fails while the change remains active, it restores that checkbox. After a successful move, it verifies the checkbox in the archived task list before continuing to commit. The behavior is specified in the [Apply skill specification](../specs/opsx-apply-skill/spec.md), authored in [apply-change.ts](../../src/core/templates/workflows/apply-change.ts), and covered by [completion tests](../../test/core/templates/propose-apply-automation.test.ts). This describes the workflow as implemented on 2026-11-03.
 
+### Apply verification
+
+The shared Apply instructions ask agents to verify behavior against the active change using proportionate methods that fit the software and environment, including launching it and using UI interaction where useful. Checks stay within the change's acceptance criteria; existing tests are preferred, and any code or setup created solely for verification is temporary and removed afterward. If the software or a suitable method cannot be run, the limitation is reported rather than treating the check as passed ([Apply skill specification](../specs/opsx-apply-skill/spec.md), [apply-change.ts](../../src/core/templates/workflows/apply-change.ts), [committed Apply skill](../../skills/openspec-apply-change/SKILL.md)).
+
 ## Local verification and hosted automation
 
 The repository does not maintain GitHub Actions workflows or Dependabot configuration. Contributors can run the package's build, test, and lint commands locally; Nix packaging and its update script also remain available ([package.json](../../package.json), [flake.nix](../../flake.nix), [update-flake.sh](../../scripts/update-flake.sh)). Release automation is no longer provided by repository workflows, though the package's local release scripts remain.

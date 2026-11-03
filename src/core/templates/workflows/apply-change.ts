@@ -155,6 +155,9 @@ ${PROJECT_ROOT_GUARD}
    - Show which task is being worked on
    - Make the code changes required, or perform the requested workflow action for a task in the final \`## N. Apply completion\` group
    - Keep changes minimal and focused
+   - Verify the implemented behavior against the active change using proportionate checks that fit the software and available environment. When useful, launch the software in its environment and use UI interaction or other suitable methods relevant to the acceptance criteria.
+   - Keep checks focused on the active change. Prefer existing tests; if new code or setup is needed solely for verification, make it temporary and remove it after the check. Do not add or retain permanent project test files or infrastructure solely for verification.
+   - If the software or a suitable verification method cannot be run, report that limitation and do not claim the check passed.
    - Before editing, confirm the checkbox at the returned \`sourcePath\` and \`line\` still matches the task description; if it does not, rerun the apply instructions and use the refreshed location
    - Mark the task complete at its returned \`sourcePath\` and \`line\`: \`- [ ]\` → \`- [x]\`
    - Rerun the apply instructions and confirm that task is now done and progress changed

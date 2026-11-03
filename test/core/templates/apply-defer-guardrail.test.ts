@@ -34,3 +34,24 @@ describe('apply instructions surface deferred scope (#1529)', () => {
     expect(getOpsxApplyCommandTemplate().content).toContain(needle);
   });
 });
+
+describe('apply verification guidance', () => {
+  const surfaces = [
+    getApplyChangeSkillTemplate().instructions,
+    getOpsxApplyCommandTemplate().content,
+  ];
+
+  it('permits focused, software-appropriate verification without retaining verification-only tests', () => {
+    for (const instructions of surfaces) {
+      expect(instructions).toContain('Verify the implemented behavior against the active change');
+      expect(instructions).toContain('launch the software in its environment');
+      expect(instructions).toContain('UI interaction or other suitable methods');
+      expect(instructions).toContain('Keep checks focused on the active change.');
+      expect(instructions).toContain('make it temporary and remove it after the check');
+      expect(instructions).toContain(
+        'Do not add or retain permanent project test files or infrastructure solely for verification.'
+      );
+      expect(instructions).toContain('report that limitation and do not claim the check passed.');
+    }
+  });
+});
