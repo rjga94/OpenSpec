@@ -118,26 +118,35 @@ describe('default proposal guidance', () => {
 });
 
 describe('default task guidance', () => {
-  it('keeps tracked tasks within the pre-archive workflow (#1790)', () => {
+  it('includes tracked apply completion tasks in every task plan', () => {
     const tasks = defaultSchema.artifacts.find(artifact => artifact.id === 'tasks');
     expect(tasks).toBeDefined();
     expect(tasks!.instruction).toMatch(
-      /Track implementation and verification work that can be completed before\s+archive/
+      /Track implementation and verification work before archive/
     );
     expect(tasks!.instruction).toMatch(
-      /preserve those steps as plain bullets in an\s+optional `## Workflow follow-up` section at the end of tasks.md/
+      /Always add a\s+final numbered `Apply completion` task group to every tasks.md generated\s+with this schema/
     );
+    expect(tasks!.instruction).toMatch(/These are executable tasks, not\s+follow-up notes/);
 
     const examples = [...tasks!.instruction.matchAll(/```\s*([\s\S]*?)```/g)];
-    expect(examples).toHaveLength(2);
-    const implementation = examples[0][1];
-    const followUp = examples[1][1];
-    expect(followUp).toContain('## Workflow follow-up');
-    expect(followUp).toContain('- Verify the archived result.');
-    expect(parseTaskLines(followUp)).toEqual([]);
-    expect(parseTaskLines(`${implementation}\n${followUp}`)).toEqual(
-      parseTaskLines(implementation)
+    expect(examples).toHaveLength(1);
+    const example = examples[0][1];
+    const completionGroup = example.split('## 3. Apply completion')[1];
+    expect(completionGroup).toBeDefined();
+    expect(completionGroup).toContain('Sync delta specs into main specs');
+    expect(completionGroup).toContain('Capture durable project knowledge to the wiki');
+    expect(completionGroup).toContain('Archive the change');
+    expect(completionGroup).toContain('Commit the completed work');
+    expect(parseTaskLines(completionGroup)).toHaveLength(4);
+    expect(example).not.toContain('Workflow follow-up');
+
+    const template = fs.readFileSync(
+      path.join(repoRoot, 'schemas', 'spec-driven', 'templates', 'tasks.md'),
+      'utf-8'
     );
+    expect(template).toContain('## 3. Apply completion');
+    expect(template).toContain('- [ ] 3.4 Commit the completed work');
   });
 
   it('requires a concrete verification method in each task (#345)', () => {
@@ -157,13 +166,17 @@ describe('default task guidance', () => {
     const example = tasks!.instruction.match(/```\s*([\s\S]*?)```/)?.[1];
     expect(example).toBeDefined();
     const numberedTasks = example!.split('\n').filter(line => /^- \[ \] \d+\.\d+ /.test(line));
-    expect(numberedTasks).toHaveLength(5);
+    expect(numberedTasks).toHaveLength(9);
     expect(numberedTasks.every(line => /\bverify\b/i.test(line))).toBe(true);
     expect(numberedTasks[0]).toContain('expected files are present');
     expect(numberedTasks[1]).toContain('package installation succeeds');
     expect(numberedTasks[2]).toContain('export test passes');
     expect(numberedTasks[3]).toContain('unit tests cover quoting and delimiters');
     expect(numberedTasks[4]).toContain('Document the export API');
+    expect(numberedTasks[5]).toContain('Sync delta specs');
+    expect(numberedTasks[6]).toContain('Capture durable project knowledge');
+    expect(numberedTasks[7]).toContain('Archive the change');
+    expect(numberedTasks[8]).toContain('Commit the completed work');
     expect(example).not.toMatch(/^- \[ \] \d+\.\d+ (?:verify|run (?:the )?verification)\b/im);
   });
 
@@ -185,7 +198,7 @@ describe('default task guidance', () => {
       /A group\s+whose work calls for neither, such as scaffolding or dependency setup,\s+carries neither/
     );
     expect(tasks!.instruction).toMatch(
-      /A final group is for integration checks only, not for\s+the tests and docs an earlier group owed/
+      /A final implementation group is for integration checks\s+only, not for\s+the tests and docs an earlier group owed/
     );
 
     // The worked example has to show a docs task inside the implementation
@@ -196,13 +209,16 @@ describe('default task guidance', () => {
       .split('\n')
       .filter(line => /^## /.test(line.trim()))
       .map(line => line.trim());
-    expect(headings).toHaveLength(2);
+    expect(headings).toHaveLength(3);
     expect(headings.some(heading => /\b(test|testing|documentation|docs)\b/i.test(heading))).toBe(
       false
     );
 
-    const lastGroup = example!.slice(example!.lastIndexOf(headings[headings.length - 1]));
-    expect(lastGroup).toMatch(/^- \[ \] \d+\.\d+ Document the export API in docs\/export\.md/im);
+    const implementationGroup = example!.slice(example!.indexOf('## 2. Core Implementation'));
+    expect(implementationGroup).toMatch(
+      /^- \[ \] \d+\.\d+ Document the export API in docs\/export\.md/im
+    );
+    expect(headings[2]).toMatch(/^## \d+\. Apply completion$/);
   });
 });
 

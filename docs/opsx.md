@@ -162,7 +162,7 @@ rules:
 | `/opsx:new` | Start a new change scaffold (expanded workflow) |
 | `/opsx:continue` | Create the next artifact (expanded workflow) |
 | `/opsx:ff` | Fast-forward planning artifacts (expanded workflow) |
-| `/opsx:apply` | Implement tasks; when all are complete, sync specs, archive, and commit with a generated message |
+| `/opsx:apply` | Implement tasks; tracked completion steps sync specs, capture wiki knowledge, archive, and commit |
 | `/opsx:update` | Revise a change's planning artifacts and keep them coherent |
 | `/opsx:verify` | Validate implementation against artifacts (expanded workflow) |
 | `/opsx:sync` | Merge delta specs into main specs (optional) |
@@ -208,7 +208,7 @@ Creates all planning artifacts at once. Use when you have a clear picture of wha
 ```
 /opsx:apply
 ```
-Works through tasks, checking them off as you go. If you're juggling multiple changes, you can run `/opsx:apply <name>`; otherwise it should infer from the conversation and prompt you to choose if it can't tell. When every tracked task is complete, it syncs delta specs, archives the change, and commits the completed work with a generated message without asking for confirmation. If tasks remain incomplete or a sync/archive step fails, it stops before the later steps.
+Works through tasks, checking them off as you go. Default spec-driven task lists include tracked sync, wiki capture, archive, and commit steps at the end; Apply executes and checks them in order. If you're juggling multiple changes, you can run `/opsx:apply <name>`; otherwise it should infer from the conversation and prompt you to choose if it can't tell. Older task lists without those steps retain automatic sync, archive, and commit after all tasks are complete. If a task or lifecycle step fails, Apply stops before later steps.
 
 ### Updating a change
 ```

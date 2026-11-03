@@ -65,7 +65,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
    - If `state: "blocked"`: show the message and pause implementation.
      - If `missingArtifacts` is non-empty: suggest using `/openspec-continue-change` to create them.
      - Otherwise, follow the CLI instruction to create or repair the schema-configured tracking file from existing planning artifacts. Do not assume another artifact is ready or start implementation while blocked.
-   - If `state: "all_done"`: report that all tracked tasks are complete and suggest review or verification as appropriate before archiving
+   - If `state: "all_done"`: defer completion handling until step 8 distinguishes tracked Apply completion tasks from legacy task files
    - Otherwise: proceed to implementation
 
    Treat `context` as a required prompt-level input. Read and consider it, and
@@ -93,7 +93,17 @@ In both branches, never create the root as a side effect: do not run `openspec i
    Do not copy `context` or `operationGuidance` verbatim into implementation
    files or planning artifacts unless the user separately asks for that content.
 
-5. **Show current progress**
+5. **Check Git commit readiness**
+
+   This workflow commits its completed work. Before editing, confirm the current
+   directory is inside a Git repository and inspect `git status --short`,
+   including staged, unstaged, and untracked files. If there is no Git repository
+   or the index already contains staged changes, stop before implementation and
+   explain why the automatic commit cannot safely proceed. Record pre-existing
+   working-tree changes so they can be excluded from this workflow's commit.
+   Never clean, stash, reset, or discard them.
+
+6. **Show current progress**
 
    Display:
    - Schema being used
@@ -101,16 +111,33 @@ In both branches, never create the root as a side effect: do not run `openspec i
    - Remaining tasks overview
    - Dynamic instruction from CLI
 
-6. **Implement tasks (loop until done or blocked)**
+7. **Implement tasks (loop until done or blocked)**
 
    For each pending task:
    - Show which task is being worked on
-   - Make the code changes required
+   - Make the code changes required, or perform the requested workflow action for a task in the final `## N. Apply completion` group
    - Keep changes minimal and focused
    - Before editing, confirm the checkbox at the returned `sourcePath` and `line` still matches the task description; if it does not, rerun the apply instructions and use the refreshed location
    - Mark the task complete at its returned `sourcePath` and `line`: `- [ ]` → `- [x]`
    - Rerun the apply instructions and confirm that task is now done and progress changed
    - Continue to next task
+
+   **Tracked Apply completion group**
+
+   If the task file has a final numbered heading ending in `Apply completion`,
+   its four checkboxes are real tasks. Do not wait for `state: "all_done"` before
+   executing them. Complete them in order, and do not start this group until
+   every task before it is complete:
+
+   1. **Sync delta specs**: run `/openspec-sync-specs "<name>"` and verify the main specs reflect every delta requirement. If there are no delta specs, verify that none exist and mark this task complete as a no-op.
+   2. **Capture wiki knowledge**: run `/openspec-capture` to capture durable decisions and project knowledge from this change. If there is nothing new to record, report that and mark this task complete as a no-op.
+   3. **Archive the change**: only after the sync and capture tasks are checked, run `openspec archive "<name>" --skip-specs --yes` (include the selected store flag when applicable). The explicit sync task has already merged and verified the delta specs, so `--skip-specs` prevents a second merge. `--yes` allows the still-pending commit task to remain tracked during archive. Verify the archive destination, then locate the moved tasks file, check the archive task there, and continue using that archived path. Do not rerun apply instructions after the change is archived.
+   4. **Commit the work**: stage only files changed for this change by implementation, task progress, sync, wiki capture, or archive. Do not use `git add .` or `git add -A`, and do not include pre-existing changes. Mark the commit checkbox in the archived tasks file as part of preparing this commit, stage that file, then commit with a concise message and verify the commit hash. Treat the task as complete only after the commit succeeds; if it fails, restore the checkbox to incomplete and report the error.
+
+   For sync and capture tasks, mark their checkbox after verification and refresh
+   apply instructions as usual. After archive moves the change, update the task
+   checkbox in the archived file instead; the active-change instructions no
+   longer apply. Leave all later lifecycle tasks unchecked if a step fails.
 
    **Pause if:**
    - Task is unclear → ask for clarification
@@ -119,12 +146,44 @@ In both branches, never create the root as a side effect: do not run `openspec i
    - Error or blocker encountered → report and wait for guidance
    - User interrupts
 
-7. **On completion or pause, show status**
+   If implementation stops while tasks before the Apply completion group remain
+   incomplete, report progress and do not start that group. If a lifecycle task
+   fails, report progress and do not run any later lifecycle task.
+
+8. **Finish tracked Apply completion tasks or legacy closeout**
+
+   If the task file has the final numbered `Apply completion` group, its sync,
+   wiki capture, archive, and commit actions are already executed through the
+   tracked task loop. Verify the archived task checkboxes and successful commit;
+   do not run the automatic closeout again.
+
+   For older task files without that group, retain the automatic closeout:
+   re-run `openspec instructions apply --change "<name>" --json` and continue
+   only when it reports `state: "all_done"` and zero remaining tasks. If any
+   task is incomplete, stop without starting closeout.
+
+   Pass the exact **Apply completion mode** handoff to the archive workflow:
+   "run `/openspec-archive-change "<name>"` in Apply completion mode: sync its delta specs, archive it, and do not ask for confirmation". The archive workflow syncs delta specs before moving the
+   change and does not ask for confirmation in this mode. If sync, archive, or
+   verification fails or reports a blocker, stop; do not commit.
+
+   After archive succeeds, stage only files changed for this change by
+   implementation, task progress, sync, or archive. Do not use `git add .` or
+   `git add -A`, and do not include pre-existing changes. If a changed file
+   contains unrelated pre-existing edits that cannot be isolated safely, stop
+   before committing and report it.
+
+   Generate a concise commit message from the change's intent and completed work
+   (for example, `feat: complete <change-name>`), then commit without asking
+   for confirmation. Verify that the commit succeeded. If staging or committing
+   fails, report the error and do not claim the pipeline completed.
+
+9. **On completion or pause, show status**
 
    Display:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
-   - If all done: report that tracked tasks are complete and suggest review or verification as appropriate before archiving
+   - If all done: report the sync and wiki capture results, archive location, generated commit message, and commit hash
    - If paused: explain why and wait for guidance
 
 **Output During Implementation**
@@ -155,8 +214,7 @@ Working on task 4/7: <task description>
 - [x] Task 2
 ...
 
-All tracked tasks are complete. Review or verify the change as appropriate
-before archiving. You can archive this change with `/openspec-archive-change`.
+All tracked tasks are complete, including sync, wiki capture, archive, and commit.
 ```
 
 **Output On Pause (Issue Encountered)**
@@ -171,12 +229,8 @@ before archiving. You can archive this change with `/openspec-archive-change`.
 ### Issue Encountered
 <description of the issue>
 
-**Options:**
-1. <option 1>
-2. <option 2>
-3. Other approach
-
-What would you like to do?
+No later lifecycle tasks were run after the blocker. Resolve it and run
+`/openspec-apply-change` again to continue; completed task checkboxes remain checked.
 ```
 
 **Guardrails**
@@ -196,6 +250,9 @@ What would you like to do?
 - Consider every guidance entry; explain any inapplicable or conflicting advice
 - Do not copy runtime context or operation guidance into implementation files or planning artifacts
 - Preserve CLI-controlled blocked/ready/all-done behavior and completion criteria
+- For a tracked Apply completion group, run each lifecycle action only after all preceding tasks are complete; for legacy task files, use automatic closeout only at `state: "all_done"`
+- Do not repeat sync, wiki capture, archive, or commit after a tracked Apply completion group succeeds
+- Preserve unrelated staged, unstaged, and untracked work; commit only this change's completed work
 
 **Fluid Workflow Integration**
 

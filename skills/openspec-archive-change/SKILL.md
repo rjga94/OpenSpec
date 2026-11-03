@@ -28,6 +28,14 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
 **Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
 
+**Apply completion mode**: `/openspec-apply-change` may invoke archive after verifying that all
+tracked tasks are complete, passing the exact mode name "Apply completion mode".
+In this mode, do not ask for confirmation: stop and report if artifacts or tasks
+are incomplete; sync delta specs automatically when needed; archive automatically
+only after sync and verification succeed. If there are no delta specs or they are
+already synced, archive without another sync. A sync blocker or failure stops the
+workflow before archiving. Direct archive invocations retain the prompts below.
+
 **Steps**
 
 1. **Select the change**
@@ -80,6 +88,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
    **If any artifacts are neither `done` nor `skipped`** (skipped artifacts satisfy the requirement - the change declares skip_specs):
    - Display warning listing incomplete artifacts
+   - In Apply completion mode, stop and report the incomplete artifacts without prompting
    - Ask the user to confirm they want to proceed
    - Proceed if user confirms
 
@@ -102,6 +111,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
    **If incomplete tasks found:**
    - Display warning showing count of incomplete tasks
+   - In Apply completion mode, stop and report the incomplete task count without prompting
    - Ask the user to confirm they want to proceed
    - Proceed if user confirms
 
@@ -123,6 +133,11 @@ In both branches, never create the root as a side effect: do not run `openspec i
      - Otherwise, count the capability as needing sync and name it in the summary (`<capability-path>: new main spec will be created`). If the delta also has REMOVED requirements, warn that they will be ignored because there is no main spec to remove from. The sync creates the main spec from only the delta's ADDED requirements, exactly as `openspec archive` does.
    - Determine what changes would be applied (adds, modifications, removals, renames)
    - Continue assessing the remaining capabilities even when one is sync-blocked. Show a combined summary before prompting.
+
+   **In Apply completion mode**, do not show the prompt options below. If a
+   capability is sync-blocked, stop and report its blocker. Otherwise, sync and
+   verify all pending delta specs automatically; if none need syncing, continue
+   directly to archive. Never archive after a sync or verification failure.
 
    **Prompt options:**
    - If any capability is sync-blocked: explain why and offer only "Archive without syncing", "Cancel"
@@ -216,7 +231,7 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
 3. **Read before writing.** If the wiki exists, read `index.md` and the pages related to what you collected. Update an existing page in place when the topic is already covered; do not create a second page for the same topic. Preserve edits people made by hand. If the conversation contradicts a page, update it to the newer information, note on the page that it replaces earlier information, and tell the user.
 
-4. **Organize for navigation.** The wiki is a multi-level Markdown knowledge base. Choose the layout that fits the content (for example by area, topic, or time). Every folder, including the wiki root and asset folders, has an `index.md` listing its pages and subfolders with a one-line description each. Add every new page to its parent index in the same capture so the whole wiki is reachable from `<wiki>/index.md`. Create the wiki and its root index if they do not exist yet.
+4. **Organize for navigation.** The wiki is a multi-level Markdown knowledge base. Choose categories and page boundaries to fit the knowledge being captured. Possible topics include project context, domain concepts, architecture and decisions, integrations, or research. Create folders and pages only when they help organize real content, not as empty placeholders. Keep an existing layout when it still works. Every folder, including the wiki root and asset folders, has an `index.md` listing its pages and subfolders with a one-line description each. Add every new page to its parent index in the same capture so the whole wiki is reachable from `<wiki>/index.md`. Create the wiki and its root index if they do not exist yet.
 
 5. **Preserve reference material.**
    - Links: record the link, its title, and the date in the page that uses it.

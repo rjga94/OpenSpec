@@ -78,48 +78,48 @@ function specDrivenTitles(): Record<string, string> {
 }
 
 const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
-  getCaptureSkillTemplate: '3123bb1b668d4c3401fc749cf36de86f1ffe4039d434619fb99aae607220dbca',
-  getOpsxCaptureCommandTemplate: 'f461a7d76c22df8315f7d289569c90e9607271ad68bdd60e125fbfcf02045ea3',
-  getExploreSkillTemplate: 'c1ade3f426056e2b04c36d4f2a65c197fda417bb8f284708e86993abb73e888c',
+  getCaptureSkillTemplate: '35a4a2a075bc212ee6058c7628939d70c6f8edbb20777e0b28a8663a366bf077',
+  getOpsxCaptureCommandTemplate: 'beadecd592cc62ee4ec16df5f0151b60916499079112c7a2b8c04b6d4ad7af80',
+  getExploreSkillTemplate: 'f8f1eb01dd9e6b4b042daba9a985710ae1229528c1eb3faa121ba0f39491d8ad',
   getNewChangeSkillTemplate: '0e5035b7b42198afc430206a1dbc9579096650ef0813d85e837d5a6cd0b98a85',
   getContinueChangeSkillTemplate: '2da5a24eb949f0717ffdb23c28c021ab6f73dc4beeb92ab709b8dbdac9db7355',
-  getApplyChangeSkillTemplate: '3e95cc86e6b741bff4a203a862a599c789abc4447ddf52bff5b24f91e44f297d',
+  getApplyChangeSkillTemplate: '864f613df8d7043abd35aa958febde1b64b79a97b135e5967f6ed5ee0ec92ad3',
   getFfChangeSkillTemplate: '0eb8ddc6da710bc9ed6cd142a2eec1bec883f730125d76dc38e532bd5395bdf2',
   getSyncSpecsSkillTemplate: 'bc80fe9b07eaa289e5eb8a3ce65eb7df722a16d864e37283c678220712e4f230',
   getOnboardSkillTemplate: 'bde83c2afcefe72fdce754cd2846d65024e1782745add4016a91a28d2220c09f',
-  getOpsxExploreCommandTemplate: 'fe1b0a7e392ad513c95da0e2f1f7dfcd4e3493adedaaf015c02af6770220c1a0',
+  getOpsxExploreCommandTemplate: '77ca7c82e82f722eb08dce180365b28d035ff728a9d688380820455b089fe40d',
   getOpsxNewCommandTemplate: '6d504fef1e0d4ced7c423f4cc9d9d2cee11b1a6224edf685e06a3f0757e0ebff',
   getOpsxContinueCommandTemplate: '9e36b758c2760fcab4dcef4677ee678eb29eac00f31de8cbc99f812a440afaaf',
-  getOpsxApplyCommandTemplate: '7ae048131646d972277b1cdd6315f85bd644b0d0e3feacab5434cee4c7cd31de',
+  getOpsxApplyCommandTemplate: '1d178e035cd39ba7554420ba9d1ec424f43ed3b66bf75b0a631e8d87cf66d828',
   getOpsxFfCommandTemplate: '625d6a4a52adeaa16dbceff378f1d7cb07556e79b19d9af63feca5125aa4da13',
   getArchiveChangeSkillTemplate: '4230bc396b8dbac63172bb19116d8bfa9afa7ba858413a6db2bdde7f5f7ab1dd',
-  getBulkArchiveChangeSkillTemplate: '8949741f9f33485a3dfd92cc11106e8a5207c268a35e764b5ed759eb956a646d',
+  getBulkArchiveChangeSkillTemplate: '757b810916b6106cd5fbe9d9898a831971bab7a58eb0ffdaaf3fd66017a248f4',
   getOpsxSyncCommandTemplate: '60550b7bb9829421656d6324a9e4c951bc912f48f88882d1a07ce7f78397a5e7',
   getVerifyChangeSkillTemplate: '9c45ab6d958a9fc432fa59b8d447ca8722a2275da566e91c0e545f531a921ed3',
   getOpsxArchiveCommandTemplate: '08a0aeb170e700d3f0bfcab6d5952d503fc709b1c3272410b2aa7808700aa7d6',
   getOpsxOnboardCommandTemplate: 'b4ea9e2b51423bd7d1ed29df7cc2699f25c5ccfee89d1d8a7ad85ef1720cd1d7',
-  getOpsxBulkArchiveCommandTemplate: 'f3a35b90429b66e2e6d294350960d5f5a63031d6d7db44675d17394afcd59a22',
+  getOpsxBulkArchiveCommandTemplate: 'a6901627791c3a6bfc27c4034358b0623813c4218eaa2c36ccb100feeb5e7ed7',
   getOpsxVerifyCommandTemplate: 'ddc3fe6d529c82703ac131fb4383e4ae1f8df152d11afd75ae74ca17b12f1b24',
-  getOpsxProposeSkillTemplate: '06a118f724232d04761ce9d03992154d834a3547f7fe7049b5be93a329238484',
-  getOpsxProposeCommandTemplate: 'a9a2e3e31befcf87e0b61fbd983e475de4917d42f024f1a5aba654d84e60e1f4',
+  getOpsxProposeSkillTemplate: 'd34eb5ce83e7b089706c3be2307aa688b0ec867b53efaf80f1bd895368641237',
+  getOpsxProposeCommandTemplate: '07ba0d13d55a82522cac39e871d5fcc93ac025b73ae42c78f850847ca62549dc',
   getFeedbackSkillTemplate: 'dabeb5e825b9349abc8156c3e7b8608f27987912a6d9bf47ef29addde6138133',
   getUpdateChangeSkillTemplate: '14c209b8a18d1b100d372b0ef96707b70a7c64117a16309ee463f66d39180b3e',
   getOpsxUpdateCommandTemplate: '33528a80c9436c9dad74084a37d2fce5e78e34abfb71185fa21495a4f2a8b4d3',
 };
 
 const EXPECTED_GENERATED_SKILL_CONTENT_HASHES: Record<string, string> = {
-  'openspec-capture': 'bd58169c69f7d3910fd7dfcf061ce02ec63fc32069ccda2b3538caca6d7112a6',
-  'openspec-explore': 'ca2f3e0e32f4367e9a055566835db730a6a4e45512a4de44e6ee905e82443d39',
+  'openspec-capture': '1636b82d0120903c0ff5b72752b8c980e38e4647c2843b2fc88d63f15ed91314',
+  'openspec-explore': '8b43ea97a54967e4834c173b91f180e3aa14e63cde764bf3324b5fff29c3a68b',
   'openspec-new-change': '27e09d43785953827efc9a98bb9d6cf06db48fe6abe7e1c049409fe5b5061323',
   'openspec-continue-change': 'd8859091316ad43a58cd015091454a95bf49378ec9d9117b24ab9b2396dc8303',
-  'openspec-apply-change': '28c483df02fecc0e2e8b51eb47146424501e95f53ae5e9939172349ba245ee11',
+  'openspec-apply-change': 'da9283d2496247384dca7eb262800c349c4c891ce07258df15a79380d7858c86',
   'openspec-ff-change': '224ff2ed2315eb23876fc4b83d796b60cf3cd05d853f2612e5b056ee7a6e93d2',
   'openspec-sync-specs': '3909936a236a21a9a6d5bf495f90b396b3b68fc9220d7b2c1894668653beb2e4',
   'openspec-archive-change': '21d85230122e10c2d36e053f3fd24e01a76df966636ce4eb73eda527dc0c235a',
-  'openspec-bulk-archive-change': '559a1e16967d224115c749ebd90af0ee394dc3a22b77c00eeb04a3a568cd7d67',
+  'openspec-bulk-archive-change': '2ca83e9f9103b9555edb81c2b51c0ea93ffb643552e278529ee0c9880a064ce1',
   'openspec-verify-change': '082453eb0a8079a4c1c72c243373bf6489ebac56f9adaa8b58588047823ded0d',
   'openspec-onboard': 'e0a48e78fea725a0a8189a5847a22b290a6c0aa255e198e71c856ab574d963fb',
-  'openspec-propose': '6f7df0666c92da18b96f6cdc548ef2e077c82560fb81b60458c60cc16a9157c5',
+  'openspec-propose': '0cd289258d24ae5f13b58ff3d3b72f09bb01462425a30cf5aece193b1542877f',
   'openspec-update-change': 'a6fc9d6972bfb024b91f0a01e14d8a7666ae641bcad83cfae937e41dcccc545a',
 };
 
@@ -1294,10 +1294,13 @@ describe('apply skill/command shared instruction core', () => {
     expect(getOpsxApplyCommandTemplate().content).toBe(core);
   });
 
-  it('keeps task completion distinct from archive readiness (#1790)', () => {
+  it('tracks apply completion steps while preserving legacy closeout (#1790)', () => {
     const core = getApplyInstructions();
     expect(core).toContain('All tracked tasks are complete');
-    expect(core).toMatch(/sync its delta specs,\s+archive it/);
+    expect(core).toContain('Sync delta specs');
+    expect(core).toContain('Capture wiki knowledge');
+    expect(core).toContain('do not run the automatic closeout again');
+    expect(core).toContain('For older task files without that group');
     expect(core).not.toContain('All tasks complete! You can archive');
   });
 });

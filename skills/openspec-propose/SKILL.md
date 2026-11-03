@@ -75,6 +75,8 @@ In both branches, never create the root as a side effect: do not run `openspec i
 
 4. **Create the change directory**
 
+   Create the change in the current checkout. Do not create or switch Git branches as part of this workflow.
+
    Choose one schema form below. If a registered store is selected, append `--store "<store-id>"` to that command and each later OpenSpec command shown below that accepts `--store`.
 
    Using the configured default:

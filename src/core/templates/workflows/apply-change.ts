@@ -20,11 +20,23 @@ const BLOCKED_STATE_HANDOFF = optionalWorkflow(
   'suggest completing the missing artifacts. Run `openspec status --change "<name>" --json`, select the next `ready` artifact (not `skipped` or `blocked`), and use `openspec instructions "<artifact-id>" --change "<name>" --json` for its rules and template. Keep the selected `--store <id>` on both commands.'
 );
 
-/** The archive handoff used after apply has completed every tracked task. */
+/** Legacy archive handoff for task files without tracked Apply completion steps. */
 const ARCHIVE_HANDOFF = optionalWorkflow(
   'archive',
   'run `/opsx:archive "<name>"` in Apply completion mode: sync its delta specs, archive it, and do not ask for confirmation',
   'run `openspec archive "<name>"` to sync its delta specs and archive it without prompting'
+);
+
+const APPLY_SYNC_STEP = optionalWorkflow(
+  'sync',
+  'run `/opsx:sync "<name>"` and verify the main specs reflect every delta requirement',
+  'perform the delta-to-main-spec merge inline and verify the main specs reflect every delta requirement'
+);
+
+const APPLY_WIKI_CAPTURE_STEP = optionalWorkflow(
+  'capture',
+  'run `/opsx:capture` to capture durable decisions and project knowledge from this change',
+  'perform wiki capture inline using the archive workflow capture procedure'
 );
 
 /**
@@ -84,7 +96,7 @@ ${PROJECT_ROOT_GUARD}
    - If \`state: "blocked"\`: show the message and pause implementation.
      - If \`missingArtifacts\` is non-empty: ${BLOCKED_STATE_HANDOFF}
      - Otherwise, follow the CLI instruction to create or repair the schema-configured tracking file from existing planning artifacts. Do not assume another artifact is ready or start implementation while blocked.
-   - If \`state: "all_done"\`: report that all tracked tasks are complete and continue to the automatic sync, archive, and commit steps below
+   - If \`state: "all_done"\`: defer completion handling until step 8 distinguishes tracked Apply completion tasks from legacy task files
    - Otherwise: proceed to implementation
 
    Treat \`context\` as a required prompt-level input. Read and consider it, and
@@ -134,12 +146,29 @@ ${PROJECT_ROOT_GUARD}
 
    For each pending task:
    - Show which task is being worked on
-   - Make the code changes required
+   - Make the code changes required, or perform the requested workflow action for a task in the final \`## N. Apply completion\` group
    - Keep changes minimal and focused
    - Before editing, confirm the checkbox at the returned \`sourcePath\` and \`line\` still matches the task description; if it does not, rerun the apply instructions and use the refreshed location
    - Mark the task complete at its returned \`sourcePath\` and \`line\`: \`- [ ]\` → \`- [x]\`
    - Rerun the apply instructions and confirm that task is now done and progress changed
    - Continue to next task
+
+   **Tracked Apply completion group**
+
+   If the task file has a final numbered heading ending in \`Apply completion\`,
+   its four checkboxes are real tasks. Do not wait for \`state: "all_done"\` before
+   executing them. Complete them in order, and do not start this group until
+   every task before it is complete:
+
+   1. **Sync delta specs**: ${APPLY_SYNC_STEP}. If there are no delta specs, verify that none exist and mark this task complete as a no-op.
+   2. **Capture wiki knowledge**: ${APPLY_WIKI_CAPTURE_STEP}. If there is nothing new to record, report that and mark this task complete as a no-op.
+   3. **Archive the change**: only after the sync and capture tasks are checked, run \`openspec archive "<name>" --skip-specs --yes\` (include the selected store flag when applicable). The explicit sync task has already merged and verified the delta specs, so \`--skip-specs\` prevents a second merge. \`--yes\` allows the still-pending commit task to remain tracked during archive. Verify the archive destination, then locate the moved tasks file, check the archive task there, and continue using that archived path. Do not rerun apply instructions after the change is archived.
+   4. **Commit the work**: stage only files changed for this change by implementation, task progress, sync, wiki capture, or archive. Do not use \`git add .\` or \`git add -A\`, and do not include pre-existing changes. Mark the commit checkbox in the archived tasks file as part of preparing this commit, stage that file, then commit with a concise message and verify the commit hash. Treat the task as complete only after the commit succeeds; if it fails, restore the checkbox to incomplete and report the error.
+
+   For sync and capture tasks, mark their checkbox after verification and refresh
+   apply instructions as usual. After archive moves the change, update the task
+   checkbox in the archived file instead; the active-change instructions no
+   longer apply. Leave all later lifecycle tasks unchecked if a step fails.
 
    **Pause if:**
    - Task is unclear → ask for clarification
@@ -148,14 +177,21 @@ ${PROJECT_ROOT_GUARD}
    - Error or blocker encountered → report and wait for guidance
    - User interrupts
 
-   If any tracked tasks remain incomplete when implementation stops, report the
-   final progress and stop here. Do not sync specs, archive the change, or commit.
+   If implementation stops while tasks before the Apply completion group remain
+   incomplete, report progress and do not start that group. If a lifecycle task
+   fails, report progress and do not run any later lifecycle task.
 
-8. **Run sync, archive, and commit after all tasks are complete**
+8. **Finish tracked Apply completion tasks or legacy closeout**
 
-   Re-run \`openspec instructions apply --change "<name>" --json\` and continue
+   If the task file has the final numbered \`Apply completion\` group, its sync,
+   wiki capture, archive, and commit actions are already executed through the
+   tracked task loop. Verify the archived task checkboxes and successful commit;
+   do not run the automatic closeout again.
+
+   For older task files without that group, retain the automatic closeout:
+   re-run \`openspec instructions apply --change "<name>" --json\` and continue
    only when it reports \`state: "all_done"\` and zero remaining tasks. If any
-   task is incomplete, stop without starting the follow-up steps.
+   task is incomplete, stop without starting closeout.
 
    Pass the exact **Apply completion mode** handoff to the archive workflow:
    "${ARCHIVE_HANDOFF}". The archive workflow syncs delta specs before moving the
@@ -178,7 +214,7 @@ ${PROJECT_ROOT_GUARD}
    Display:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
-   - If all done: report the sync result, archive location, generated commit message, and commit hash
+   - If all done: report the sync and wiki capture results, archive location, generated commit message, and commit hash
    - If paused: explain why and wait for guidance
 
 **Output During Implementation**
@@ -209,8 +245,7 @@ Working on task 4/7: <task description>
 - [x] Task 2
 ...
 
-All tracked tasks are complete. The workflow now syncs delta specs, archives the
-change, and commits the completed work automatically.
+All tracked tasks are complete, including sync, wiki capture, archive, and commit.
 \`\`\`
 
 **Output On Pause (Issue Encountered)**
@@ -225,8 +260,8 @@ change, and commits the completed work automatically.
 ### Issue Encountered
 <description of the issue>
 
-No sync, archive, or commit was run. Resolve the blocker and run \`/opsx:apply\`
-again to continue.
+No later lifecycle tasks were run after the blocker. Resolve it and run
+\`/opsx:apply\` again to continue; completed task checkboxes remain checked.
 \`\`\`
 
 **Guardrails**
@@ -246,7 +281,8 @@ again to continue.
 - Consider every guidance entry; explain any inapplicable or conflicting advice
 - Do not copy runtime context or operation guidance into implementation files or planning artifacts
 - Preserve CLI-controlled blocked/ready/all-done behavior and completion criteria
-- Never sync, archive, or commit unless the refreshed apply instructions report all tracked tasks complete
+- For a tracked Apply completion group, run each lifecycle action only after all preceding tasks are complete; for legacy task files, use automatic closeout only at \`state: "all_done"\`
+- Do not repeat sync, wiki capture, archive, or commit after a tracked Apply completion group succeeds
 - Preserve unrelated staged, unstaged, and untracked work; commit only this change's completed work
 
 **Fluid Workflow Integration**

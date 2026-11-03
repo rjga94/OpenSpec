@@ -383,11 +383,13 @@ Guidelines:
 - Each tracked task MUST be a checkbox: `- [ ] X.Y Task description`
 - Tasks should be small enough to complete in one session
 - Order tasks by dependency (what must be done first?)
-- Track implementation and verification work that can be completed before
-  archive. If the requested workflow includes archive or work that requires
-  this change to be archived, preserve those steps as plain bullets in an
-  optional `## Workflow follow-up` section at the end of tasks.md. These
-  bullets are reference information outside tracked task progress.
+- Track implementation and verification work before archive. Always add a
+  final numbered `Apply completion` task group to every tasks.md generated
+  with this schema. It MUST contain these four tracked checkboxes, in this
+  order: sync delta specs, capture durable project knowledge to the wiki,
+  archive the change, and commit the completed work. Each checkbox must
+  include a concrete verification method. These are executable tasks, not
+  follow-up notes; Apply executes and checks them off in order.
 - Each task MUST state how to verify completion (a test, command,
   observable behavior, or delivered artifact). Put the verification in
   that task's checkbox description. Use a separate verification task only
@@ -398,8 +400,9 @@ Guidelines:
   when a late group first exercises work from an early one, the failures
   cascade back through every group in between and force rework. A group
   whose work calls for neither, such as scaffolding or dependency setup,
-  carries neither. A final group is for integration checks only, not for
-  the tests and docs an earlier group owed.
+  carries neither. A final implementation group is for integration checks
+  only, not for the tests and docs an earlier group owed. The reserved
+  `Apply completion` group contains only the required lifecycle tasks.
 
 Example:
 ```
@@ -415,14 +418,13 @@ Example:
 - [ ] 2.1 Implement data export function and verify the export test passes
 - [ ] 2.2 Add CSV formatting utilities and verify unit tests cover quoting and delimiters
 - [ ] 2.3 Document the export API in docs/export.md and verify the documented command runs as written
-```
 
-When applicable, append workflow follow-up as plain bullets, for example:
-```
-## Workflow follow-up
+## 3. Apply completion
 
-- Archive the change after the project's review requirements are satisfied.
-- Verify the archived result.
+- [ ] 3.1 Sync delta specs into main specs and verify the intended requirements are present
+- [ ] 3.2 Capture durable project knowledge to the wiki and verify relevant pages and indexes, or report that nothing new needed capture
+- [ ] 3.3 Archive the change after sync and wiki capture, then verify its archive path
+- [ ] 3.4 Commit the completed work and verify the resulting commit hash
 ```
 
 Reference specs for what needs to be built, design for how to build it.

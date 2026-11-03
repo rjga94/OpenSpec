@@ -22,18 +22,30 @@ describe('apply completion automation', () => {
     ['command', getOpsxArchiveCommandTemplate().content],
   ];
 
-  it('stops before follow-up automation when tasks remain incomplete', () => {
+  it('does not start tracked lifecycle tasks before implementation tasks finish', () => {
     for (const [label, body] of applySurfaces) {
-      expect(body, label).toContain('If any tracked tasks remain incomplete');
-      expect(body, label).toContain('Do not sync specs, archive the change, or commit');
+      expect(body, label).toContain('do not start this group until');
+      expect(body, label).toContain('every task before it is complete');
+      expect(body, label).toContain('If implementation stops while tasks before the Apply completion group remain');
       expect(body, label).toContain('state: "all_done"');
     }
   });
 
-  it('syncs, archives, and commits without confirmation after all tasks complete', () => {
+  it('executes tracked lifecycle tasks and avoids repeating automatic closeout', () => {
     for (const [label, body] of applySurfaces) {
+      expect(body, label).toContain('Sync delta specs');
+      expect(body, label).toContain('Capture wiki knowledge');
+      expect(body, label).toContain('openspec archive "<name>" --skip-specs --yes');
+      expect(body, label).toContain('Mark the commit checkbox in the archived tasks file');
+      expect(body, label).toContain('do not run the automatic closeout again');
+      expect(body, label).toContain('For older task files without that group, retain the automatic closeout');
+    }
+  });
+
+  it('retains automatic closeout for legacy task files', () => {
+    for (const [label, body] of applySurfaces) {
+      expect(body, label).toContain('state: "all_done"');
       expect(body, label).toContain('Apply completion mode');
-      expect(body, label).toContain('sync its delta specs, archive it, and do not ask for confirmation');
       expect(body, label).toContain('Generate a concise commit message');
       expect(body, label).toMatch(/commit without asking\s+for confirmation/);
       expect(body, label).toMatch(/Do not use `git add \.` or\s+`git add -A`/);
