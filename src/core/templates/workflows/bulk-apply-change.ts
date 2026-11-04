@@ -43,16 +43,19 @@ ${PROJECT_ROOT_GUARD}
    scope; do not assume artifact names or paths.
 
    Read the available scope-defining and implementation-planning artifacts
-   and relevant current code and tests. Identify prerequisites and order
-   selected prerequisites before the changes that depend on them. For
-   independent changes, choose an order based on their scope and the
-   implementation context. Never use creation date as the ordering rule.
+   and relevant current code and tests. Analyze the entire selected set
+   together, identifying dependencies, incompatible assumptions or
+   contracts, duplicated work, and opportunities to consolidate or
+   redistribute work. Order selected prerequisites before the changes that
+   depend on them. For independent changes, choose an order based on their
+   scope and the implementation context. Never use creation date as the
+   ordering rule.
 
    If a material dependency or safe order cannot be established from the
    available evidence, explain the uncertainty and ask before editing.
 
-   Show the ordered list with a short rationale for each position before
-   implementation.
+   Keep this analysis read-only. Report the resulting order after preflight
+   reconciliation.
 
 3. **Apply the batch's blocked-change policy**
 
@@ -67,14 +70,53 @@ ${PROJECT_ROOT_GUARD}
 
 4. **Check Git commit readiness**
 
-   Before editing, confirm this is a Git repository and inspect
+   Before editing any selected change plan or implementation file, confirm
+   this is a Git repository and inspect
    \`git status --short\`, including staged, unstaged, and untracked files.
    If the index already contains staged changes, or there is no Git
-   repository, stop before implementation. Record pre-existing work so it
-   can be excluded from each change's commit. Never clean, stash, reset,
-   or discard it.
+   repository, stop before refactoring or implementation. Record
+   pre-existing work so it can be excluded from each change's commit. Never
+   clean, stash, reset, or discard it.
 
-5. **Apply each ordered change in sequence**
+5. **Preflight and reconcile the applicable batch**
+
+   Use the complete batch analysis from step 2 to prepare the changes that
+   the blocked-change policy in step 3 allows this run to process. Analyze
+   every selected change, but do not edit a blocked change or process
+   entries after the explicit-batch stop point.
+
+   Decide the complete set of plan changes before editing any artifact.
+   Automatically reorganize selected plans as needed, without asking for
+   approval, when the changes preserve every proposal's initial idea and
+   intent:
+   - When only some work overlaps, move or consolidate the relevant
+     requirements and tasks into the existing change that best owns that
+     work. Update affected proposals, specs, designs, and task lists.
+     Preserve distinct outcomes and completed task progress.
+   - When the selected work forms one coherent outcome, create a new
+     change with \`openspec new change "<name>"\`. Use its schema and
+     concrete paths from status and artifact instructions to create a
+     complete proposal, specs, design, and task list that preserve the
+     combined intent. After verifying the survivor's artifacts and
+     readiness, delete only the fully absorbed selected source change
+     directories using their exact paths. Do not delete unselected changes
+     or partially retained changes.
+   - Keep independent outcomes as separate changes and order the resulting
+     changes by their implementation dependencies and scope.
+
+   If any necessary refactor would change or omit the initial idea or intent
+   of a selected proposal, stop before making any part of that refactor.
+   Explain which intent cannot be preserved and ask how to proceed. Do not
+   ask for approval for intent-preserving moves or merges. Existing blocked
+   change, Git safety, and other Apply safeguards still apply.
+
+   After refactoring, rerun status and apply instructions for every
+   resulting change. Read the refreshed context files and tasks, confirm
+   they are ready under the blocked-change policy, and do not rely on cached
+   task state. Show the final ordered changes with a short rationale before
+   implementation.
+
+6. **Apply each ordered change in sequence**
 
    For each applicable change:
 
@@ -126,12 +168,12 @@ ${PROJECT_ROOT_GUARD}
       not start any later changes. Earlier completed changes remain
       completed; do not attempt rollback.
 
-6. **Report batch results**
+7. **Report batch results**
 
    Report the chosen order and rationale, completed changes, blocked
-   changes skipped or stopped at, any automatic plan adaptations, and any
-   remaining work. For a paused batch, explain the blocker and wait for
-   guidance.
+   changes skipped or stopped at, automatic plan reorganizations or
+   consolidations, and any remaining work. For a paused batch, explain the
+   blocker and wait for guidance.
 
 **Single-change Apply procedure**
 
