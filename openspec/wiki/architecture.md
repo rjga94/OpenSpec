@@ -18,6 +18,12 @@ The workflow instruction handler resolves the planning root and schema, loads ch
 
 Agent-facing instructions are authored as workflow-specific TypeScript templates under `src/core/templates/workflows/` and re-exported through [skill-templates.ts](../../src/core/templates/skill-templates.ts). The package also provides generation scripts for committed skill outputs and parity hashes ([package scripts](../../package.json)). Capture's shared procedure lives in [wiki.ts](../../src/core/templates/workflows/wiki.ts); the CLI does not manage wiki content, which is written by the agent under the resolved OpenSpec root.
 
+### Proposal image references
+
+Propose and Fast Forward share guidance to retain only user-provided images that materially inform a change. The workflow stores accessible copies under the change's `references/` directory and links and captions them in a proposal artifact; if a relevant attachment is unavailable, the agent asks for an accessible file or permission to omit it rather than leaving a broken link. This behavior is specified in the [Propose workflow contract](../specs/opsx-propose-skill/spec.md) and implemented in [proposal-image-guidance.ts](../../src/core/templates/workflows/proposal-image-guidance.ts), which is included by the [Propose](../../src/core/templates/workflows/propose.ts) and [Fast Forward](../../src/core/templates/workflows/ff-change.ts) templates.
+
+During Apply capture, linked proposal images are copied into a change-specific wiki assets folder, linked from the page that explains the informed decision, and given provenance using the change name, path relative to the change root, and capture date. The wiki link does not depend on the change's active path, which changes when the change is archived. Large-file approval and Git LFS safeguards cover both change references and wiki copies; the [capture contract](../specs/opsx-capture-skill/spec.md), [shared capture procedure](../../src/core/templates/workflows/wiki.ts), and [template tests](../../test/core/templates/propose.test.ts) describe and verify the workflow.
+
 ### Update workflow authorization
 
 The update command and skill share the instructions in [update-change.ts](../../src/core/templates/workflows/update-change.ts), with behavior covered by [template tests](../../test/core/templates/update-change.test.ts) and specified in the [update workflow contract](../specs/opsx-update-skill/spec.md). Step 4 reads and reconciles artifacts; step 5 is the only write phase.

@@ -117,6 +117,26 @@ describe('default proposal guidance', () => {
   });
 });
 
+describe('proposal image reference guidance', () => {
+  it('preserves relevant images consistently across Propose and Fast Forward surfaces', () => {
+    for (const [label, body] of loopBodies) {
+      expect(body, label).toContain('user-provided image attachments that materially inform the change');
+      expect(body, label).toContain("path.join(changeRoot, 'references', ...)");
+      expect(body, label).toContain('path.relative()');
+      expect(body, label).toContain('relative Markdown path');
+      expect(body, label).toContain('requirement or decision it informed');
+    }
+  });
+
+  it('requires an accessible replacement or explicit omission when an image cannot be copied', () => {
+    for (const [label, body] of loopBodies) {
+      expect(body, label).toContain('ask for an accessible file or permission to omit it');
+      expect(body, label).toContain('Do not create a broken link or claim it was preserved');
+      expect(body, label).toContain('mention that in the final summary');
+    }
+  });
+});
+
 describe('default task guidance', () => {
   it('includes tracked apply completion tasks in every task plan', () => {
     const tasks = defaultSchema.artifacts.find(artifact => artifact.id === 'tasks');

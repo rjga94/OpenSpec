@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -57,6 +59,37 @@ describe('capture skill', () => {
     }
   });
 
+  it('copies proposal-linked images with durable provenance in direct and Apply capture', () => {
+    const applySurfaces = [
+      getApplyChangeSkillTemplate().instructions,
+      getOpsxApplyCommandTemplate().content,
+    ];
+    const applyWithCapture = applySurfaces.map((surface) =>
+      resolveOptionalWorkflows(surface, new Set(['capture', 'archive', 'sync']))
+    );
+
+    for (const text of [
+      capture.instructions,
+      getOpsxCaptureCommandTemplate().content,
+      ...applySurfaces.map((surface) =>
+        resolveOptionalWorkflows(surface, new Set(['archive', 'sync']))
+      ),
+      getArchiveChangeSkillTemplate().instructions,
+      getBulkArchiveChangeSkillTemplate().instructions,
+    ]) {
+      expect(text).toContain("current change's proposal or design links an image");
+      expect(text).toContain('<wiki>/assets/<change-name>/');
+      expect(text).toContain('reference path relative to the change root');
+      expect(text).toContain('Do not link the wiki page to the active change path');
+      expect(text).toContain('source under the change');
+      expect(text).toContain('patterns covering the resolved wiki assets and change-reference paths');
+    }
+
+    for (const text of applyWithCapture) {
+      expect(text).toContain('run `/opsx:capture` to apply the canonical capture procedure');
+    }
+  });
+
   it('asks before copying very large files', () => {
     expect(capture.instructions).toMatch(/very large/i);
     expect(capture.instructions).toMatch(/ask/i);
@@ -87,6 +120,39 @@ describe('capture skill', () => {
 });
 
 describe('wiki consultation and archive capture', () => {
+  it('resolves proposal and wiki asset links with native Windows paths', () => {
+    const repoRoot = path.join('repo');
+    const changeRoot = path.join(repoRoot, 'openspec', 'changes', 'example-change');
+    const proposal = path.join(changeRoot, 'proposal.md');
+    const reference = path.join(changeRoot, 'references', 'screen.png');
+    const wikiPage = path.join(repoRoot, 'openspec', 'wiki', 'decisions.md');
+    const wikiAsset = path.join(
+      repoRoot,
+      'openspec',
+      'wiki',
+      'assets',
+      'example-change',
+      'screen.png',
+    );
+    const proposalLink = path
+      .relative(path.dirname(proposal), reference)
+      .split(path.sep)
+      .join('/');
+    const wikiLink = path
+      .relative(path.dirname(wikiPage), wikiAsset)
+      .split(path.sep)
+      .join('/');
+
+    expect(proposalLink).toBe(
+      path.join('references', 'screen.png').split(path.sep).join('/'),
+    );
+    expect(wikiLink).toBe(
+      path.join('assets', 'example-change', 'screen.png').split(path.sep).join('/'),
+    );
+    expect(path.resolve(path.dirname(proposal), proposalLink)).toBe(path.resolve(reference));
+    expect(path.resolve(path.dirname(wikiPage), wikiLink)).toBe(path.resolve(wikiAsset));
+  });
+
   it('explore and propose read the wiki', () => {
     expect(getExploreSkillTemplate().instructions).toContain('openspec/wiki/');
     expect(getOpsxProposeSkillTemplate().instructions).toContain('openspec/wiki/');

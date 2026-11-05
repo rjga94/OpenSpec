@@ -8,6 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 import { optionalWorkflow } from '../optional-workflow.js';
 import { STORE_SELECTION_GUIDANCE } from './store-selection.js';
 import { PROJECT_ROOT_GUARD } from './project-root.js';
+import { PROPOSAL_IMAGE_REFERENCE_GUIDANCE } from './proposal-image-guidance.js';
 import { WIKI_CONSULT_GUIDANCE } from './wiki.js';
 
 /**
@@ -117,6 +118,8 @@ ${WIKI_CONSULT_GUIDANCE}
    - \`planningHome\`, \`changeRoot\`, \`artifactPaths\`, and \`actionContext\`: path and scope context. Use these instead of assuming repo-local paths.
 
 6. **Create every artifact in the required set**
+
+   ${PROPOSAL_IMAGE_REFERENCE_GUIDANCE}
 
    Use a todo list to track progress through the artifacts.
 
@@ -285,6 +288,8 @@ ${WIKI_CONSULT_GUIDANCE}
    - \`planningHome\`, \`changeRoot\`, \`artifactPaths\`, and \`actionContext\`: path and scope context. Use these instead of assuming repo-local paths.
 
 6. **Create every artifact in the required set**
+
+   ${PROPOSAL_IMAGE_REFERENCE_GUIDANCE}
 
    Use a todo list to track progress through the artifacts.
 
